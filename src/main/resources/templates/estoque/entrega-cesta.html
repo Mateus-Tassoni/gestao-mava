@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Montar Cesta Básica | Mava</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+
+    <style>
+        :root {
+            --azul-petroleo: #0c5465;
+            --azul-claro: #d1e7ed;
+            --texto-escuro: #2c3e50;
+            --sucesso: #198754;
+        }
+
+        body {
+            background-color: #f0f2f5;
+            font-family: 'Segoe UI', sans-serif;
+            min-height: 100vh;
+        }
+
+        /* --- NAVBAR --- */
+        .navbar-manancial {
+            background: linear-gradient(135deg, #0c5465, #146c82);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        /* --- PADRÃO MANANCIAL DE CARDS --- */
+        .card-3d {
+            background: #ffffff;
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(12, 84, 101, 0.08);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-topo-detalhe {
+            height: 6px;
+            width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: var(--azul-petroleo);
+        }
+
+        /* --- PADRÃO MANANCIAL DE FORMULÁRIOS --- */
+        .form-label {
+            color: var(--texto-escuro);
+            font-weight: 700;
+            font-size: 0.95rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .input-arredondado {
+            border-radius: 12px;
+            padding: 0.75rem 1rem;
+            border: 1px solid #dee2e6;
+            transition: all 0.2s;
+            background-color: #fff;
+        }
+
+        .input-arredondado:focus {
+            border-color: var(--azul-petroleo);
+            box-shadow: 0 0 0 0.25rem rgba(12, 84, 101, 0.15);
+        }
+
+        select.input-arredondado {
+            cursor: pointer;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 16px 12px;
+            padding-right: 2.5rem;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+
+        /* Input de Quantidade na Tabela */
+        .input-qtd-moderno {
+            border-radius: 10px;
+            border: 1px solid #dee2e6;
+            text-align: center;
+            font-weight: 800;
+            color: var(--azul-petroleo);
+            padding: 0.4rem;
+            width: 80px;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .input-qtd-moderno:focus {
+            border-color: var(--azul-petroleo);
+            outline: none;
+            box-shadow: 0 0 0 0.25rem rgba(12, 84, 101, 0.15);
+        }
+
+        /* Esconde as setinhas feias do input type="number" */
+        .input-qtd-moderno::-webkit-inner-spin-button,
+        .input-qtd-moderno::-webkit-outer-spin-button {
+            -webkit-appearance: none; margin: 0;
+        }
+        .input-qtd-moderno { -moz-appearance: textfield; }
+
+        /* Animação do JS (Preencher Padrão) */
+        .destaque-animado {
+            background-color: var(--azul-claro) !important;
+            border-color: var(--azul-petroleo) !important;
+            transform: scale(1.1);
+            color: var(--azul-petroleo);
+        }
+
+        /* --- TABELA MODERNA --- */
+        /* Adicionado min-width para forçar scroll horizontal no celular */
+        .table-moderna { border-collapse: separate; border-spacing: 0 8px; margin-top: -8px; min-width: 500px; }
+        .table-moderna th { text-transform: uppercase; font-size: 0.75rem; letter-spacing: 1px; color: #6c757d; border: none; padding: 0 1rem 10px 1rem; font-weight: 700; }
+        .table-moderna td { vertical-align: middle; background-color: #ffffff; border-top: 1px solid #f8f9fa; border-bottom: 1px solid #f8f9fa; padding: 1rem; transition: all 0.2s; }
+        .table-moderna td:first-child { border-left: 1px solid #f8f9fa; border-top-left-radius: 12px; border-bottom-left-radius: 12px; }
+        .table-moderna td:last-child { border-right: 1px solid #f8f9fa; border-top-right-radius: 12px; border-bottom-right-radius: 12px; }
+        .table-moderna tbody tr { transition: transform 0.2s, box-shadow 0.2s; }
+        .table-moderna tbody tr:hover td { background-color: #f8f9fa; border-color: #e9ecef; }
+        .table-moderna tbody tr:hover { transform: scale(1.005); box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
+
+        /* --- BOTÕES --- */
+        .btn-manancial { background-color: var(--azul-petroleo); color: white; border-radius: 12px; font-weight: 700; transition: all 0.3s ease; }
+        .btn-manancial:hover { background-color: #093e4b; color: white; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(12, 84, 101, 0.2); }
+
+        .btn-acao-magica {
+            border-radius: 12px; font-weight: 700; color: var(--azul-petroleo);
+            background-color: var(--azul-claro); border: none; transition: all 0.2s;
+        }
+        .btn-acao-magica:hover { background-color: #b6effb; transform: translateY(-2px); }
+
+        .btn-sucesso { background-color: var(--sucesso); color: white; border-radius: 12px; font-weight: 700; transition: all 0.3s ease; border: none; }
+        .btn-sucesso:hover { background-color: #146c43; color: white; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(25, 135, 84, 0.3); }
+
+        /* Badge de Estoque Modernizada */
+        .badge-estoque { background-color: #f8f9fa; color: #6c757d; border: 1px solid #dee2e6; padding: 0.5rem 0.8rem; font-weight: 700; border-radius: 8px; letter-spacing: 0.5px; white-space: nowrap; }
+
+        .hover-scale { transition: transform 0.2s; }
+        .hover-scale:hover { transform: scale(1.05); }
+
+        /* --- AJUSTES DE RESPONSIVIDADE PARA MOBILE --- */
+        @media (max-width: 991.98px) {
+            /* Desativa o sticky-top no mobile para não ocupar a tela inteira */
+            .col-lg-4.sticky-top { position: static !important; }
+        }
+
+        @media (max-width: 576px) {
+            .navbar-brand span { font-size: 0.85rem !important; }
+            .card-3d { padding: 1.25rem !important; } /* Alivia espaçamento nos cards principais */
+            .table-moderna td, .table-moderna th { padding-left: 0.75rem; padding-right: 0.75rem; }
+            .badge-estoque { padding: 0.3rem 0.5rem; font-size: 0.8rem; }
+            .input-qtd-moderno { width: 60px; } /* Reduz a caixa de input um pouquinho no mobile */
+        }
+    </style>
+</head>
+<body>
+
+<!-- Margem ajustada no mobile (mb-4 mb-md-5) -->
+<nav class="navbar navbar-expand-lg navbar-dark navbar-manancial mb-4 mb-md-5 sticky-top">
+    <div class="container">
+        <a class="navbar-brand d-flex align-items-center gap-2 gap-md-3" href="/">
+            <img th:src="@{/img/logo.png}" alt="Logo" width="40" height="40" class="bg-white rounded-circle p-1 shadow-sm">
+            <div class="d-flex flex-column text-white">
+                <span class="fw-bold text-uppercase" style="letter-spacing: 1px; font-size: 1rem; line-height: 1.1;">Mava</span>
+            </div>
+        </a>
+
+        <div class="ms-auto">
+            <a href="/estoque/lista" class="btn btn-outline-light btn-sm rounded-pill px-3 px-md-4 fw-bold hover-scale">
+                <i class="bi bi-x-lg"></i> <span class="d-none d-sm-inline ms-1">Cancelar</span>
+            </a>
+        </div>
+    </div>
+</nav>
+
+<div class="container pb-5">
+
+    <div class="mb-4">
+        <h4 class="fw-bold mb-1" style="color: var(--texto-escuro);">Montagem de Cesta Básica</h4>
+        <span class="text-muted small">Desconte itens do estoque e registre a entrega para uma família.</span>
+    </div>
+
+    <form action="/estoque/salvar-cesta" method="post">
+        <div class="row g-4 align-items-start">
+
+            <!-- Sticky-top desativado via CSS em telas menores (< 992px) -->
+            <div class="col-12 col-lg-4 sticky-top" style="top: 100px; z-index: 10;">
+                <div class="card-3d p-4">
+                    <div class="card-topo-detalhe"></div>
+
+                    <div class="d-flex align-items-center mb-4 mt-2">
+                        <div class="bg-light rounded-circle d-flex align-items-center justify-content-center me-3 flex-shrink-0" style="width: 40px; height: 40px;">
+                            <span class="fw-bold fs-5" style="color: var(--azul-petroleo);">1</span>
+                        </div>
+                        <h5 class="mb-0 fw-bold" style="color: var(--texto-escuro);">Destinatário</h5>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label">Selecione a Família <span class="text-danger">*</span></label>
+                        <select name="familiaId" class="form-control input-arredondado" required>
+                            <option value="" disabled selected>-- Escolha na lista --</option>
+                            <option th:each="f : ${familias}" th:value="${f.id}" th:text="${f.nomeRepresentante}"></option>
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label">Observação Geral</label>
+                        <textarea name="observacao" class="form-control input-arredondado" rows="3" placeholder="Ex: Cesta de Natal, Auxílio emergencial..."></textarea>
+                    </div>
+
+                    <hr class="mb-4" style="opacity: 0.1;">
+
+                    <div class="d-grid gap-3">
+                        <button type="button" class="btn btn-acao-magica py-2" onclick="preencherSugestao()">
+                            <i class="bi bi-magic me-2 fs-5 align-middle"></i> Preencher Padrão
+                        </button>
+
+                        <button type="submit" class="btn btn-sucesso py-3 fs-6 mt-2">
+                            <i class="bi bi-check2-circle me-2 fs-5 align-middle"></i> Confirmar Entrega
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Coluna dos itens de estoque -->
+            <div class="col-12 col-lg-8">
+                <div class="card-3d p-4">
+                    <div class="card-topo-detalhe" style="background: #6c757d;"></div>
+
+                    <div class="d-flex flex-column flex-sm-row align-items-sm-center text-center text-sm-start mb-4 mt-2 gap-3 gap-sm-0">
+                        <div class="bg-light rounded-circle d-flex align-items-center justify-content-center me-sm-3 flex-shrink-0 mx-auto mx-sm-0" style="width: 40px; height: 40px;">
+                            <span class="fw-bold fs-5" style="color: #6c757d;">2</span>
+                        </div>
+                        <div>
+                            <h5 class="mb-0 fw-bold" style="color: var(--texto-escuro);">Itens da Cesta</h5>
+                            <small class="text-muted lh-sm d-block mt-1">Informe a quantidade apenas dos produtos que serão entregues.</small>
+                        </div>
+                    </div>
+
+                    <!-- Div responsável pelo scroll horizontal da tabela no celular -->
+                    <div class="table-responsive mt-3" style="border-radius: 12px;">
+                        <table class="table table-moderna w-100">
+                            <thead>
+                            <tr>
+                                <th class="ps-3 text-nowrap" style="width: 50%;">Produto</th>
+                                <th class="text-center text-nowrap">Disponível</th>
+                                <th class="text-center text-nowrap">Qtd. na Cesta</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="p : ${produtos}">
+                                <td class="ps-3 text-nowrap">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <div class="bg-light rounded p-2 text-muted d-none d-sm-block">
+                                            <i class="bi bi-box-seam"></i>
+                                        </div>
+                                        <div>
+                                            <div class="fw-bold fs-6 produto-nome" style="color: var(--texto-escuro);" th:text="${p.nome}">Arroz</div>
+                                            <small class="text-muted text-uppercase" style="font-size: 0.7rem; letter-spacing: 0.5px;" th:text="${p.categoria}">ALIMENTO</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="text-center align-middle">
+                                        <span class="badge-estoque">
+                                            <span th:text="${p.quantidadeAtual}">100</span> <span th:text="${p.unidade}">KG</span>
+                                        </span>
+                                </td>
+                                <td class="align-middle">
+                                    <div class="d-flex justify-content-center">
+                                        <input type="number"
+                                               th:name="'qtds[' + ${p.id} + ']'"
+                                               class="form-control input-qtd input-qtd-moderno"
+                                               value="0" min="0" th:max="${p.quantidadeAtual}">
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <tr th:if="${#lists.isEmpty(produtos)}">
+                                <td colspan="3" class="text-center py-5 border-0">
+                                    <i class="bi bi-inbox fs-1 text-muted opacity-50 mb-3 d-block"></i>
+                                    <h6 class="fw-bold text-muted">Estoque Vazio</h6>
+                                    <p class="text-muted small">Não há produtos disponíveis para montar cestas no momento.</p>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </form>
+</div>
+
+<script>
+    function preencherSugestao() {
+        const padrao = {
+            'arroz': 1,
+            'feijão': 2, 'feijao': 2,
+            'açúcar': 1, 'acucar': 1,
+            'óleo': 1, 'oleo': 1,
+            'macarrão': 2, 'macarrao': 2,
+            'café': 1, 'cafe': 1,
+            'sal': 1
+        };
+
+        const linhas = document.querySelectorAll('tbody tr');
+
+        linhas.forEach(linha => {
+            // Prevenção de erro caso a tabela esteja vazia (estado vazio)
+            const elementoNome = linha.querySelector('.produto-nome');
+            if(!elementoNome) return;
+
+            const nomeProduto = elementoNome.innerText.toLowerCase();
+            const inputQtd = linha.querySelector('.input-qtd');
+
+            for (const [chave, qtd] of Object.entries(padrao)) {
+                if (nomeProduto.includes(chave)) {
+                    // Verifica se tem estoque suficiente antes de preencher
+                    const maxEstoque = parseInt(inputQtd.getAttribute('max'));
+                    if(maxEstoque >= qtd) {
+                        inputQtd.value = qtd;
+                    } else {
+                        inputQtd.value = maxEstoque; // Preenche só o que tem
+                    }
+
+                    // A nova animação Premium
+                    inputQtd.classList.add('destaque-animado');
+                    setTimeout(() => inputQtd.classList.remove('destaque-animado'), 800);
+                }
+            }
+        });
+    }
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Solicitar Visita Pastoral | Mava</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <style>
+    :root {
+        --azul-petroleo: #0c5465;
+        --laranja-pastoral: #fd7e14;
+        --texto-escuro: #2c3e50;
+    }
+
+    body {
+        background-color: #f0f2f5;
+        font-family: 'Segoe UI', sans-serif;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        padding: 20px 0;
+    }
+
+    .card-app {
+        background: #ffffff;
+        border: none;
+        border-radius: 24px;
+        box-shadow: 0 15px 35px rgba(12, 84, 101, 0.1);
+        overflow: hidden;
+        position: relative;
+    }
+
+    .header-app {
+        background: linear-gradient(135deg, var(--azul-petroleo), #146c82);
+        padding: 40px 20px 30px;
+        text-align: center;
+        color: white;
+        border-bottom-left-radius: 30px;
+        border-bottom-right-radius: 30px;
+        margin-bottom: 25px;
+    }
+
+    .header-app img {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        background: white;
+        padding: 5px;
+        margin-bottom: 15px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    .form-label {
+        color: var(--texto-escuro);
+        font-weight: 700;
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+        padding-left: 5px;
+    }
+
+    .input-mobile {
+        border-radius: 16px;
+        padding: 0.85rem 1.2rem;
+        border: 1px solid #dee2e6;
+        background-color: #f8f9fa;
+        font-size: 1rem;
+        transition: all 0.2s;
+    }
+
+    .input-mobile:focus {
+        background-color: #ffffff;
+        border-color: var(--laranja-pastoral);
+        box-shadow: 0 0 0 4px rgba(253, 126, 20, 0.1);
+        outline: none;
+    }
+
+    select.input-mobile {
+        cursor: pointer;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 1.2rem center;
+        background-size: 16px 12px;
+        padding-right: 3rem;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+    }
+
+    .btn-enviar {
+        background-color: var(--laranja-pastoral);
+        color: white;
+        border-radius: 16px;
+        font-weight: 800;
+        font-size: 1.1rem;
+        padding: 1rem;
+        border: none;
+        width: 100%;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-top: 10px;
+    }
+
+    .btn-enviar:hover, .btn-enviar:active {
+        background-color: #e56b00;
+        transform: scale(0.98);
+    }
+
+    /* Tela de Sucesso Animada */
+    .success-box {
+        text-align: center;
+        padding: 40px 20px;
+    }
+    .success-icon {
+        font-size: 5rem;
+        color: #198754;
+        margin-bottom: 20px;
+        animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+
+    @keyframes popIn {
+        0% { transform: scale(0); opacity: 0; }
+        100% { transform: scale(1); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-12 col-sm-10 col-md-8 col-lg-5">
+
+      <div class="card-app pb-4">
+
+        <!-- HEADER DO APP -->
+        <div class="header-app">
+          <img th:src="@{/img/logo.png}" alt="Logo Mava">
+          <h4 class="fw-bold mb-1">Cuidado Pastoral</h4>
+          <p class="mb-0 opacity-75 small">Mava</p>
+        </div>
+
+        <div class="px-4">
+
+          <!-- TELA DE SUCESSO (Só aparece se o form for enviado) -->
+          <div th:if="${mensagemSucesso}" class="success-box">
+            <i class="bi bi-check-circle-fill success-icon"></i>
+            <h4 class="fw-bold text-success mb-3">Solicitação Enviada!</h4>
+            <p class="text-muted" th:text="${mensagemSucesso}"></p>
+            <p class="text-muted small mt-4 mb-0">Você pode fechar esta tela.</p>
+          </div>
+
+          <!-- FORMULÁRIO DE SOLICITAÇÃO (Fica oculto se tiver sucesso) -->
+          <div th:unless="${mensagemSucesso}">
+            <div class="text-center mb-4">
+              <h5 class="fw-bold" style="color: var(--texto-escuro);">Como podemos orar por você?</h5>
+              <p class="text-muted small">Preencha os dados abaixo e nossa equipe entrará em contato para agendar uma visita ou atendimento.</p>
+            </div>
+
+            <form th:action="@{/solicitar-visita/salvar}" method="post" th:object="${visita}">
+
+              <div class="mb-3">
+                <label class="form-label">Seu Nome Completo</label>
+                <div class="position-relative">
+                  <i class="bi bi-person position-absolute top-50 translate-middle-y ms-3 text-muted"></i>
+                  <input type="text" th:field="*{nomeNaoMembro}" class="form-control input-mobile ps-5" placeholder="Digite seu nome..." required>
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">WhatsApp para Contato</label>
+                <div class="position-relative">
+                  <i class="bi bi-whatsapp position-absolute top-50 translate-middle-y ms-3 text-muted"></i>
+                  <input type="tel" th:field="*{telefoneContato}" id="telefone" class="form-control input-mobile ps-5" placeholder="(DD) 90000-0000" required>
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Qual o motivo principal?</label>
+                <div class="position-relative">
+                  <i class="bi bi-chat-heart position-absolute top-50 translate-middle-y ms-3 text-muted"></i>
+                  <select th:field="*{tipo}" class="form-control input-mobile ps-5" required>
+                    <option value="" disabled selected>Selecione uma opção...</option>
+                    <option value="ACONSELHAMENTO">Aconselhamento / Oração</option>
+                    <option value="ENFERMIDADE_HOSPITAL">Enfermidade / Hospital</option>
+                    <option value="NOVO_VISITANTE">Sou novo na igreja</option>
+                    <option value="OUTROS">Outros motivos</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="mb-4">
+                <label class="form-label">Detalhes Adicionais <span class="text-muted fw-normal">(Opcional)</span></label>
+                <textarea th:field="*{observacoes}" class="form-control input-mobile" rows="3" placeholder="Se quiser, escreva um pouco sobre o que está precisando..."></textarea>
+              </div>
+
+              <button type="submit" class="btn-enviar shadow-sm">
+                Enviar Solicitação <i class="bi bi-send-fill ms-1"></i>
+              </button>
+            </form>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="text-center mt-3">
+        <small class="text-muted opacity-50"><i class="bi bi-lock-fill"></i> Seus dados estão seguros.</small>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Script para a Máscara do Telefone/WhatsApp (Simples e eficiente) -->
+<script>
+  document.getElementById('telefone').addEventListener('input', function (e) {
+      var x = e.target.value.replace(/\D/g, '').match(/(\d{0,2})(\d{0,5})(\d{0,4})/);
+      e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
+  });
+</script>
+
+</body>
+</html>

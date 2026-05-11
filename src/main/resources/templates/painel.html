@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Painel de Presença Ao Vivo | Mava</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+        :root {
+            --azul-petroleo: #0c5465;
+            --azul-brilhante: #00d2ff;
+            --ouro-visitante: #ffc107;
+            --laranja-quente: #fd7e14;
+            --texto-claro: #f8f9fa;
+        }
+
+        /* --- BACKGROUND CINEMATOGRÁFICO COM EFEITO DE LENTE --- */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 2vh 2vw;
+            background: linear-gradient(135deg, rgba(5, 36, 43, 0.85), rgba(0, 0, 0, 0.95)), url('/img/fundo.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: var(--texto-claro);
+            min-height: 100vh; /* Alterado de height para min-height para evitar corte no celular */
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden; /* Evita rolagem horizontal indesejada */
+            overflow-y: auto; /* Permite rolagem vertical se a tela for muito pequena */
+        }
+
+        /* --- HEADER E CONTADORES (KPIs) --- */
+        .painel-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding: 0 2rem;
+        }
+
+        .logo-box {
+            display: flex; align-items: center; gap: 15px;
+        }
+        .logo-img { max-height: 80px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5)); }
+        .logo-text { font-size: 1.5rem; font-weight: 900; text-transform: uppercase; line-height: 1.1; letter-spacing: 1px; }
+
+        .placar-container { display: flex; gap: 20px; }
+
+        /* Efeito "Vidro Fosco" (Glassmorphism) */
+        .card-numero {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 15px 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            min-width: 180px;
+        }
+
+        .card-numero h2 { margin: 0; font-size: 1rem; color: rgba(255,255,255,0.7); text-transform: uppercase; letter-spacing: 2px; font-weight: 700; }
+        .card-numero .numero { font-size: 3.5rem; font-weight: 900; line-height: 1.1; text-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+
+        .num-membros { color: var(--azul-brilhante); }
+        .num-visitantes { color: var(--ouro-visitante); }
+
+        /* --- CARTÃO CENTRAL DE DESTAQUE --- */
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem 0; /* Espaço extra para mobile */
+        }
+
+        .destaque {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 40px 60px;
+            border-radius: 30px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            text-align: center;
+            max-width: 800px;
+            width: 100%;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform: scale(1);
+        }
+
+        /* Animação de Entrada (Pulo) */
+        .destaque.animar {
+            transform: scale(1.08);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.8);
+        }
+
+        /* Tema Condicional do Cartão Central */
+        .tema-membro { border-bottom: 8px solid var(--azul-brilhante); }
+        .tema-visitante { border-bottom: 8px solid var(--laranja-quente); }
+
+        /* Avatar da Pessoa */
+        .avatar-container {
+            width: 220px; height: 220px; margin: 0 auto 25px;
+            border-radius: 50%; padding: 6px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0));
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            position: relative;
+        }
+
+        .tema-membro .avatar-container { border: 4px solid var(--azul-brilhante); }
+        .tema-visitante .avatar-container { border: 4px solid var(--ouro-visitante); }
+
+        .avatar-img {
+            width: 100%; height: 100%; object-fit: cover; border-radius: 50%;
+            background-color: #111;
+        }
+
+        /* Textos Centrais */
+        .nome-grande {
+            font-size: 4rem; font-weight: 900; margin: 0; line-height: 1.1;
+            text-shadow: 0 5px 15px rgba(0,0,0,0.8); letter-spacing: -1px;
+            word-wrap: break-word; /* Evita que nomes muito longos quebrem a tela */
+        }
+
+        .cargo { font-size: 1.8rem; color: rgba(255,255,255,0.8); margin-top: 10px; font-weight: 300; }
+
+        .badge-tipo {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 8px 25px; border-radius: 50rem;
+            margin-top: 20px; font-size: 1.2rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px;
+        }
+
+        .tema-membro .badge-tipo { background-color: rgba(0, 210, 255, 0.15); color: var(--azul-brilhante); border: 1px solid rgba(0, 210, 255, 0.3); }
+        .tema-visitante .badge-tipo { background-color: rgba(255, 193, 7, 0.15); color: var(--ouro-visitante); border: 1px solid rgba(255, 193, 7, 0.3); }
+
+        /* --- RODAPÉ E STATUS --- */
+        .status-footer {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0 2rem; color: rgba(255,255,255,0.5); font-size: 1rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase;
+        }
+
+        .online-dot {
+            height: 12px; width: 12px; background-color: #198754; border-radius: 50%;
+            display: inline-block; margin-right: 8px; animation: blink 2s infinite;
+        }
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+
+        .clock-text { font-size: 1.5rem; color: #fff; font-weight: 300; letter-spacing: 2px; }
+
+        /* === AJUSTES MOBILE RESPONSIVOS === */
+        @media (max-width: 768px) {
+            body { padding: 15px; }
+
+            .painel-top {
+                flex-direction: column;
+                gap: 20px;
+                padding: 0;
+                margin-bottom: 1rem;
+            }
+
+            .placar-container {
+                width: 100%;
+                justify-content: center;
+                gap: 10px;
+            }
+
+            .card-numero {
+                min-width: 130px;
+                padding: 10px 15px;
+                flex: 1; /* Faz as caixas crescerem igualmente */
+            }
+            .card-numero .numero { font-size: 2.5rem; }
+            .card-numero h2 { font-size: 0.85rem; }
+
+            .destaque {
+                padding: 30px 20px;
+            }
+
+            .avatar-container {
+                width: 140px; height: 140px;
+                margin-bottom: 15px;
+            }
+
+            .nome-grande { font-size: 2.2rem; }
+            .cargo { font-size: 1.2rem; }
+            .badge-tipo { font-size: 1rem; padding: 6px 18px; }
+
+            .status-footer {
+                flex-direction: column;
+                gap: 15px;
+                padding: 15px 0 0 0;
+                text-align: center;
+                font-size: 0.85rem;
+            }
+            .clock-text { font-size: 1.2rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="painel-top">
+    <div class="logo-box">
+        <img src="/img/logo.png" alt="Logo da Igreja" class="logo-img" onerror="this.style.display='none'">
+        <div class="logo-text">Igreja Batista<br>Manancial</div>
+    </div>
+
+    <div class="placar-container">
+        <div class="card-numero">
+            <h2>Membros</h2>
+            <div class="numero num-membros" id="qtdMembros">0</div>
+        </div>
+        <div class="card-numero">
+            <h2>Visitantes</h2>
+            <div class="numero num-visitantes" id="qtdVisitantes">0</div>
+        </div>
+    </div>
+</div>
+
+<div class="main-content">
+    <div class="destaque tema-membro" id="cardDestaque">
+
+        <div class="avatar-container">
+            <img id="fotoMembro" src="/img/logo.png" class="avatar-img" onerror="this.src='/img/logo.png'">
+        </div>
+
+        <h2 class="nome-grande" id="ultimoNome">Sistema Pronto</h2>
+        <div class="cargo" id="ultimoCargo">Aguardando check-in...</div>
+
+        <div class="badge-tipo" id="boxTipo">
+            <i id="iconeTipo" class="bi bi-person-vcard"></i>
+            <span id="ultimoTipo">ONLINE</span>
+        </div>
+
+    </div>
+</div>
+
+<div class="status-footer">
+    <div><span class="online-dot"></span> Recepção e Catraca Integradas</div>
+    <div class="clock-text" id="clock">--:--:--</div>
+</div>
+
+<script>
+    let ultimoHorarioRegistrado = "";
+    const IMAGEM_PADRAO = "/img/logo.png";
+
+    async function atualizarDados() {
+        try {
+            // Chama a API do Java
+            const response = await fetch('/api/presenca/placar');
+            const dados = await response.json();
+
+            // Atualiza os Placares Numéricos
+            document.getElementById('qtdMembros').innerText = dados.totalMembros || 0;
+            document.getElementById('qtdVisitantes').innerText = dados.totalVisitantes || 0;
+
+            // Se não houver ninguém registrado ainda, apenas atualiza relógio e sai
+            if (!dados.ultimoNome) {
+                atualizarRelogio();
+                return;
+            }
+
+            // Verifica se uma nova pessoa passou na recepção
+            if (dados.horario !== ultimoHorarioRegistrado) {
+
+                // 1. Inicia a Animação do Cartão
+                animarCard();
+
+                // 2. Atualiza Textos
+                document.getElementById('ultimoNome').innerText = dados.ultimoNome;
+                document.getElementById('ultimoCargo').innerText = dados.ultimoCargo || "---";
+                document.getElementById('ultimoTipo').innerText = dados.ultimoTipo || "MEMBRO";
+
+                // 3. Atualiza Temas (Membro vs Visitante)
+                const card = document.getElementById('cardDestaque');
+                const icone = document.getElementById('iconeTipo');
+
+                if (dados.ultimoTipo === 'VISITANTE') {
+                    card.className = "destaque tema-visitante animar"; // Mantém classe animar
+                    icone.className = "bi bi-star-fill";
+                } else {
+                    card.className = "destaque tema-membro animar"; // Mantém classe animar
+                    icone.className = "bi bi-person-check-fill";
+                }
+
+                // 4. Atualiza a Foto
+                const imgElement = document.getElementById('fotoMembro');
+                let fotoFinal = IMAGEM_PADRAO;
+
+                // Verifica se veio URL válida do Java
+                if (dados.fotoUrl && dados.fotoUrl !== "null" && dados.fotoUrl.trim() !== "") {
+                    fotoFinal = dados.fotoUrl.startsWith("/") || dados.fotoUrl.startsWith("http")
+                                ? dados.fotoUrl
+                                : "/uploads/" + dados.fotoUrl;
+                }
+
+                // Só troca o SRC para não dar "flicker" (piscar) desnecessário
+                if (imgElement.getAttribute('src') !== fotoFinal) {
+                    imgElement.src = fotoFinal;
+                }
+
+                // Salva o horário como o mais recente
+                ultimoHorarioRegistrado = dados.horario;
+            }
+
+            atualizarRelogio();
+
+        } catch (error) {
+            console.error("Erro ao comunicar com o servidor da Recepção:", error);
+        }
+    }
+
+    // Efeito de Pulo (Tum-Tum) do Cartão Central
+    function animarCard() {
+        const card = document.getElementById('cardDestaque');
+        card.classList.add('animar');
+        // Remove a classe após 500ms para o CSS fazer o cartão voltar ao normal
+        setTimeout(() => card.classList.remove('animar'), 500);
+    }
+
+    // Relógio e Data do rodapé
+    function atualizarRelogio() {
+        const agora = new Date();
+        document.getElementById('clock').innerText = agora.toLocaleTimeString('pt-BR');
+    }
+
+    // Executa a verificação a cada 1 segundo
+    setInterval(atualizarDados, 1000);
+
+    // Inicia imediatamente ao carregar a página
+    atualizarDados();
+</script>
+</body>
+</html>

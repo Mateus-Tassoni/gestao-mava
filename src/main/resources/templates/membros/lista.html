@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Membros Cadastrados | Mava</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+        :root {
+            --azul-petroleo: #0c5465;
+            --azul-claro: #d1e7ed;
+            --texto-escuro: #2c3e50;
+            --verde-sucesso: #198754;
+            --vermelho-erro: #dc3545;
+        }
+
+        body {
+            background-color: #f0f2f5;
+            font-family: 'Segoe UI', sans-serif;
+            min-height: 100vh;
+        }
+
+        /* --- NAVBAR --- */
+        .navbar-manancial {
+            background: linear-gradient(135deg, #0c5465, #146c82);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        /* --- PADRÃO MANANCIAL DE CARDS --- */
+        .card-3d {
+            background: #ffffff;
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(12, 84, 101, 0.08);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-topo-detalhe {
+            height: 6px; width: 100%; position: absolute; top: 0; left: 0;
+            background: var(--azul-petroleo);
+        }
+
+        /* --- BOTÕES DO DASHBOARD --- */
+        .btn-dash {
+            border-radius: 12px; font-weight: 700; padding: 0.6rem 1.2rem;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            border: none; display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+
+        .btn-azul { background-color: var(--azul-petroleo); color: white; }
+        .btn-outline-dash { background-color: white; color: var(--azul-petroleo); border: 2px solid var(--azul-claro); }
+
+        /* --- BARRA DE BUSCA --- */
+        .input-arredondado {
+            border-radius: 12px; padding: 0.6rem 1rem; border: 1px solid #dee2e6; transition: all 0.2s;
+        }
+        .input-arredondado:focus {
+            border-color: var(--azul-petroleo); box-shadow: 0 0 0 0.25rem rgba(12, 84, 101, 0.15);
+        }
+
+        .search-group .btn {
+            border-top-right-radius: 12px; border-bottom-right-radius: 12px;
+            background-color: var(--azul-claro); color: var(--azul-petroleo);
+            border: 1px solid var(--azul-claro); font-weight: bold; transition: all 0.2s;
+        }
+        .search-group .input-arredondado { border-top-right-radius: 0; border-bottom-right-radius: 0; border-right: none; }
+
+        /* --- TABELA MODERNA --- */
+        .table-moderna { border-collapse: separate; border-spacing: 0 8px; margin-top: -8px; }
+        .table-moderna th { text-transform: uppercase; font-size: 0.75rem; letter-spacing: 1px; color: #6c757d; border: none; padding: 0 1rem 10px 1rem; font-weight: 700; white-space: nowrap; }
+        .table-moderna td { vertical-align: middle; background-color: #ffffff; border-top: 1px solid #f8f9fa; border-bottom: 1px solid #f8f9fa; padding: 0.8rem 1rem; transition: all 0.2s; }
+        .table-moderna td:first-child { border-left: 1px solid #f8f9fa; border-top-left-radius: 12px; border-bottom-left-radius: 12px; }
+        .table-moderna td:last-child { border-right: 1px solid #f8f9fa; border-top-right-radius: 12px; border-bottom-right-radius: 12px; }
+        .table-moderna tbody tr { transition: transform 0.2s, box-shadow 0.2s; }
+
+        /* Avatares e Badges */
+        .avatar-tabela {
+            width: 42px; height: 42px; border-radius: 50%; object-fit: cover;
+            border: 2px solid white; box-shadow: 0 3px 8px rgba(0,0,0,0.1); flex-shrink: 0;
+        }
+        .avatar-nulo {
+            width: 42px; height: 42px; border-radius: 50%; flex-shrink: 0;
+            background-color: var(--azul-claro); color: var(--azul-petroleo);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem; border: 2px solid white; box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+        }
+
+        .badge-cargo {
+            background-color: #f8f9fa; color: var(--texto-escuro);
+            border: 1px solid #dee2e6; padding: 0.3rem 0.8rem;
+            border-radius: 8px; font-weight: 700; font-size: 0.75rem; letter-spacing: 0.3px;
+            display: inline-block; white-space: nowrap;
+        }
+
+        /* Botões de Ação na Tabela */
+        .btn-acao-tabela {
+            width: 35px; height: 35px; border-radius: 50%; flex-shrink: 0;
+            display: inline-flex; align-items: center; justify-content: center;
+            background-color: transparent; border: none; color: #adb5bd; transition: all 0.2s;
+        }
+
+        /* --- ALERTAS --- */
+        .alert-premium { background-color: #ffffff; border-radius: 12px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08); color: var(--texto-escuro); }
+        .alert-premium.erro { border-left: 5px solid var(--vermelho-erro); }
+        .alert-premium.sucesso { border-left: 5px solid var(--verde-sucesso); }
+
+        .hover-scale { transition: transform 0.2s; }
+
+        /* === REGRAS DE HOVER APENAS PARA DESKTOP === */
+        @media (hover: hover) and (pointer: fine) {
+            .btn-dash:hover { transform: translateY(-3px); }
+            .btn-azul:hover { background-color: #093e4b; color: white; box-shadow: 0 6px 15px rgba(12, 84, 101, 0.3); }
+            .btn-outline-dash:hover { background-color: var(--azul-claro); }
+            .search-group .btn:hover { background-color: #b6effb; }
+            .table-moderna tbody tr:hover td { background-color: #f8f9fa; border-color: #e9ecef; }
+            .table-moderna tbody tr:hover { transform: scale(1.005); box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
+            .btn-acao-tabela:hover.edit { background-color: var(--azul-claro); color: var(--azul-petroleo); }
+            .btn-acao-tabela:hover.delete { background-color: #ffe6e6; color: var(--vermelho-erro); }
+            .hover-scale:hover { transform: scale(1.05); }
+        }
+
+        /* === AJUSTES MOBILE EXCLUSIVOS === */
+        @media (max-width: 768px) {
+            .card-3d { padding: 1.2rem !important; }
+
+            .botoes-topo { width: 100%; flex-direction: column; }
+            .botoes-topo .btn-dash { width: 100%; }
+
+            .table-moderna td, .table-moderna th { padding: 0.8rem 0.5rem; }
+            .table-moderna td h6, .table-moderna td .fs-6 { font-size: 0.95rem !important; }
+            .table-moderna td .small { font-size: 0.75rem; }
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark navbar-manancial mb-3 mb-lg-5 sticky-top">
+    <div class="container">
+        <a class="navbar-brand d-flex align-items-center gap-2 gap-md-3" href="/">
+            <img th:src="@{/img/logo.png}" alt="Logo" width="42" height="42" class="bg-white rounded-circle p-1 shadow-sm">
+            <div class="d-flex flex-column text-white">
+                <span class="fw-bold text-uppercase" style="letter-spacing: 1px; font-size: 1rem; line-height: 1.1;">Mava</span>
+            </div>
+        </a>
+
+        <div class="ms-auto d-flex gap-2 gap-md-3 align-items-center">
+            <span class="text-white opacity-75 d-none d-md-block small text-uppercase fw-bold" style="letter-spacing: 1px;">
+                Secretaria
+            </span>
+            <a href="/" class="btn btn-outline-light btn-sm rounded-pill px-3 px-md-4 fw-bold hover-scale text-nowrap">
+                <i class="bi bi-house-door-fill d-inline d-sm-none"></i>
+                <span class="d-none d-sm-inline">Início</span>
+            </a>
+        </div>
+    </div>
+</nav>
+
+<div class="container pb-5">
+
+    <div th:if="${mensagemErro}" class="alert alert-premium erro alert-dismissible fade show mb-4 d-flex align-items-center gap-3 p-3 p-md-4" role="alert">
+        <div class="bg-danger bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 40px; height: 40px; md:width: 50px; md:height: 50px;">
+            <i class="bi bi-shield-lock-fill fs-5 fs-md-4 text-danger"></i>
+        </div>
+        <div>
+            <h6 class="alert-heading fw-bold mb-0 mb-md-1 text-danger">Ação Bloqueada</h6>
+            <span class="small fw-semibold text-muted lh-sm d-block" th:text="${mensagemErro}">Erro ao processar.</span>
+        </div>
+        <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div th:if="${mensagemSucesso}" class="alert alert-premium sucesso alert-dismissible fade show mb-4 d-flex align-items-center gap-3 p-3 p-md-4" role="alert">
+        <div class="bg-success bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 40px; height: 40px; md:width: 50px; md:height: 50px;">
+            <i class="bi bi-check-circle-fill fs-5 fs-md-4 text-success"></i>
+        </div>
+        <div>
+            <h6 class="alert-heading fw-bold mb-0 mb-md-1 text-success">Concluído</h6>
+            <span class="small fw-semibold text-muted lh-sm d-block" th:text="${mensagemSucesso}">Ação realizada com sucesso.</span>
+        </div>
+        <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
+        <div>
+            <h4 class="fw-bold mb-1" style="color: var(--texto-escuro);"><i class="bi bi-people-fill me-2 text-muted"></i>Membros Cadastrados</h4>
+            <span class="text-muted small">Gerencie a membresia, cargos e históricos.</span>
+        </div>
+
+        <div class="d-flex gap-2 botoes-topo">
+            <a href="/api/presenca/historico" class="btn-dash btn-outline-dash shadow-sm text-nowrap">
+                <i class="bi bi-clock-history"></i> Histórico<span class="d-none d-sm-inline"> de Acessos</span>
+            </a>
+            <a href="/membros/novo" class="btn-dash btn-azul shadow-sm text-nowrap">
+                <i class="bi bi-person-plus-fill fs-5"></i> Novo<span class="d-none d-sm-inline"> Membro</span>
+            </a>
+        </div>
+    </div>
+
+    <div class="card-3d p-3 p-md-4">
+        <div class="card-topo-detalhe"></div>
+
+        <div class="row mb-3 mb-md-4 align-items-center mt-2">
+            <div class="col-md-5 mb-3 mb-md-0">
+                <h6 class="text-uppercase fw-bold text-muted mb-0 small text-center text-md-start" style="letter-spacing: 1px;">Diretório de Membros</h6>
+            </div>
+            <div class="col-md-7">
+                <form action="/membros" method="get">
+                    <div class="input-group search-group shadow-sm" style="border-radius: 12px;">
+                        <span class="input-group-text bg-white border-end-0" style="border-top-left-radius: 12px; border-bottom-left-radius: 12px;">
+                            <i class="bi bi-search text-muted"></i>
+                        </span>
+                        <input type="text" name="busca" class="form-control input-arredondado border-start-0 ps-0" placeholder="Buscar por nome..." th:value="${busca}">
+                        <button class="btn px-3 px-md-4" type="submit">Localizar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-moderna w-100 mb-0">
+                <thead>
+                <tr>
+                    <th class="ps-2 ps-md-3 text-nowrap" style="min-width: 200px;">Membro</th>
+                    <th class="text-nowrap" style="min-width: 140px;">Contato</th>
+                    <th class="text-nowrap" style="min-width: 150px;">Função Ministerial</th>
+                    <th class="text-end pe-2 pe-md-3 text-nowrap" style="min-width: 90px;">Ações</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                <tr th:each="membro : ${membros}">
+
+                    <td class="ps-2 ps-md-3">
+                        <div class="d-flex align-items-center gap-2 gap-md-3">
+                            <img th:if="${not #strings.isEmpty(membro.fotoUrl)}" th:src="@{'/uploads/' + ${membro.fotoUrl}}" class="avatar-tabela">
+                            <div th:unless="${not #strings.isEmpty(membro.fotoUrl)}" class="avatar-nulo">
+                                <i class="bi bi-person-fill"></i>
+                            </div>
+
+                            <div>
+                                <div class="fw-bold fs-6 text-wrap" style="color: var(--texto-escuro);" th:text="${membro.nome}">Nome do Membro</div>
+                            </div>
+                        </div>
+                    </td>
+
+                    <td>
+                        <div class="d-flex align-items-center text-muted fw-semibold small text-nowrap" th:if="${not #strings.isEmpty(membro.telefone)}">
+                            <i class="bi bi-whatsapp me-1 me-md-2" style="color: #25D366; font-size: 1.1rem;"></i>
+                            <span th:text="${membro.telefone}">(11) 99999-9999</span>
+                        </div>
+                        <span th:unless="${not #strings.isEmpty(membro.telefone)}" class="text-muted small fst-italic text-nowrap">Sem telefone</span>
+                    </td>
+
+                    <td>
+                        <span class="badge-cargo text-wrap" th:text="${not #strings.isEmpty(membro.cargo) ? membro.cargo : 'Membro'}">Cargo</span>
+                    </td>
+
+                    <td class="text-end pe-2 pe-md-3">
+                        <div class="d-flex justify-content-end gap-1">
+                            <a th:href="@{/membros/editar/{id}(id=${membro.id})}" class="btn-acao-tabela edit" title="Editar Ficha">
+                                <i class="bi bi-pencil-fill fs-6"></i>
+                            </a>
+                            <a th:href="@{/membros/excluir/{id}(id=${membro.id})}" class="btn-acao-tabela delete" title="Excluir Membro" onclick="return confirm('Atenção: Tem certeza que deseja apagar o registro deste membro?')">
+                                <i class="bi bi-trash3-fill fs-6"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr th:if="${#lists.isEmpty(membros)}">
+                    <td colspan="4" class="text-center py-5 px-3">
+                        <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 70px; height: 70px;">
+                            <i class="bi bi-person-x fs-2 text-muted opacity-50"></i>
+                        </div>
+                        <h6 class="fw-bold text-muted">Nenhum membro encontrado</h6>
+                        <p class="text-muted small mb-0 lh-sm">Não localizamos registros com essa busca ou o banco está vazio.</p>
+                    </td>
+                </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/base :: scripts-seguranca}"></div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

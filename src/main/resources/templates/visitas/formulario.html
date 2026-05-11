@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Agendar Visita Pastoral | Mava</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/confirmDate/confirmDate.min.css">
+
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.bootstrap5.min.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --azul-petroleo: #0c5465;
+            --azul-claro: #d1e7ed;
+            --texto-escuro: #2c3e50;
+            --laranja-pastoral: #fd7e14;
+            --verde-sucesso: #198754;
+        }
+
+        body {
+            background-color: #f0f2f5;
+            font-family: 'Segoe UI', sans-serif;
+            min-height: 100vh;
+        }
+
+        /* --- NAVBAR --- */
+        .navbar-manancial {
+            background: linear-gradient(135deg, #0c5465, #146c82);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        /* --- PADRÃO MANANCIAL DE CARDS --- */
+        .card-3d {
+            background: #ffffff; border: none; border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(12, 84, 101, 0.08);
+            position: relative; overflow: hidden;
+        }
+
+        .card-topo-detalhe {
+            height: 6px; width: 100%; position: absolute; top: 0; left: 0;
+            background: var(--laranja-pastoral);
+        }
+
+        /* --- INPUTS --- */
+        .form-label {
+            color: var(--texto-escuro); font-weight: 700; font-size: 0.95rem; margin-bottom: 0.5rem;
+        }
+
+        .input-arredondado {
+            border-radius: 12px; padding: 0.75rem 1rem; border: 1px solid #dee2e6;
+            transition: all 0.2s; background-color: #fff;
+        }
+        .input-arredondado:focus {
+            border-color: var(--laranja-pastoral); box-shadow: 0 0 0 0.25rem rgba(253, 126, 20, 0.15); outline: none;
+        }
+
+        select.input-arredondado {
+            cursor: pointer; background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+            background-repeat: no-repeat; background-position: right 1rem center; background-size: 16px 12px; padding-right: 2.5rem; -webkit-appearance: none; -moz-appearance: none; appearance: none;
+        }
+
+        .input-group-text-moderno {
+            background-color: #f8f9fa; border: 1px solid #dee2e6; border-right: none;
+            border-top-left-radius: 12px; border-bottom-left-radius: 12px; color: #6c757d;
+        }
+        .input-arredondado-group { border-top-left-radius: 0; border-bottom-left-radius: 0; border-left: none; }
+
+        /* Botões de Seleção (Membro/Visitante) */
+        .btn-check:checked + .btn-outline-secondary {
+            background-color: var(--laranja-pastoral);
+            border-color: var(--laranja-pastoral);
+            color: white;
+            box-shadow: 0 4px 10px rgba(253, 126, 20, 0.2);
+        }
+
+        /* --- ESTILO DO BOTÃO OK DO CALENDÁRIO --- */
+        .flatpickr-confirm {
+            background-color: var(--verde-sucesso) !important;
+            color: white !important;
+            border-radius: 8px !important;
+            font-weight: bold !important;
+            padding: 10px 15px !important;
+            margin: 0 auto 10px auto !important;
+            width: 90% !important;
+            text-align: center !important;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1) !important;
+            transition: transform 0.2s !important;
+        }
+
+        /* --- BOTÕES --- */
+        .btn-pastoral { background-color: var(--laranja-pastoral); color: white; border-radius: 12px; font-weight: 700; transition: all 0.3s ease; border: none; }
+        .btn-cancelar { border-radius: 12px; font-weight: 600; color: #6c757d; background: transparent; border: 1px solid transparent; transition: all 0.2s; }
+
+        .hover-scale { transition: transform 0.2s; }
+
+        /* Ajuste fino para o campo do Tom Select não quebrar o seu design arredondado */
+        .ts-control { border-radius: 0 12px 12px 0 !important; border: 1px solid #dee2e6 !important; padding: 0.75rem 1rem !important; }
+        .ts-control.focus { border-color: var(--laranja-pastoral) !important; box-shadow: 0 0 0 0.25rem rgba(253, 126, 20, 0.15) !important; }
+
+        /* === REGRAS DE HOVER APENAS PARA DESKTOP === */
+        @media (hover: hover) and (pointer: fine) {
+            .flatpickr-confirm:hover { transform: scale(1.02) !important; }
+            .btn-pastoral:hover { background-color: #e56b00; color: white; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(253, 126, 20, 0.2); }
+            .btn-cancelar:hover { background-color: #e9ecef; color: var(--texto-escuro); }
+            .hover-scale:hover { transform: scale(1.05); }
+        }
+
+        /* === AJUSTES MOBILE EXCLUSIVOS === */
+        @media (max-width: 768px) {
+            .card-3d { padding: 1.5rem !important; }
+            .botoes-acao { flex-direction: column; width: 100%; }
+            .botoes-acao .btn { width: 100%; margin-bottom: 0.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark navbar-manancial mb-3 mb-lg-5 sticky-top">
+    <div class="container">
+        <a class="navbar-brand d-flex align-items-center gap-2 gap-md-3" href="/">
+            <img th:src="@{/img/logo.png}" alt="Logo" width="42" height="42" class="bg-white rounded-circle p-1 shadow-sm">
+            <div class="d-flex flex-column text-white">
+                <span class="fw-bold text-uppercase" style="letter-spacing: 1px; font-size: 1rem; line-height: 1.1;">Mava</span>
+            </div>
+        </a>
+
+        <div class="ms-auto d-flex gap-2 gap-md-3 align-items-center">
+            <span class="text-white opacity-75 d-none d-md-block small text-uppercase fw-bold" style="letter-spacing: 1px;">
+                Gestão Pastoral
+            </span>
+            <a href="/visitas" class="btn btn-outline-light btn-sm rounded-pill px-3 px-md-4 fw-bold hover-scale text-nowrap">
+                <i class="bi bi-card-list me-1"></i> <span class="d-none d-sm-inline">Lista de Visitas</span><span class="d-inline d-sm-none">Voltar</span>
+            </a>
+        </div>
+    </div>
+</nav>
+
+<div class="container pb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-8">
+
+            <div class="mb-3">
+                <a href="/visitas" class="text-decoration-none text-muted fw-bold d-flex align-items-center hover-scale" style="width: fit-content;">
+                    <i class="bi bi-arrow-left me-2"></i> Voltar
+                </a>
+            </div>
+
+            <div class="card-3d p-4 p-md-5">
+                <div class="card-topo-detalhe"></div>
+
+                <div class="d-flex align-items-center mb-4 mb-md-5 mt-2">
+                    <div class="rounded-circle d-flex align-items-center justify-content-center me-3 shadow-sm flex-shrink-0" style="width: 55px; height: 55px; background-color: #fff4ec;">
+                        <i class="bi bi-house-heart-fill fs-3" style="color: var(--laranja-pastoral);"></i>
+                    </div>
+                    <div>
+                        <h4 class="mb-0 fw-bold" style="color: var(--texto-escuro); letter-spacing: -0.5px;">Ficha de Visita Pastoral</h4>
+                        <small class="text-muted d-block lh-sm mt-1">Agende ou registre o relatório de um encontro.</small>
+                    </div>
+                </div>
+
+                <form action="/visitas/salvar" method="post" th:object="${visita}">
+                    <input type="hidden" th:field="*{id}" th:if="${visita.id != null}" />
+
+                    <!-- LINHA 1: DATA E PESSOA VISITADA -->
+                    <div class="row g-3 g-md-4 mb-3 mb-md-4">
+                        <div class="col-md-6">
+                            <label class="form-label">Data e Hora Agendada <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text input-group-text-moderno px-3"><i class="bi bi-calendar-event"></i></span>
+                                <input type="text" th:field="*{dataVisita}" class="form-control input-arredondado input-arredondado-group fw-bold text-muted calendario-premium" placeholder="Selecione..." required autocomplete="off" />
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label d-block">Vínculo com a Igreja <span class="text-danger">*</span></label>
+
+                            <div class="btn-group w-100 mb-2" role="group">
+                                <input type="radio" class="btn-check" name="tipoVinculo" id="btnMembro" value="MEMBRO" checked autocomplete="off">
+                                <label class="btn btn-outline-secondary fw-bold" for="btnMembro" style="border-radius: 12px 0 0 12px;">Membro</label>
+
+                                <input type="radio" class="btn-check" name="tipoVinculo" id="btnVisitante" value="VISITANTE" autocomplete="off">
+                                <label class="btn btn-outline-secondary fw-bold" for="btnVisitante" style="border-radius: 0 12px 12px 0;">Não Membro</label>
+                            </div>
+
+                            <div id="divSelectMembro">
+                                <div class="input-group">
+                                    <span class="input-group-text input-group-text-moderno px-3"><i class="bi bi-person-hearts" style="color: var(--laranja-pastoral);"></i></span>
+                                    <select th:field="*{membro}" id="selectMembro" class="form-control input-arredondado input-arredondado-group fw-semibold" required placeholder="Digite o nome do membro...">
+                                        <option value="" disabled selected>Digite para buscar o membro...</option>
+                                        <option th:each="m : ${listaMembros}" th:value="${m.id}" th:text="${m.nome}"></option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div id="divInputVisitante" style="display: none;">
+                                <div class="input-group">
+                                    <span class="input-group-text input-group-text-moderno px-3"><i class="bi bi-person-walking" style="color: var(--laranja-pastoral);"></i></span>
+                                    <!-- AQUI ESTÁ A CORREÇÃO: Usando o novo atributo nomeNaoMembro -->
+                                    <input type="text" th:field="*{nomeNaoMembro}" id="inputVisitante" class="form-control input-arredondado input-arredondado-group fw-semibold" placeholder="Nome da pessoa ou família">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- LINHA 2: RESPONSÁVEL (NOVO PADRÃO BANCO DE DADOS) E TIPO -->
+                    <div class="row g-3 g-md-4 mb-3 mb-md-4">
+                        <div class="col-md-6">
+                            <label class="form-label">Responsável pela Visita <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text input-group-text-moderno px-3"><i class="bi bi-person-badge"></i></span>
+                                <select th:field="*{responsavel}" id="selectResponsavel" class="form-control input-arredondado input-arredondado-group fw-semibold" required placeholder="Selecione o líder...">
+                                    <option value="" disabled selected>Selecione o líder...</option>
+                                    <option th:each="m : ${listaMembros}" th:value="${m.id}" th:text="${m.nome}"></option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Tipo de Visita <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text input-group-text-moderno px-3"><i class="bi bi-tag"></i></span>
+                                <select th:field="*{tipo}" class="form-control input-arredondado input-arredondado-group" required>
+                                    <option value="" disabled selected>Selecione o tipo...</option>
+                                    <option value="ACONSELHAMENTO">Aconselhamento</option>
+                                    <option value="ENFERMIDADE_HOSPITAL">Enfermidade / Hospital</option>
+                                    <option value="NOVO_VISITANTE">Novo Visitante / Integração</option>
+                                    <option value="ROTINA_PASTORAL">Rotina Pastoral</option>
+                                    <option value="OUTROS">Outros</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- LINHA 3: STATUS (COM A OPÇÃO PENDENTE) -->
+                    <div class="mb-4">
+                        <label class="form-label">Status do Agendamento <span class="text-danger">*</span></label>
+                        <div class="input-group shadow-sm" style="border-radius: 12px;">
+                            <span class="input-group-text input-group-text-moderno px-3"><i class="bi bi-info-circle" style="color: var(--laranja-pastoral);"></i></span>
+                            <select th:field="*{status}" class="form-control input-arredondado input-arredondado-group fw-bold" style="color: var(--texto-escuro);">
+                                <option value="PENDENTE">🔴 Pendente (Aguardando Triagem)</option>
+                                <option value="AGENDADA">📅 Agendada (Ainda vai acontecer)</option>
+                                <option value="REALIZADA">✅ Realizada (Já aconteceu)</option>
+                                <option value="CANCELADA">❌ Cancelada / Adiada</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- LINHA 4: OBSERVAÇÕES E TELEFONE (INVISÍVEL MAS SALVO) -->
+                    <!-- Adicionado campo de telefone oculto para não perder o dado na edição de quem veio do QR Code -->
+                    <input type="hidden" th:field="*{telefoneContato}" />
+
+                    <div class="mb-4 mb-md-5">
+                        <label class="form-label">Observações / Relatório <span class="text-muted fw-normal">(Opcional)</span></label>
+                        <textarea th:field="*{observacoes}" class="form-control input-arredondado" rows="4" placeholder="Anote aqui os pedidos de oração, detalhes da conversa ou encaminhamentos necessários..."></textarea>
+                    </div>
+
+                    <hr class="mt-4 mt-md-5 mb-4" style="opacity: 0.1;">
+
+                    <div class="d-flex flex-column flex-md-row justify-content-end gap-2 botoes-acao">
+                        <a href="/visitas" class="btn btn-cancelar px-4 py-2 order-2 order-md-1 text-center">Cancelar</a>
+                        <button type="submit" class="btn btn-pastoral px-5 py-2 shadow-sm order-1 order-md-2">
+                            <i class="bi bi-save2-fill me-2 fs-5 align-middle"></i> Salvar Visita
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://npmcdn.com/flatpickr/dist/l10n/pt.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/confirmDate/confirmDate.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
+
+<script>
+    flatpickr(".calendario-premium", {
+        enableTime: true,
+        altInput: true,
+        altFormat: "d/m/Y H:i",
+        dateFormat: "Y-m-d\TH:i",
+        time_24hr: true,
+        minuteIncrement: 30,
+        locale: "pt",
+        disableMobile: "true",
+        plugins: [
+            new confirmDatePlugin({
+                confirmIcon: "<i class='bi bi-check2-circle me-1'></i>",
+                confirmText: "CONFIRMAR DATA E HORA",
+                showAlways: true,
+                theme: "light"
+            })
+        ]
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // TomSelect para o Membro a ser visitado
+        new TomSelect("#selectMembro",{
+            create: false,
+            openOnFocus: false,
+            sortField: {
+                field: "text",
+                direction: "asc"
+            }
+        });
+
+        // NOVO: TomSelect para o Responsável pela Visita (Pastor/Diácono)
+        new TomSelect("#selectResponsavel",{
+            create: false,
+            openOnFocus: false,
+            sortField: {
+                field: "text",
+                direction: "asc"
+            }
+        });
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const radioMembro = document.getElementById('btnMembro');
+        const radioVisitante = document.getElementById('btnVisitante');
+
+        const divMembro = document.getElementById('divSelectMembro');
+        const selectMembro = document.getElementById('selectMembro');
+
+        const divVisitante = document.getElementById('divInputVisitante');
+        const inputVisitante = document.getElementById('inputVisitante');
+
+        const selectMembroInstance = selectMembro.tomselect;
+
+        function atualizarCampos() {
+            if (radioMembro.checked) {
+                divMembro.style.display = 'block';
+                selectMembro.setAttribute('required', 'required');
+                if (selectMembroInstance) selectMembroInstance.enable();
+
+                divVisitante.style.display = 'none';
+                inputVisitante.removeAttribute('required');
+                inputVisitante.setAttribute('disabled', 'disabled');
+                inputVisitante.value = '';
+            } else {
+                divMembro.style.display = 'none';
+                selectMembro.removeAttribute('required');
+                if (selectMembroInstance) {
+                    selectMembroInstance.disable();
+                    selectMembroInstance.clear();
+                }
+
+                divVisitante.style.display = 'block';
+                inputVisitante.setAttribute('required', 'required');
+                inputVisitante.removeAttribute('disabled');
+            }
+        }
+
+        radioMembro.addEventListener('change', atualizarCampos);
+        radioVisitante.addEventListener('change', atualizarCampos);
+
+        // Se o campo do não membro já tiver valor (Edição), marca a opção Visitante
+        if (inputVisitante.value && inputVisitante.value.trim() !== '') {
+            radioVisitante.checked = true;
+        }
+
+        atualizarCampos();
+    });
+</script>
+
+<div th:replace="~{fragments/base :: scripts-seguranca}"></div>
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Check-in Realizado | Mava Kids</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+
+    <style>
+        :root {
+            --azul-petroleo: #0c5465;
+            --texto-escuro: #2c3e50;
+            --verde-sucesso: #198754;
+        }
+
+        /* Fundo imersivo contínuo do Totem/Mobile */
+        body {
+            background: linear-gradient(135deg, #0c5465, #146c82);
+            font-family: 'Segoe UI', sans-serif;
+            display: flex; align-items: center; justify-content: center;
+            min-height: 100vh; margin: 0; padding: 20px;
+        }
+
+        /* Card Central Premium */
+        .card-totem {
+            background: #ffffff;
+            border: none;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+            width: 100%; max-width: 450px;
+            padding: 4rem 2rem;
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .card-topo-detalhe {
+            height: 8px; width: 100%; position: absolute; top: 0; left: 0;
+            background: var(--verde-sucesso); /* Linha verde indicando sucesso */
+        }
+
+        /* Animação do Ícone de Sucesso */
+        .icon-sucesso {
+            font-size: 5.5rem;
+            color: var(--verde-sucesso);
+            line-height: 1;
+            margin-bottom: 1.5rem;
+            display: inline-block;
+            opacity: 0;
+            transform: scale(0.5);
+            animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            80% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Botão Secundário */
+        .btn-voltar {
+            color: var(--texto-escuro);
+            background-color: #f8f9fa; border: 2px solid #e9ecef;
+            font-weight: 700; text-decoration: none;
+            padding: 12px 24px; border-radius: 50rem;
+            transition: all 0.2s; width: 100%; display: block;
+            margin-top: 2rem; font-size: 1.1rem;
+        }
+        .btn-voltar:hover { background-color: #e9ecef; border-color: #dee2e6; color: var(--azul-petroleo); }
+
+        .contador-texto { font-weight: 600; color: #adb5bd; font-size: 0.9rem; margin-top: 1.5rem; }
+
+        /* --- AJUSTES DE RESPONSIVIDADE PARA MOBILE --- */
+        @media (max-width: 576px) {
+            .card-totem {
+                padding: 3rem 1.5rem; /* Reduz o espaço em branco ao redor no celular */
+            }
+            .icon-sucesso {
+                font-size: 4.5rem; /* Reduz um pouco o ícone para não dominar a tela toda */
+                margin-bottom: 1rem;
+            }
+            h2.fw-bold {
+                font-size: 1.75rem; /* Ajusta o título para evitar quebra de linha ruim */
+            }
+            .btn-voltar {
+                padding: 14px 24px; /* Aumenta a área de toque verticalmente no mobile */
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="card-totem shadow-lg">
+    <div class="card-topo-detalhe"></div>
+
+    <i class="bi bi-check-circle-fill icon-sucesso"></i>
+
+    <h2 class="fw-bold mb-2" style="color: var(--texto-escuro); letter-spacing: -1px;">Check-in Realizado!</h2>
+    <p class="text-muted fw-semibold mb-0" style="font-size: 1.1rem;">A etiqueta está sendo impressa.</p>
+    <p class="text-muted small">Pode retirar na recepção e bom culto.</p>
+
+    <a href="/kids/checkin" class="btn-voltar shadow-sm">
+        Fazer novo check-in
+    </a>
+
+    <div class="contador-texto">
+        Voltando ao início em <span id="contador">6</span>s...
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        let tempoRestante = 6;
+        const elementoContador = document.getElementById('contador');
+
+        const intervalo = setInterval(function() {
+            tempoRestante--;
+            elementoContador.innerText = tempoRestante;
+
+            if (tempoRestante <= 0) {
+                clearInterval(intervalo);
+                window.location.href = "/kids/checkin"; // Redireciona automaticamente
+            }
+        }, 1000); // 1000ms = 1 segundo
+    });
+</script>
+
+</body>
+</html>

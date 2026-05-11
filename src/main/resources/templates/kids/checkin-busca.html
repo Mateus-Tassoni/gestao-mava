@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Check-in Kids | Mava</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+
+    <style>
+        :root {
+            --azul-petroleo: #0c5465;
+            --texto-escuro: #2c3e50;
+            --vermelho-erro: #dc3545;
+            --amarelo-kids: #ffc107;
+        }
+
+        /* Fundo imersivo estilo "Totem/App" */
+        body {
+            background: linear-gradient(135deg, #0c5465, #146c82);
+            font-family: 'Segoe UI', sans-serif;
+            display: flex; align-items: center; justify-content: center;
+            min-height: 100vh; margin: 0; padding: 15px;
+        }
+
+        /* Card Central Premium */
+        .card-checkin {
+            background: #ffffff;
+            border: none;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+            width: 100%; max-width: 420px;
+            padding: 3rem 2.5rem;
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        /* Detalhe no topo com cor mais alegre */
+        .card-topo-detalhe {
+            height: 8px; width: 100%; position: absolute; top: 0; left: 0;
+            background: var(--amarelo-kids);
+        }
+
+        /* Input Customizado para Digitação Rápida */
+        .input-arredondado {
+            border-radius: 16px;
+            background-color: #f8f9fa;
+            border: 2px solid #e9ecef;
+            text-align: center;
+            letter-spacing: 2px;
+            font-weight: 800;
+            font-size: 1.6rem;
+            padding: 1rem;
+            transition: all 0.3s;
+            color: var(--azul-petroleo);
+        }
+
+        .input-arredondado:focus {
+            border-color: var(--azul-petroleo);
+            box-shadow: 0 0 0 0.25rem rgba(12, 84, 101, 0.15);
+            background-color: #ffffff;
+            outline: none;
+        }
+
+        .input-arredondado::placeholder {
+            color: #ced4da; font-weight: 600; letter-spacing: 1px; font-size: 1.4rem;
+        }
+
+        /* Botão de Ação Gigante */
+        .btn-entrar {
+            background-color: var(--azul-petroleo);
+            color: white; border-radius: 16px; font-weight: 800;
+            font-size: 1.3rem; padding: 1rem; transition: all 0.3s ease; border: none; width: 100%;
+            margin-top: 1rem; letter-spacing: 1px;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        /* Alerta de Erro Discreto e Elegante */
+        .alert-premium {
+            background-color: #fff5f5; border-left: 4px solid var(--vermelho-erro);
+            border-radius: 12px; color: var(--vermelho-erro); font-weight: 600;
+            padding: 0.8rem; font-size: 0.95rem; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 10px rgba(220, 53, 69, 0.05);
+        }
+
+        /* Correção para navegadores mobile não darem zoom automático no input */
+        input[type="tel"] { touch-action: manipulation; }
+
+        /* === REGRAS DE HOVER APENAS PARA DESKTOP === */
+        @media (hover: hover) and (pointer: fine) {
+            .btn-entrar:hover {
+                background-color: #093e4b; transform: translateY(-3px); box-shadow: 0 8px 15px rgba(12, 84, 101, 0.3);
+                color: white;
+            }
+        }
+
+        /* === AJUSTES MOBILE EXCLUSIVOS === */
+        @media (max-width: 576px) {
+            .card-checkin { padding: 2.5rem 1.5rem; }
+            .input-arredondado { font-size: 1.4rem; letter-spacing: 1px; padding: 0.8rem; }
+            .input-arredondado::placeholder { font-size: 1.2rem; }
+            .btn-entrar { font-size: 1.15rem; padding: 0.85rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="card-checkin">
+
+    <div class="card-topo-detalhe"></div>
+
+    <img src="/img/logo-etiqueta.png" alt="Logo Kids" class="img-fluid mb-4" style="max-height: 90px;" onerror="this.style.display='none'">
+
+    <h3 class="fw-bold mb-1" style="color: var(--texto-escuro); letter-spacing: -0.5px;">Check-in</h3>
+    <p class="text-muted mb-4 fw-semibold lh-sm">Digite o celular do responsável</p>
+
+    <div th:if="${erro}" class="alert-premium mb-4" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2 fs-5 flex-shrink-0"></i>
+        <span th:text="${erro}">Número não encontrado</span>
+    </div>
+
+    <form action="/kids/checkin/buscar" method="POST">
+        <div class="mb-4">
+            <input type="tel" name="telefone" class="form-control input-arredondado"
+                   placeholder="(00) 00000-0000" required autofocus inputmode="numeric"
+                   th:value="${telefone}" oninput="mascaraTelefone(this)">
+        </div>
+
+        <button type="submit" class="btn btn-entrar shadow-sm">
+            BUSCAR CADASTRO <i class="bi bi-arrow-right-circle-fill ms-2 fs-5"></i>
+        </button>
+    </form>
+
+    <div class="mt-4 pt-3 border-top">
+        <small class="text-muted fw-semibold d-block lh-sm">
+            <i class="bi bi-info-circle-fill me-1 opacity-50"></i>
+            Não possui cadastro? Procure a recepção.
+        </small>
+    </div>
+
+</div>
+
+<script>
+    // Substituída a máscara básica pela máscara padrão e robusta do sistema
+    function mascaraTelefone(input) {
+        let v = input.value.replace(/\D/g, "");
+        if (v.length > 11) v = v.substring(0, 11);
+        if (v.length > 10) { input.value = v.replace(/^(\d{2})(\d{5})(\d{4}).*/, "($1) $2-$3"); }
+        else if (v.length > 5) { input.value = v.replace(/^(\d{2})(\d{4})(\d{0,4}).*/, "($1) $2-$3"); }
+        else if (v.length > 2) { input.value = v.replace(/^(\d{2})(\d{0,5})/, "($1) $2"); }
+        else { input.value = v.replace(/^(\d*)/, "($1"); }
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Histórico de Visitantes | Mava</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+        :root { --azul-petroleo: #0c5465; --texto-escuro: #2c3e50; }
+        body { background-color: #f0f2f5; font-family: 'Segoe UI', sans-serif; min-height: 100vh; }
+
+        .navbar-manancial { background: linear-gradient(135deg, #0c5465, #146c82); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .card-tabela { border: none; border-radius: 20px; box-shadow: 0 10px 20px rgba(12, 84, 101, 0.08); overflow: hidden; background: white; }
+        .topo-detalhe { height: 6px; width: 100%; background: var(--azul-petroleo); }
+
+        .badge-igreja { font-size: 0.75rem; padding: 0.4em 0.8em; border-radius: 8px; font-weight: 700; }
+
+        /* Estilos do filtro */
+        .select-filtro { border-radius: 12px; border: 1px solid #dee2e6; padding: 0.6rem 1rem; color: var(--texto-escuro); font-weight: 600; }
+        .select-filtro:focus { border-color: var(--azul-petroleo); box-shadow: 0 0 0 0.25rem rgba(12, 84, 101, 0.15); }
+        .btn-manancial { background-color: var(--azul-petroleo); color: white; border-radius: 12px; font-weight: 700; transition: all 0.3s; }
+
+        /* --- REGRAS DE HOVER APENAS PARA DESKTOP --- */
+        @media (hover: hover) and (pointer: fine) {
+            .table-hover tbody tr:hover { background-color: #f8f9fa; transition: 0.2s; }
+            .btn-manancial:hover { background-color: #093e4b; color: white; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(12, 84, 101, 0.2); }
+        }
+
+        /* --- AJUSTES MOBILE EXCLUSIVOS --- */
+        @media (max-width: 768px) {
+            .filtro-form { flex-direction: column; align-items: stretch !important; gap: 10px !important; }
+            .filtro-wrap { width: 100%; }
+            .btn-filtro-wrap { display: flex; gap: 10px; width: 100%; }
+            .btn-filtro-wrap .btn { flex-grow: 1; }
+
+            .table th, .table td { padding: 0.8rem 0.5rem; font-size: 0.9rem; }
+            .table-responsive { border-radius: 0 0 20px 20px; }
+
+            .acao-botoes { flex-direction: column; gap: 6px; }
+            .acao-botoes .btn { width: 100%; justify-content: center; display: flex; }
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark navbar-manancial mb-3 mb-lg-5 sticky-top">
+    <div class="container-fluid px-3 px-md-4">
+        <a class="navbar-brand d-flex align-items-center gap-2 gap-md-3" href="/">
+            <img th:src="@{/img/logo.png}" alt="Logo" width="40" height="40" class="bg-white rounded-circle p-1">
+            <span class="fw-bold text-uppercase small d-none d-sm-inline" style="letter-spacing: 1px;">Módulo Boas Vindas</span>
+        </a>
+        <div class="ms-auto d-flex gap-2">
+            <a href="/visitantes/novo" class="btn btn-warning fw-bold text-dark rounded-pill px-3 px-md-4 shadow-sm text-nowrap">
+                <i class="bi bi-plus-circle-fill me-1"></i> <span class="d-none d-sm-inline">Nova Ficha</span><span class="d-inline d-sm-none">Novo</span>
+            </a>
+            <a href="/" class="btn btn-outline-light rounded-pill px-3 px-md-4 fw-bold text-nowrap">
+                <i class="bi bi-house-door-fill d-inline d-sm-none"></i>
+                <span class="d-none d-sm-inline">Painel Inicial</span>
+            </a>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid px-3 px-md-4 pb-5">
+
+    <div class="row align-items-center mb-4">
+        <div class="col-lg-6 d-flex align-items-center mb-3 mb-lg-0">
+            <div class="bg-info bg-opacity-10 rounded-circle p-3 me-3 flex-shrink-0">
+                <i class="bi bi-person-lines-fill fs-3 text-info"></i>
+            </div>
+            <div>
+                <h4 class="mb-0 fw-bold" style="color: var(--texto-escuro);">Relatório de Visitantes</h4>
+                <p class="text-muted small mb-0 lh-sm mt-1">Acompanhe e gerencie as pessoas que nos visitaram recentemente.</p>
+            </div>
+        </div>
+
+        <div class="col-lg-6 d-flex justify-content-lg-end">
+            <form action="/visitantes" method="get" class="d-flex align-items-center bg-white p-2 rounded-4 shadow-sm w-100 filtro-form">
+                <div class="d-flex align-items-center flex-grow-1 filtro-wrap">
+                    <i class="bi bi-funnel text-muted ms-2 me-2"></i>
+                    <select name="filtroCivil" class="form-select select-filtro border-0 shadow-none bg-light w-100">
+                        <option value="">Todos os Estados Civis</option>
+                        <option th:each="ec : ${estadosCivis}"
+                                th:value="${ec}"
+                                th:text="${ec}"
+                                th:selected="${ec == filtroAtual}"></option>
+                    </select>
+                </div>
+                <div class="btn-filtro-wrap ms-lg-2 mt-2 mt-lg-0">
+                    <button type="submit" class="btn btn-manancial px-4">Filtrar</button>
+                    <a th:if="${filtroAtual != null}" href="/visitantes" class="btn btn-light rounded-3 text-danger px-3 shadow-sm d-flex justify-content-center align-items-center" title="Limpar Filtros">
+                        <i class="bi bi-x-lg fw-bold"></i>
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div th:if="${param.sucesso}" class="alert alert-success alert-dismissible fade show border-0 shadow-sm rounded-4 mb-4" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i> Operação realizada com sucesso!
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <div th:if="${param.excluido}" class="alert alert-danger alert-dismissible fade show border-0 shadow-sm rounded-4 mb-4 bg-danger bg-opacity-10 text-danger" role="alert">
+        <i class="bi bi-trash-fill me-2"></i> Cadastro do visitante excluído permanentemente.
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div class="card-tabela">
+        <div class="topo-detalhe"></div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-light text-muted small text-uppercase fw-bold" style="letter-spacing: 1px;">
+                    <tr>
+                        <th class="ps-3 ps-md-4 py-3 text-nowrap">Nome do Visitante</th>
+                        <th class="py-3 text-nowrap">Contato</th>
+                        <th class="py-3 text-nowrap">Perfil</th>
+                        <th class="py-3 text-center text-nowrap">Unidade</th>
+                        <th class="py-3 text-center text-nowrap">Data</th>
+                        <th class="pe-3 pe-md-4 py-3 text-end text-nowrap">Ações</th>
+                    </tr>
+                    </thead>
+                    <tbody class="border-top-0">
+                    <tr th:each="v : ${visitantes}">
+                        <td class="ps-3 ps-md-4 py-3 fw-bold text-wrap" style="color: var(--texto-escuro); min-width: 150px;" th:text="${v.nome}">João da Silva</td>
+                        <td class="py-3">
+                            <a th:if="${v.telefone != null and !v.telefone.isEmpty()}"
+                               th:href="'https://wa.me/' + ${#strings.replace(#strings.replace(#strings.replace(v.telefone, '(', ''), ')', ''), '-', '')}"
+                               target="_blank" class="text-decoration-none text-success fw-bold text-nowrap">
+                                <i class="bi bi-whatsapp me-1"></i> <span th:text="${v.telefone}"></span>
+                            </a>
+                            <span th:if="${v.telefone == null or v.telefone.isEmpty()}" class="text-muted small text-nowrap">Não informado</span>
+                        </td>
+                        <td class="py-3 text-muted small text-nowrap">
+                            <span th:text="${v.sexo}">MASC</span> • <span th:text="${v.estadoCivil}">SOLTEIRO</span>
+                        </td>
+                        <td class="py-3 text-center">
+                            <span class="badge text-bg-light border text-secondary badge-igreja" th:text="${v.congregacao}">SEDE</span>
+                        </td>
+                        <td class="py-3 text-center fw-semibold text-muted text-nowrap">
+                            <i class="bi bi-calendar2-check text-info me-1"></i>
+                            <span th:text="${#temporals.format(v.dataCadastro, 'dd/MM/yyyy')}">10/10/2023</span>
+                        </td>
+
+                        <td class="pe-3 pe-md-4 py-3 text-end">
+                            <div class="d-flex justify-content-end acao-botoes">
+                                <a th:href="@{/visitantes/editar/{id}(id=${v.id})}" class="btn btn-sm btn-outline-primary rounded-pill fw-bold px-3">
+                                    <i class="bi bi-pencil-fill"></i> <span class="d-none d-md-inline ms-1">Editar</span>
+                                </a>
+                                <a th:href="@{/visitantes/excluir/{id}(id=${v.id})}" class="btn btn-sm btn-outline-danger rounded-pill fw-bold px-3" onclick="return confirm('Tem certeza que deseja excluir permanentemente este cadastro?');" title="Excluir">
+                                    <i class="bi bi-trash-fill"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr th:if="${#lists.isEmpty(visitantes)}">
+                        <td colspan="6" class="text-center py-5 text-muted">
+                            <i class="bi bi-inbox fs-1 d-block mb-2 opacity-50"></i>
+                            <span th:text="${filtroAtual != null ? 'Nenhum visitante encontrado com esse perfil.' : 'Nenhum visitante registrado ainda.'}"></span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

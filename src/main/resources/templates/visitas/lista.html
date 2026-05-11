@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Visitas Pastorais | Mava</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js'></script>
+
+    <style>
+        :root {
+            --azul-petroleo: #0c5465;
+            --azul-claro: #d1e7ed;
+            --texto-escuro: #2c3e50;
+            --laranja-pastoral: #fd7e14;
+            --laranja-suave: #fff4ec;
+            --verde-sucesso: #198754;
+            --verde-suave: #f3faf6;
+            --cinza-subtil: #eaecef;
+        }
+
+        body {
+            background-color: #f0f2f5;
+            font-family: 'Segoe UI', sans-serif;
+            min-height: 100vh;
+        }
+
+        /* --- NAVBAR --- */
+        .navbar-manancial {
+            background: linear-gradient(135deg, #0c5465, #146c82);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        /* --- PADRÃO MANANCIAL DE CARDS --- */
+        .card-3d {
+            background: #ffffff; border: none; border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(12, 84, 101, 0.08);
+            position: relative; overflow: hidden;
+        }
+
+        .card-topo-detalhe {
+            height: 6px; width: 100%; position: absolute; top: 0; left: 0;
+            background: var(--laranja-pastoral);
+        }
+
+        /* --- DASHBOARD BOTÕES E ABAS --- */
+        .btn-dash { border-radius: 12px; font-weight: 700; padding: 0.6rem 1.2rem; transition: all 0.3s ease; border: none; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-pastoral { background-color: var(--laranja-pastoral); color: white; }
+
+        .nav-pills .nav-link { color: #6c757d; font-weight: 700; border-radius: 12px; transition: all 0.2s; border: 1px solid transparent; }
+        .nav-pills .nav-link.active { background-color: white; color: var(--laranja-pastoral); box-shadow: 0 4px 10px rgba(12, 84, 101, 0.08); border-color: var(--cinza-subtil); }
+
+        /* --- TABELA MODERNA --- */
+        .table-moderna { border-collapse: separate; border-spacing: 0 8px; margin-top: -8px; }
+        .table-moderna th { text-transform: uppercase; font-size: 0.75rem; letter-spacing: 1px; color: #6c757d; border: none; padding: 0 1rem 10px 1rem; font-weight: 700; white-space: nowrap; }
+        .table-moderna td { vertical-align: middle; background-color: #ffffff; border-top: 1px solid #f8f9fa; border-bottom: 1px solid #f8f9fa; padding: 1.2rem 1rem; transition: all 0.2s; }
+        .table-moderna td:first-child { border-left: 1px solid #f8f9fa; border-top-left-radius: 12px; border-bottom-left-radius: 12px; }
+        .table-moderna td:last-child { border-right: 1px solid #f8f9fa; border-top-right-radius: 12px; border-bottom-right-radius: 12px; }
+        .table-moderna tbody tr { transition: transform 0.2s, box-shadow 0.2s; }
+
+        /* Avatares e Badges */
+        .avatar-tabela { width: 40px; height: 40px; border-radius: 50%; background-color: var(--laranja-suave); color: var(--laranja-pastoral); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; }
+        .badge-status { font-weight: 700; padding: 0.5rem 1rem; border-radius: 50rem; font-size: 0.75rem; letter-spacing: 0.3px; display: inline-flex; align-items: center; white-space: nowrap; }
+
+        /* Animação para solicitação nova (QR Code) */
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(220, 53, 69, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); }
+        }
+        .badge-pendente {
+            background-color: #dc3545; color: white;
+            animation: pulse-red 2s infinite;
+        }
+
+        /* Botões de Ação na Tabela */
+        .btn-acao-tabela { width: 35px; height: 35px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; background-color: transparent; border: none; color: #adb5bd; transition: all 0.2s; text-decoration: none;}
+
+        .hover-scale { transition: transform 0.2s; }
+
+        /* === REGRAS DE HOVER APENAS PARA DESKTOP === */
+        @media (hover: hover) and (pointer: fine) {
+            .btn-dash:hover { transform: translateY(-2px); }
+            .btn-pastoral:hover { background-color: #e56b00; color: white; box-shadow: 0 6px 15px rgba(253, 126, 20, 0.3); }
+            .nav-pills .nav-link:hover { background-color: white; border-color: var(--cinza-subtil); color: var(--texto-escuro); }
+            .table-moderna tbody tr:hover td { background-color: #f8f9fa; border-color: #e9ecef; }
+            .table-moderna tbody tr:hover { transform: scale(1.005); box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
+            .btn-acao-tabela:hover.edit { background-color: var(--laranja-suave); color: var(--laranja-pastoral); }
+            .btn-acao-tabela:hover.zap { background-color: #d1e7dd; color: #198754 !important; }
+            /* NOVA REGRA PARA O BOTÃO DE DELETAR */
+            .btn-acao-tabela:hover.delete { background-color: #f8d7da !important; color: #dc3545 !important; }
+            .hover-scale:hover { transform: scale(1.05); }
+        }
+
+        /* =========================================================
+           ULTRA MODERNIZAÇÃO DO FULLCALENDAR - ESTILO MANANCIAL PREMIUM
+           ========================================================= */
+
+        .fc { --fc-border-color: #eaecef; --fc-daygrid-event-dot-width: 10px; }
+        .fc .fc-view-harness { background-color: #ffffff; padding: 10px; border-radius: 15px; }
+        .fc-theme-standard td, .fc-theme-standard th { border-color: var(--cinza-subtil) !important; }
+        .fc-scrollgrid { border-radius: 15px; overflow: hidden; border-color: var(--cinza-subtil) !important; }
+
+        .fc-header-toolbar { padding: 5px 10px 20px 10px !important; margin-bottom: 0 !important; }
+        .fc-toolbar-title { font-size: 1.6rem !important; font-weight: 800 !important; color: var(--azul-petroleo); letter-spacing: -1px; }
+
+        .fc .fc-button {
+            border-radius: 30px !important; padding: 8px 18px !important;
+            font-weight: 700 !important; text-transform: uppercase !important; font-size: 0.75rem !important; letter-spacing: 0.5px;
+            transition: all 0.2s ease !important; box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+            border: 1px solid var(--cinza-subtil) !important;
+        }
+
+        .fc .fc-button-primary { background-color: #ffffff !important; color: var(--texto-escuro) !important; }
+        @media (hover: hover) and (pointer: fine) {
+            .fc .fc-button-primary:hover { background-color: #f8f9fa !important; border-color: #ced4da !important; color: var(--azul-petroleo) !important; transform: translateY(-1px); }
+        }
+
+        .fc .fc-button-primary:not(:disabled).fc-button-active {
+            background-color: var(--azul-petroleo) !important; color: #ffffff !important; border-color: var(--azul-petroleo) !important;
+            box-shadow: 0 4px 10px rgba(12, 84, 101, 0.2) !important;
+        }
+
+        .fc .fc-button-group .fc-button { border-radius: 30px !important; margin: 0 2px; }
+        .fc .fc-today-button { background-color: var(--azul-claro) !important; color: var(--azul-petroleo) !important; border-color: var(--azul-claro) !important; opacity: 1 !important; }
+
+        .fc-col-header-cell { background-color: #f8f9fa; border-bottom: 2px solid var(--cinza-subtil) !important; padding: 12px 0 !important; }
+        .fc-col-header-cell-cushion { color: #6c757d; font-weight: 700; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 1px; }
+
+        .fc-daygrid-day { transition: background-color 0.2s; }
+        .fc-daygrid-day-number { font-weight: 600; color: var(--texto-escuro); padding: 8px 12px !important; font-size: 0.9rem; }
+
+        .fc-day-today { background-color: #f3f9fb !important; }
+        .fc-day-today .fc-daygrid-day-number { color: var(--azul-petroleo); font-weight: 800; background-color: #ffffff; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; margin: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+
+        .fc-daygrid-event {
+            background-color: #ffffff !important;
+            border: 1px solid var(--cinza-subtil) !important;
+            border-radius: 8px !important;
+            padding: 5px 8px 5px 12px !important;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.03) !important;
+            margin: 2px 4px !important;
+            transition: all 0.2s ease !important;
+            position: relative; overflow: hidden;
+        }
+
+        .fc-daygrid-event::before {
+            content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 5px;
+            background-color: var(--fc-event-bg-color);
+            border-radius: 8px 0 0 8px;
+        }
+
+        .fc-event-main { padding: 0 !important; color: var(--texto-escuro) !important; display: flex; align-items: center; gap: 4px; }
+        .fc-event-time { font-weight: 700 !important; color: var(--fc-event-bg-color) !important; font-size: 0.75rem; }
+        .fc-event-title { font-weight: 600 !important; font-size: 0.8rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        .fc-list-event-dot { border-width: 5px !important; }
+
+        /* === AJUSTES MOBILE EXCLUSIVOS === */
+        @media (max-width: 768px) {
+            /* Tabela Ajustes */
+            .table-moderna td, .table-moderna th { padding: 0.8rem 0.5rem; }
+            .table-moderna td h6, .table-moderna td .fs-6 { font-size: 0.95rem !important; }
+
+            /* Botões do topo e Tabs */
+            .botoes-topo { width: 100%; flex-direction: column; }
+            .botoes-topo .btn-dash { width: 100%; }
+
+            #pills-tab { flex-direction: column; width: 100%; border-radius: 16px !important; }
+            #pills-tab .nav-item { width: 100%; }
+            #pills-tab .nav-link { width: 100%; border-radius: 12px !important; }
+
+            /* Calendário Mobile */
+            .fc-toolbar-title { font-size: 1.2rem !important; }
+            .fc .fc-button { padding: 6px 12px !important; font-size: 0.65rem !important; }
+            .fc-header-toolbar { flex-wrap: wrap; gap: 10px; justify-content: center !important; }
+            .fc-toolbar-chunk { display: flex; justify-content: center; width: 100%; }
+            .fc .fc-view-harness { padding: 5px; }
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark navbar-manancial mb-3 mb-lg-5 sticky-top">
+    <div class="container">
+        <a class="navbar-brand d-flex align-items-center gap-2 gap-md-3" href="/">
+            <img th:src="@{/img/logo.png}" alt="Logo" width="42" height="42" class="bg-white rounded-circle p-1 shadow-sm">
+            <div class="d-flex flex-column text-white">
+                <span class="fw-bold text-uppercase" style="letter-spacing: 1px; font-size: 1rem; line-height: 1.1;">Mava</span>
+            </div>
+        </a>
+
+        <div class="ms-auto d-flex gap-2 gap-md-3 align-items-center">
+            <span class="text-white opacity-75 d-none d-md-block small text-uppercase fw-bold" style="letter-spacing: 1px;">
+                Gestão Pastoral
+            </span>
+            <a href="/" class="btn btn-outline-light btn-sm rounded-pill px-3 px-md-4 fw-bold hover-scale text-nowrap">
+                <i class="bi bi-grid-3x3-gap-fill me-1"></i> <span class="d-none d-sm-inline">Painel Geral</span><span class="d-inline d-sm-none">Voltar</span>
+            </a>
+        </div>
+    </div>
+</nav>
+
+<div class="container pb-5">
+
+    <div th:if="${mensagemSucesso}" class="alert alert-success alert-dismissible fade show mb-4 shadow-sm" role="alert" style="border-radius: 12px; border-left: 5px solid #198754;">
+        <i class="bi bi-check-circle-fill me-2"></i> <span th:text="${mensagemSucesso}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <!-- Adicionado o alerta de erro caso a exclusão falhe -->
+    <div th:if="${mensagemErro}" class="alert alert-danger alert-dismissible fade show mb-4 shadow-sm" role="alert" style="border-radius: 12px; border-left: 5px solid #dc3545;">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i> <span th:text="${mensagemErro}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
+        <div>
+            <h4 class="fw-bold mb-1" style="color: var(--texto-escuro);"><i class="bi bi-heart-pulse-fill me-2" style="color: var(--laranja-pastoral);"></i>Agenda de Visitas</h4>
+            <span class="text-muted small">Acompanhe os aconselhamentos e pedidos do QR Code.</span>
+        </div>
+
+        <div class="d-flex gap-2 botoes-topo">
+            <a href="/visitas/novo" class="btn-dash btn-pastoral shadow-sm">
+                <i class="bi bi-plus-lg fs-5"></i> Agendar Visita
+            </a>
+        </div>
+    </div>
+
+    <ul class="nav nav-pills mb-4 gap-1 p-1 bg-white rounded-pill shadow-sm d-inline-flex" id="pills-tab" role="tablist" style="border: 1px solid var(--cinza-subtil);">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active px-4 py-2 rounded-pill" id="pills-calendario-tab" data-bs-toggle="pill" data-bs-target="#pills-calendario" type="button" role="tab">
+                <i class="bi bi-calendar3 me-2"></i> Visão Calendário
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link px-4 py-2 rounded-pill" id="pills-lista-tab" data-bs-toggle="pill" data-bs-target="#pills-lista" type="button" role="tab">
+                <i class="bi bi-list-ul me-2"></i> Visão Tabela
+            </button>
+        </li>
+    </ul>
+
+    <div class="tab-content" id="pills-tabContent">
+
+        <div class="tab-pane fade show active" id="pills-calendario" role="tabpanel">
+            <div class="card-3d p-2 p-md-4">
+                <div class="card-topo-detalhe"></div>
+                <div id='calendar'></div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="pills-lista" role="tabpanel">
+            <div class="card-3d p-3 p-md-4">
+                <div class="card-topo-detalhe"></div>
+
+                <div class="table-responsive mt-2">
+                    <table class="table table-moderna align-middle w-100 mb-0">
+                        <thead>
+                        <tr>
+                            <th class="ps-2 ps-md-3" style="min-width: 100px;">Data e Hora</th>
+                            <th style="min-width: 200px;">Membro / Visitado</th>
+                            <th style="min-width: 180px;">Tipo / Responsável</th>
+                            <th class="text-center" style="min-width: 130px;">Status</th>
+                            <th class="text-end pe-2 pe-md-3" style="min-width: 140px;">Ações</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        <tr th:each="v : ${visitas}">
+                            <!-- DATA -->
+                            <td class="ps-2 ps-md-3">
+                                <div class="d-flex flex-column" th:if="${v.dataVisita != null}">
+                                    <span class="fw-bold" style="color: var(--texto-escuro);" th:text="${#temporals.format(v.dataVisita, 'dd/MM/yyyy')}">01/01/2026</span>
+                                    <span class="text-muted small fw-semibold"><i class="bi bi-clock me-1 opacity-50"></i><span th:text="${#temporals.format(v.dataVisita, 'HH:mm')}">14:00</span></span>
+                                </div>
+                                <div th:if="${v.dataVisita == null}">
+                                    <span class="badge bg-light text-dark border">Sem Data</span>
+                                </div>
+                            </td>
+
+                            <!-- NOME E TELEFONE -->
+                            <td>
+                                <div class="d-flex align-items-center gap-2 gap-md-3">
+                                    <div class="avatar-tabela d-none d-sm-flex" th:classappend="${v.status != null and v.status.name() == 'PENDENTE'} ? 'bg-danger bg-opacity-10 text-danger' : ''">
+                                        <i th:class="${v.membro != null ? 'bi bi-person-fill' : 'bi bi-person-walking'}"></i>
+                                    </div>
+                                    <div>
+                                        <span class="fw-bold fs-6 d-block lh-sm text-wrap" style="color: var(--texto-escuro);"
+                                              th:text="${v.membro != null ? v.membro.nome : v.nomeNaoMembro}">Nome da Pessoa</span>
+
+                                        <div class="d-flex align-items-center gap-2 mt-1">
+                                            <span th:if="${v.membro == null}" class="badge bg-secondary opacity-75" style="font-size: 0.6rem; letter-spacing: 0.5px;">NÃO MEMBRO</span>
+
+                                            <small th:if="${v.telefoneContato != null and !v.telefoneContato.isEmpty()}" class="text-success fw-bold" style="font-size: 0.75rem;">
+                                                <i class="bi bi-whatsapp"></i> <span th:text="${v.telefoneContato}"></span>
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <!-- TIPO E RESPONSÁVEL -->
+                            <td>
+                                <div class="fw-bold text-wrap mb-1" style="color: var(--texto-escuro); font-size: 0.85rem;" th:text="${v.tipo != null ? v.tipo : 'Motivo não definido'}">
+                                    ACONSELHAMENTO
+                                </div>
+                                <div class="text-muted" style="font-size: 0.75rem;">
+                                    <i class="bi bi-person-badge me-1"></i>
+                                    <span th:text="${v.responsavel != null ? v.responsavel.nome : 'Aguardando Designação'}">Pr. João</span>
+                                </div>
+                            </td>
+
+                            <!-- STATUS C/ BADGES NOVOS -->
+                            <td class="text-center">
+                                <!-- Novo pelo QR Code -->
+                                <span th:if="${v.status != null and v.status.name() == 'PENDENTE'}" class="badge badge-status badge-pendente">
+                                    <i class="bi bi-exclamation-circle-fill me-1"></i> Aguardando
+                                </span>
+
+                                <span th:if="${v.status != null and v.status.name() == 'AGENDADA'}" class="badge badge-status" style="background-color: #fff8e6; color: #d39e00; border: 1px solid #ffeeba;">
+                                    <i class="bi bi-calendar-event me-1"></i> Agendada
+                                </span>
+
+                                <span th:if="${v.status != null and v.status.name() == 'REALIZADA'}" class="badge badge-status bg-success-subtle text-success border border-success">
+                                    <i class="bi bi-check-circle-fill me-1"></i> Realizada
+                                </span>
+
+                                <span th:if="${v.status != null and v.status.name() == 'CANCELADA'}" class="badge badge-status bg-secondary text-white">
+                                    <i class="bi bi-x-circle-fill me-1"></i> Cancelada
+                                </span>
+                            </td>
+
+                            <!-- AÇÕES: WHATSAPP, EDITAR E EXCLUIR -->
+                            <td class="text-end pe-2 pe-md-3">
+                                <div class="d-flex justify-content-end gap-1">
+                                    <!-- Botão Mágico do WhatsApp -->
+                                    <a th:if="${v.telefoneContato != null and !v.telefoneContato.isEmpty()}"
+                                       th:with="telefoneLimpo=${#strings.replace(#strings.replace(#strings.replace(#strings.replace(v.telefoneContato, ' ', ''), '(', ''), ')', ''), '-', '')}"
+                                       th:href="'https://wa.me/55' + ${telefoneLimpo}"
+                                       target="_blank" class="btn-acao-tabela zap text-success bg-success bg-opacity-10" title="Chamar no WhatsApp">
+                                        <i class="bi bi-whatsapp"></i>
+                                    </a>
+
+                                    <!-- Editar -->
+                                    <a th:href="@{/visitas/editar/{id}(id=${v.id})}" class="btn-acao-tabela edit bg-light" title="Ver Detalhes / Editar">
+                                        <i class="bi bi-pencil-fill"></i>
+                                    </a>
+
+                                    <!-- Excluir (Com aviso de segurança) -->
+                                    <a th:href="@{/visitas/excluir/{id}(id=${v.id})}"
+                                       class="btn-acao-tabela delete text-danger bg-danger bg-opacity-10"
+                                       title="Excluir Visita"
+                                       onclick="return confirm('🚨 Tem certeza que deseja excluir esta visita? Esta ação não pode ser desfeita.');">
+                                        <i class="bi bi-trash3-fill"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr th:if="${#lists.isEmpty(visitas)}">
+                            <td colspan="5" class="text-center py-5">
+                                <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 70px; height: 70px;">
+                                    <i class="bi bi-journal-text fs-2 text-muted opacity-50"></i>
+                                </div>
+                                <h6 class="fw-bold text-muted">Nenhuma visita programada</h6>
+                                <p class="text-muted small mb-0 px-3">Use o botão "Agendar Visita" ou compartilhe o QR Code para iniciar.</p>
+                            </td>
+                        </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div th:replace="~{fragments/base :: scripts-seguranca}"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
+        var isMobile = window.innerWidth < 768;
+
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: isMobile ? 'listMonth' : 'dayGridMonth',
+            locale: 'pt-br',
+            height: 'auto',
+            contentHeight: 'auto',
+            aspectRatio: 1.35,
+            handleWindowResize: true,
+            stickyHeaderDates: true,
+
+            headerToolbar: {
+                left: isMobile ? 'prev,next' : 'prev,today,next',
+                center: 'title',
+                right: isMobile ? 'listMonth,timeGridDay' : 'dayGridMonth,timeGridWeek,listMonth'
+            },
+            buttonText: { today: 'Hoje', month: 'Mês', week: 'Semana', list: 'Lista', day: 'Dia' },
+            dayMaxEventRows: 3,
+            eventTimeFormat: { hour: '2-digit', minute: '2-digit', meridiem: false, hour12: false },
+
+            events: '/api/visitas',
+
+            eventClick: function(info) {
+                info.el.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    window.location.href = '/visitas/editar/' + info.event.id;
+                }, 100);
+            },
+
+            eventContent: function(arg) {
+                let timeText = arg.timeText;
+                let titleText = arg.event.title;
+                let nomePessoa = titleText.replace("Visita: ", "");
+
+                return {
+                    html: `<div class="fc-event-main">
+                             <span class="fc-event-time">${timeText}</span>
+                             <span class="fc-event-title" title="${nomePessoa}">${nomePessoa}</span>
+                           </div>`
+                };
+            }
+        });
+
+        calendar.render();
+
+        window.addEventListener('resize', function() {
+            var newIsMobile = window.innerWidth < 768;
+            if (newIsMobile && calendar.view.type === 'dayGridMonth') {
+                calendar.changeView('listMonth');
+                calendar.setOption('headerToolbar', { left: 'prev,next', center: 'title', right: 'listMonth,timeGridDay' });
+            } else if (!newIsMobile && (calendar.view.type === 'listMonth' || calendar.view.type === 'timeGridDay')) {
+                calendar.changeView('dayGridMonth');
+                calendar.setOption('headerToolbar', { left: 'prev,today,next', center: 'title', right: 'dayGridMonth,timeGridWeek,listMonth' });
+            }
+        });
+
+        var tabCalendario = document.getElementById('pills-calendario-tab');
+        if (tabCalendario) {
+            tabCalendario.addEventListener('shown.bs.tab', function () {
+                calendar.updateSize();
+            });
+        }
+    });
+</script>
+
+</body>
+</html>

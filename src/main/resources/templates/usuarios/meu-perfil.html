@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Meu Perfil | Mava</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+        :root {
+            --azul-petroleo: #0c5465;
+            --texto-escuro: #2c3e50;
+        }
+
+        body { background-color: #f0f2f5; font-family: 'Segoe UI', sans-serif; min-height: 100vh; }
+        .navbar-manancial { background: linear-gradient(135deg, #0c5465, #146c82); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+
+        .card-3d {
+            background: #ffffff; border: none; border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(12, 84, 101, 0.08); position: relative; overflow: hidden;
+        }
+        .card-topo-detalhe { height: 6px; width: 100%; position: absolute; top: 0; left: 0; background: var(--azul-petroleo); }
+
+        .input-arredondado { border-radius: 12px; padding: 0.75rem 1rem; border: 1px solid #dee2e6; transition: all 0.2s; }
+        .input-arredondado:focus { border-color: var(--azul-petroleo); box-shadow: 0 0 0 0.25rem rgba(12, 84, 101, 0.15); }
+
+        .btn-manancial { background-color: var(--azul-petroleo); color: white; border-radius: 12px; font-weight: 700; transition: all 0.3s; }
+
+        /* === REGRAS DE HOVER APENAS PARA DESKTOP === */
+        @media (hover: hover) and (pointer: fine) {
+            .btn-manancial:hover { background-color: #093e4b; color: white; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(12, 84, 101, 0.2); }
+        }
+
+        /* === AJUSTES MOBILE EXCLUSIVOS === */
+        @media (max-width: 576px) {
+            .card-3d { padding: 1.5rem !important; }
+            .btn-manancial { font-size: 0.95rem; padding: 0.8rem !important; }
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark navbar-manancial mb-3 mb-lg-5 sticky-top">
+    <div class="container">
+        <a class="navbar-brand fw-bold text-uppercase d-flex align-items-center" href="/" style="font-size: 1rem;">
+            <i class="bi bi-shield-lock-fill me-2"></i>
+            <span class="d-none d-sm-inline">Área Segura</span>
+            <span class="d-inline d-sm-none">Segurança</span>
+        </a>
+        <div class="ms-auto">
+            <a href="/" class="btn btn-outline-light btn-sm rounded-pill px-3 px-md-4 fw-bold text-nowrap">
+                <i class="bi bi-house-door-fill d-inline d-sm-none"></i>
+                <span class="d-none d-sm-inline">Voltar ao Início</span>
+            </a>
+        </div>
+    </div>
+</nav>
+
+<div class="container pb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+
+            <div th:if="${mensagemSucesso}" class="alert alert-success rounded-4 shadow-sm fw-bold d-flex align-items-center"><i class="bi bi-check-circle-fill me-2 fs-5"></i><span th:text="${mensagemSucesso}"></span></div>
+            <div th:if="${mensagemErro}" class="alert alert-danger rounded-4 shadow-sm fw-bold d-flex align-items-center"><i class="bi bi-exclamation-triangle-fill me-2 fs-5"></i><span th:text="${mensagemErro}"></span></div>
+
+            <div class="card-3d p-4 p-md-5">
+                <div class="card-topo-detalhe"></div>
+
+                <div class="text-center mb-4">
+                    <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3 shadow-sm" style="width: 80px; height: 80px;">
+                        <i class="bi bi-person-badge fs-1" style="color: var(--azul-petroleo);"></i>
+                    </div>
+                    <h4 class="fw-bold" style="color: var(--texto-escuro);">Meu Perfil</h4>
+                    <p class="text-muted small mb-0 lh-sm">Gerencie suas credenciais de acesso ao sistema.</p>
+                </div>
+
+                <div class="mb-4 p-3 bg-light rounded-4 border">
+                    <label class="form-label text-muted small fw-bold mb-2">Seu Nome / Login</label>
+                    <input type="text" class="form-control input-arredondado bg-white fw-bold text-truncate" th:value="${usuario.nome}" readonly>
+                </div>
+
+                <hr class="my-4" style="opacity: 0.1;">
+
+                <h6 class="fw-bold mb-3 d-flex align-items-center" style="color: var(--azul-petroleo);">
+                    <i class="bi bi-key-fill me-2 fs-5"></i>Alterar Senha de Acesso
+                </h6>
+
+                <form th:action="@{/usuarios/meu-perfil/alterar-senha}" method="post">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-secondary small">Nova Senha</label>
+                        <div class="input-group">
+                            <input type="password" name="novaSenha" class="form-control input-arredondado" style="border-top-right-radius: 0; border-bottom-right-radius: 0;" required minlength="6" placeholder="Mínimo 6 caracteres">
+                            <button class="btn btn-outline-secondary btn-toggle-senha" type="button" style="border-top-right-radius: 12px; border-bottom-right-radius: 12px; border-color: #dee2e6; background-color: #f8f9fa;">
+                                <i class="bi bi-eye text-muted"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold text-secondary small">Confirme a Nova Senha</label>
+                        <div class="input-group">
+                            <input type="password" name="confirmarSenha" class="form-control input-arredondado" style="border-top-right-radius: 0; border-bottom-right-radius: 0;" required minlength="6" placeholder="Digite a senha novamente">
+                            <button class="btn btn-outline-secondary btn-toggle-senha" type="button" style="border-top-right-radius: 12px; border-bottom-right-radius: 12px; border-color: #dee2e6; background-color: #f8f9fa;">
+                                <i class="bi bi-eye text-muted"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-manancial w-100 py-3 mt-2 shadow-sm d-flex justify-content-center align-items-center">
+                        <i class="bi bi-shield-check me-2 fs-5"></i> Atualizar Minha Senha
+                    </button>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const botoesSenha = document.querySelectorAll('.btn-toggle-senha');
+
+        botoesSenha.forEach(botao => {
+            botao.addEventListener('click', function() {
+                const inputSenha = this.previousElementSibling;
+                const icone = this.querySelector('i');
+
+                if (inputSenha.type === 'password') {
+                    inputSenha.type = 'text';
+                    icone.classList.remove('bi-eye');
+                    icone.classList.add('bi-eye-slash');
+                } else {
+                    inputSenha.type = 'password';
+                    icone.classList.remove('bi-eye-slash');
+                    icone.classList.add('bi-eye');
+                }
+            });
+        });
+    });
+</script>
+
+</body>
+</html>

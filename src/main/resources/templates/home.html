@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Portal Mava</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js'></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+
+    <style>
+        :root {
+            --azul-petroleo: #0c5465;
+            --azul-claro: #d1e7ed;
+            --texto-escuro: #2c3e50;
+        }
+
+        body {
+            background-color: #f0f2f5;
+            font-family: 'Segoe UI', sans-serif;
+            min-height: 100vh;
+        }
+
+        .navbar-manancial {
+            background: linear-gradient(135deg, #0c5465, #146c82);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .card-3d {
+            background: #ffffff;
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(12, 84, 101, 0.08);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+            overflow: hidden;
+            height: 100%;
+        }
+
+        @media (hover: hover) and (pointer: fine) {
+            .card-3d:hover {
+                transform: translateY(-8px);
+                box-shadow: 0 20px 30px rgba(12, 84, 101, 0.15);
+                z-index: 10;
+            }
+            .hover-scale:hover { transform: scale(1.05); }
+            .btn-modulo:hover {
+                transform: translateX(8px); background: #f8f9fa; border-color: #dee2e6; box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            }
+            .alert-moderno:hover { transform: translateY(-3px); }
+        }
+
+        .card-topo-detalhe {
+            height: 6px; width: 100%; position: absolute; top: 0; left: 0;
+        }
+
+        .menu-icon-box {
+            width: 65px; height: 65px; border-radius: 18px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.8rem; margin-bottom: 15px;
+        }
+
+        .numero-destaque {
+            font-size: 2.2rem; font-weight: 800; color: var(--azul-petroleo); line-height: 1.2;
+        }
+
+        .section-title {
+            color: #6c757d; font-weight: 700; text-transform: uppercase;
+            font-size: 0.75rem; letter-spacing: 1px; margin-bottom: 1rem; margin-left: 5px;
+        }
+
+        .hover-scale { transition: transform 0.2s; }
+
+        .valor-privado {
+            filter: blur(6px); transition: filter 0.3s; cursor: pointer; user-select: none;
+        }
+        .valor-privado:hover, .valor-privado.revelado { filter: blur(0); }
+
+        .btn-modulo {
+            background: #ffffff; border: 1px solid #e9ecef; border-radius: 12px;
+            color: var(--texto-escuro); transition: all 0.2s ease; box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        /* --- NOVOS ALERTAS MODERNOS E PREMIUM --- */
+        .alert-moderno {
+            background: #ffffff;
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 1.2rem 1.5rem;
+            transition: transform 0.3s ease;
+            flex-wrap: wrap;
+        }
+        .alert-moderno::before {
+            content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 6px;
+        }
+        .alert-warning-moderno::before { background: #fd7e14; }
+        .alert-danger-moderno::before { background: #dc3545; }
+
+        .icon-box-alert {
+            width: 45px; height: 45px; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.4rem; flex-shrink: 0;
+        }
+        .icon-warning { background: #fff3cd; color: #fd7e14; }
+        .icon-danger { background: #f8d7da; color: #dc3545; }
+
+        /* Animação para o alerta de QR Code (Pulsante) */
+        @keyframes pulse-red-alert {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.4); }
+            70% { transform: scale(1.01); box-shadow: 0 0 0 10px rgba(220, 53, 69, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); }
+        }
+        .alert-pulsante { animation: pulse-red-alert 2s infinite; border-left: 6px solid #dc3545 !important; }
+
+        @media (max-width: 576px) {
+            .alert-moderno { padding: 1rem; }
+            .alert-moderno .btn { width: 100%; margin-top: 10px; }
+            .numero-destaque { font-size: 1.8rem; }
+            .menu-icon-box { width: 50px; height: 50px; font-size: 1.4rem; }
+        }
+
+        /* --- Calendário (SOMENTE VISUALIZAÇÃO) --- */
+        .fc { font-family: 'Segoe UI', sans-serif; border: none !important; }
+        .fc-theme-standard .fc-scrollgrid { border: none !important; }
+        .fc-theme-standard td, .fc-theme-standard th { border-color: #eaecef !important; }
+        .fc-col-header-cell { background-color: #f8f9fa; padding: 12px 0 !important; border-bottom: 2px solid #dee2e6 !important; }
+        .fc-col-header-cell-cushion { color: var(--texto-escuro); font-weight: 700; text-transform: uppercase; font-size: 0.8rem; }
+        .fc-timegrid-slot-label-cushion { color: #6c757d; font-size: 0.8rem; }
+
+        .fc-v-event { border-radius: 10px !important; border: none !important; box-shadow: 0 4px 6px rgba(0,0,0,0.1); padding: 2px !important; cursor: default; transition: transform 0.2s; }
+        .fc-event-main { padding: 4px 6px !important; }
+        .fc-event-title { font-weight: 700 !important; font-size: 0.85rem; }
+        .fc-event-time { font-weight: 400 !important; font-size: 0.75rem; opacity: 0.8; }
+        .fc-header-toolbar { margin-bottom: 2em !important; padding: 0 10px; }
+        .fc-toolbar-title { font-size: 1.4rem !important; font-weight: 800; color: var(--azul-petroleo); letter-spacing: -0.5px; }
+        .fc-button { border-radius: 20px !important; font-size: 0.8rem !important; font-weight: 700 !important; text-transform: uppercase; letter-spacing: 0.5px; padding: 8px 16px !important; transition: all 0.2s; }
+        .fc-button-primary { background-color: #e3f2fd !important; border-color: #e3f2fd !important; color: var(--azul-petroleo) !important; }
+        .fc-button-primary:hover { background-color: var(--azul-claro) !important; color: var(--azul-petroleo) !important; }
+        .fc-button-primary:disabled { background-color: #f8f9fa !important; border-color: #f8f9fa !important; color: #6c757d !important; opacity: 1; }
+        .fc-button-active { background-color: var(--azul-petroleo) !important; border-color: var(--azul-petroleo) !important; color: #ffffff !important; }
+        .fc-timegrid-now-indicator-line { border-color: #dc3545 !important; border-width: 2px !important; }
+        .fc-timegrid-now-indicator-arrow { border-color: #dc3545 !important; border-width: 6px !important; }
+
+        @media (max-width: 768px) {
+            .fc-toolbar-title { font-size: 1.1rem !important; }
+            .fc-button { padding: 6px 12px !important; font-size: 0.7rem !important; }
+        }
+
+        .evento-aprovado { background-color: var(--azul-petroleo) !important; border-color: var(--azul-petroleo) !important; color: #ffffff !important; }
+        .evento-aprovado * { color: #ffffff !important; }
+        .evento-pendente { background-color: #fd7e14 !important; border-color: #fd7e14 !important; color: #ffffff !important; background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,.1) 10px, rgba(255,255,255,.1) 20px); }
+        .evento-pendente * { color: #ffffff !important; }
+        .evento-rejeitado { display: none !important; }
+        .fc-list-event td { cursor: default; }
+
+        /* --- MODO EDIÇÃO DOS MÓDULOS (DRAG AND DROP) --- */
+        .drag-handle { display: none; cursor: grab; }
+
+        .modo-edicao .drag-handle { display: inline-block; }
+        .modo-edicao .btn-modulo {
+            border: 2px dashed #adb5bd !important;
+            background-color: #f8f9fa !important;
+            pointer-events: none;
+        }
+        .modo-edicao .btn-modulo .drag-handle { pointer-events: auto; }
+        .modo-edicao .btn-modulo:hover { transform: none !important; box-shadow: none !important; }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark navbar-manancial mb-3 mb-lg-5 sticky-top">
+    <div class="container">
+        <a class="navbar-brand d-flex align-items-center gap-2 gap-md-3" href="#">
+            <img th:src="@{/img/logo.png}" alt="Logo" width="48" height="48" class="bg-white rounded-circle p-1 shadow-sm">
+            <div class="d-flex flex-column text-white">
+                <span class="fw-bold text-uppercase" style="letter-spacing: 1px; font-size: 1.1rem; line-height: 1.1;">Mava</span>
+                <small style="font-size: 0.75rem; opacity: 0.8;">Portal de Gestão</small>
+            </div>
+        </a>
+
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto align-items-center gap-2 gap-lg-3 mt-3 mt-lg-0">
+                <li class="nav-item text-white w-100 w-lg-auto">
+                    <div class="d-flex align-items-center justify-content-center justify-content-lg-start gap-2 bg-white bg-opacity-10 px-3 py-2 py-lg-1 rounded-pill">
+                        <i class="bi bi-person-circle"></i>
+                        <span>Olá,
+                            <span class="fw-bold"
+                                  th:text="${#authentication.principal instanceof T(com.igreja.gestao.model.Usuario) ? #authentication.principal.nome : #authentication.name}">
+                                    Usuário
+                            </span>
+                        </span>
+                    </div>
+                </li>
+
+                <li class="nav-item w-100 w-lg-auto">
+                    <a th:href="@{/usuarios/meu-perfil}" class="btn btn-light btn-sm rounded-pill px-3 fw-bold hover-scale w-100" style="color: var(--azul-petroleo);">
+                        <i class="bi bi-person-gear me-1"></i> Meu Perfil
+                    </a>
+                </li>
+
+                <li class="nav-item w-100 w-lg-auto">
+                    <form th:action="@{/logout}" method="post" class="d-flex m-0">
+                        <button type="submit" class="btn btn-outline-light btn-sm rounded-pill px-3 fw-bold hover-scale w-100">
+                            <i class="bi bi-box-arrow-right me-1"></i> Sair
+                        </button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container pb-5">
+
+    <h6 class="section-title">Painel de Controle</h6>
+    <div class="row g-3 g-md-4 mb-4">
+        <div class="col-6 col-md-4">
+            <div class="card-3d p-3 p-md-4 d-flex flex-column flex-md-row align-items-center justify-content-between text-center text-md-start">
+                <div class="card-topo-detalhe" style="background: #0c5465;"></div>
+                <div>
+                    <span class="text-muted small fw-bold text-uppercase d-block mb-1 mb-md-0">Membros Ativos</span>
+                    <div class="numero-destaque" th:text="${qtdMembros}">0</div>
+                </div>
+                <div class="menu-icon-box mb-0 d-none d-sm-flex" style="background-color: #e3f2fd; color: #0c5465;">
+                    <i class="bi bi-people-fill"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6 col-md-4" sec:authorize="hasAnyRole('ADMIN', 'FINANCEIRO')">
+            <div class="card-3d p-3 p-md-4 d-flex flex-column flex-md-row align-items-center justify-content-between text-center text-md-start">
+                <div class="card-topo-detalhe" style="background: #198754;"></div>
+                <div>
+                    <span class="text-muted small fw-bold text-uppercase d-block mb-1 mb-md-0 d-md-none">Saldo</span>
+                    <div class="numero-destaque text-success valor-privado"
+                         title="Passe o mouse para revelar"
+                         th:text="${saldoCaixa != null ? 'R$ ' + #numbers.formatDecimal(saldoCaixa, 1, 'POINT', 2, 'COMMA') : 'R$ 0,00'}">
+                        R$ 0,00
+                    </div>
+                </div>
+                <div class="menu-icon-box mb-0 d-none d-sm-flex" style="background-color: #d1e7dd; color: #198754;">
+                    <i class="bi bi-wallet-fill"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-4">
+            <!-- BLOQUEIO TOTAL: O card agora é apenas uma DIV visual (sem link, sem <a>) -->
+            <th:block th:if="${proximosEventos != null and not #lists.isEmpty(proximosEventos)}">
+                <div class="card-3d p-3 p-md-4 d-flex align-items-center justify-content-between">
+                    <div class="card-topo-detalhe" style="background: #fd7e14;"></div>
+                    <div class="w-100">
+                        <span class="text-muted small fw-bold text-uppercase">Próximo Culto</span>
+                        <div class="mt-1" style="color: #0c5465;">
+                            <h5 class="fw-bold mb-0 fs-6 fs-md-5 text-truncate" th:text="${proximosEventos[0].nome}">Culto</h5>
+                            <small class="fw-bold text-muted">
+                                <i class="bi bi-calendar-event me-1"></i>
+                                <span th:text="${#temporals.format(proximosEventos[0].dataHoraInicio, 'dd/MM - HH:mm')}"></span>
+                            </small>
+                        </div>
+                    </div>
+                    <div class="menu-icon-box mb-0 d-none d-sm-flex" style="background-color: #fff3cd; color: #fd7e14;">
+                        <i class="bi bi-calendar2-check-fill"></i>
+                    </div>
+                </div>
+            </th:block>
+
+            <th:block th:if="${proximosEventos == null or #lists.isEmpty(proximosEventos)}">
+                <div class="card-3d p-3 p-md-4 d-flex align-items-center justify-content-between">
+                    <div class="card-topo-detalhe" style="background: #fd7e14;"></div>
+                    <div class="w-100">
+                        <span class="text-muted small fw-bold text-uppercase">Próximo Culto</span>
+                        <div class="mt-1" style="color: #0c5465;">
+                            <span class="fw-bold fs-5 text-muted">Sem agenda</span>
+                        </div>
+                    </div>
+                    <div class="menu-icon-box mb-0 d-none d-sm-flex" style="background-color: #fff3cd; color: #fd7e14;">
+                        <i class="bi bi-calendar2-x-fill opacity-50"></i>
+                    </div>
+                </div>
+            </th:block>
+        </div>
+    </div>
+
+    <!-- ALERTAS NORMAIS -->
+    <div th:if="${not #lists.isEmpty(eventosPendentes)}" class="row mb-3" sec:authorize="hasAnyRole('ADMIN', 'AGENDA')">
+        <div class="col-12">
+            <div class="alert-moderno alert-warning-moderno">
+                <div class="icon-box-alert icon-warning"><i class="bi bi-calendar-plus"></i></div>
+                <div class="flex-grow-1">
+                    <h6 class="fw-bold mb-0" style="color: #2c3e50;">Solicitações de Agenda</h6>
+                    <span class="text-muted small">Existem <strong th:text="${#lists.size(eventosPendentes)}" style="color: #fd7e14;">0</strong> evento(s) aguardando sua análise e aprovação.</span>
+                </div>
+                <a href="/eventos/pendentes" class="btn btn-sm text-white fw-bold px-4 rounded-pill shadow-sm" style="background: #fd7e14;">Analisar Agora</a>
+            </div>
+        </div>
+    </div>
+
+    <div th:if="${contasVencendoSemana != null and contasVencendoSemana > 0}" class="row mb-3" sec:authorize="hasAnyRole('ADMIN', 'FINANCEIRO')">
+        <div class="col-12">
+            <div class="alert-moderno alert-danger-moderno">
+                <div class="icon-box-alert icon-danger"><i class="bi bi-cash-stack"></i></div>
+                <div class="flex-grow-1">
+                    <h6 class="fw-bold mb-0" style="color: #2c3e50;">Atenção Financeira</h6>
+                    <span class="text-muted small">Você tem <strong th:text="${contasVencendoSemana}" style="color: #dc3545;">0</strong> conta(s) programada(s) para vencer nesta semana.</span>
+                </div>
+                <a href="/tesouraria" class="btn btn-sm text-white fw-bold px-4 rounded-pill shadow-sm" style="background: #dc3545;">Acessar Caixa</a>
+            </div>
+        </div>
+    </div>
+
+    <div th:if="${not #lists.isEmpty(produtosEmBaixa)}" class="row mb-3" sec:authorize="hasAnyRole('ADMIN', 'ESTOQUE')">
+        <div class="col-12">
+            <div class="alert-moderno alert-danger-moderno align-items-start">
+                <div class="icon-box-alert icon-danger mt-1"><i class="bi bi-box-seam"></i></div>
+                <div class="flex-grow-1">
+                    <h6 class="fw-bold mb-1" style="color: #2c3e50;">Estoque Crítico</h6>
+                    <ul class="mb-0 small text-muted ps-3">
+                        <li th:each="p : ${produtosEmBaixa}">
+                            <strong th:text="${p.nome}">Produto</strong> com apenas <span th:text="${p.quantidadeAtual}">0</span> un (Mínimo: <span th:text="${p.estoqueMinimo}">0</span>).
+                        </li>
+                    </ul>
+                </div>
+                <a href="/estoque" class="btn btn-outline-danger btn-sm fw-bold px-4 rounded-pill">Repor Agora</a>
+            </div>
+        </div>
+    </div>
+
+    <div th:if="${not #lists.isEmpty(lotesVencendo)}" class="row mb-4" sec:authorize="hasAnyRole('ADMIN', 'ESTOQUE')">
+        <div class="col-12">
+            <div class="alert-moderno alert-warning-moderno align-items-center">
+                <div class="icon-box-alert icon-warning"><i class="bi bi-calendar-x-fill"></i></div>
+                <div class="flex-grow-1">
+                    <h6 class="fw-bold mb-1" style="color: #2c3e50;">Atenção com Validades</h6>
+                    <span class="text-muted small">Existem <strong th:text="${#lists.size(lotesVencendo)}" style="color: #fd7e14;">0</strong> lote(s) de produtos vencendo nos próximos 30 dias (ou já vencidos) no almoxarifado.</span>
+                </div>
+                <a href="/estoque" class="btn btn-sm text-white fw-bold px-4 rounded-pill shadow-sm mt-2 mt-sm-0" style="background: #fd7e14;">Ver Estoque</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================== -->
+    <!-- NOVO ALERTA: VISITAS PENDENTES (QR CODE)                       -->
+    <!-- ============================================================== -->
+    <div sec:authorize="hasAnyRole('ADMIN', 'SECRETARIA')" th:if="${visitasPendentes > 0}" class="row mb-4">
+        <div class="col-12">
+            <div class="alert-moderno alert-pulsante" style="background-color: #fff5f5;">
+                <div class="icon-box-alert icon-danger"><i class="bi bi-megaphone-fill"></i></div>
+                <div class="flex-grow-1">
+                    <h6 class="fw-bold mb-0" style="color: #dc3545;">Nova Solicitação de Visita!</h6>
+                    <span class="text-muted small">Existem <strong th:text="${visitasPendentes}" style="color: #dc3545;">0</strong> pedido(s) aguardando designação pastoral.</span>
+                </div>
+                <a href="/visitas" class="btn btn-sm text-white fw-bold px-4 rounded-pill shadow-sm mt-2 mt-sm-0" style="background: #dc3545;">Realizar Triagem</a>
+            </div>
+        </div>
+    </div>
+    <!-- ============================================================== -->
+
+    <div class="row g-4">
+        <div class="col-lg-8 order-2 order-lg-1">
+            <h6 class="section-title">Mapa Visual - Agenda da Semana</h6>
+            <div class="card-3d p-2 p-md-4">
+                <div class="card-topo-detalhe" style="background: var(--azul-petroleo);"></div>
+                <div id='calendar' style="min-height: 400px;"></div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 order-1 order-lg-2">
+            <h6 class="section-title d-flex justify-content-between align-items-center">
+                Módulos de Acesso
+                <button id="btnEditarModulos" class="btn btn-outline-secondary btn-sm rounded-pill fw-bold" style="font-size: 0.7rem; padding: 2px 10px; transition: all 0.2s;">
+                    <i class="bi bi-pencil-fill me-1"></i> Editar
+                </button>
+            </h6>
+
+            <div class="card-3d p-3 p-md-4 mb-4 mb-lg-0">
+                <div class="card-topo-detalhe" style="background: #6c757d;"></div>
+
+                <div class="d-flex flex-column gap-2 mt-2" id="containerModulos">
+
+                    <a href="/painel" target="_blank" data-id="mod-tv" class="btn btn-modulo text-start fw-bold py-2 px-3 text-decoration-none shadow-sm mb-2" style="background: linear-gradient(135deg, #0c5465, #05242b); border: none; color: white;" sec:authorize="hasAnyRole('ADMIN', 'SECRETARIA', 'RECEPCAO')">
+                        <i class="bi bi-tv-fill me-2 fs-5 align-middle" style="color: #00d2ff;"></i> Monitor TV (Ao Vivo)
+                        <i class="bi bi-grip-vertical float-end mt-1 opacity-50 small drag-handle"></i>
+                    </a>
+
+                    <a href="/visitantes/novo" data-id="mod-rec" class="btn btn-modulo text-start fw-bold py-2 px-3 text-decoration-none" sec:authorize="hasAnyRole('ADMIN', 'RECEPCAO', 'SECRETARIA')">
+                        <i class="bi bi-person-heart me-2 fs-5 align-middle" style="color: #e83e8c;"></i> Boas Vindas
+                        <i class="bi bi-grip-vertical float-end mt-1 opacity-25 text-muted drag-handle"></i>
+                    </a>
+
+                    <a href="/membros" data-id="mod-sec" class="btn btn-modulo text-start fw-bold py-2 px-3 text-decoration-none" sec:authorize="hasAnyRole('ADMIN', 'SECRETARIA')">
+                        <i class="bi bi-people-fill me-2 fs-5 align-middle" style="color: #0c5465;"></i> Secretaria
+                        <i class="bi bi-grip-vertical float-end mt-1 opacity-25 text-muted drag-handle"></i>
+                    </a>
+
+                    <a href="/tesouraria" data-id="mod-fin" class="btn btn-modulo text-start fw-bold py-2 px-3 text-decoration-none" sec:authorize="hasAnyRole('ADMIN', 'FINANCEIRO')">
+                        <i class="bi bi-cash-coin me-2 fs-5 align-middle" style="color: #198754;"></i> Tesouraria
+                        <i class="bi bi-grip-vertical float-end mt-1 opacity-25 text-muted drag-handle"></i>
+                    </a>
+
+                    <a href="/kids/gestao" data-id="mod-kid" class="btn btn-modulo text-start fw-bold py-2 px-3 text-decoration-none" sec:authorize="hasAnyRole('ADMIN', 'MINISTERIO')">
+                        <i class="bi bi-balloon-heart-fill me-2 fs-5 align-middle" style="color: #d63384;"></i> Ministério KIDS
+                        <i class="bi bi-grip-vertical float-end mt-1 opacity-25 text-muted drag-handle"></i>
+                    </a>
+
+                    <a href="/familias" data-id="mod-soc" class="btn btn-modulo text-start fw-bold py-2 px-3 text-decoration-none" sec:authorize="hasAnyRole('ADMIN', 'SOCIAL')">
+                        <i class="bi bi-heart-fill me-2 fs-5 align-middle" style="color: #6f42c1;"></i> Ação Social
+                        <i class="bi bi-grip-vertical float-end mt-1 opacity-25 text-muted drag-handle"></i>
+                    </a>
+
+                    <a href="/estoque" data-id="mod-est" class="btn btn-modulo text-start fw-bold py-2 px-3 text-decoration-none" sec:authorize="hasAnyRole('ADMIN', 'ESTOQUE')">
+                        <i class="bi bi-box-seam me-2 fs-5 align-middle" style="color: #0dcaf0;"></i> Controle de Estoque
+                        <i class="bi bi-grip-vertical float-end mt-1 opacity-25 text-muted drag-handle"></i>
+                    </a>
+
+                    <a href="/visitas" data-id="mod-vis" class="btn btn-modulo text-start fw-bold py-2 px-3 text-decoration-none" sec:authorize="hasAnyRole('ADMIN', 'SECRETARIA')">
+                        <i class="bi bi-heart-pulse-fill me-2 fs-5 align-middle" style="color: #fd7e14;"></i> Cuidado Pastoral
+                        <i class="bi bi-grip-vertical float-end mt-1 opacity-25 text-muted drag-handle"></i>
+                    </a>
+
+                    <a href="/equipes" data-id="mod-eqp" class="btn btn-modulo text-start fw-bold py-2 px-3 text-decoration-none" sec:authorize="hasAnyRole('ADMIN', 'MINISTERIO', 'SECRETARIA', 'GESTAO_EQUIPES')">
+                        <i class="bi bi-music-note-list me-2 fs-5 align-middle" style="color: #ffc107;"></i> Gestão de Equipes
+                        <i class="bi bi-grip-vertical float-end mt-1 opacity-25 text-muted drag-handle"></i>
+                    </a>
+
+                    <a href="/eventos" data-id="mod-age" class="btn btn-modulo text-start fw-bold py-2 px-3 text-decoration-none" sec:authorize="hasAnyRole('ADMIN', 'AGENDA')">
+                        <i class="bi bi-calendar-week-fill me-2 fs-5 align-middle" style="color: #fd7e14;"></i> Agenda da Igreja
+                        <i class="bi bi-grip-vertical float-end mt-1 opacity-25 text-muted drag-handle"></i>
+                    </a>
+
+                    <a href="/config/tipos" data-id="mod-cfg" class="btn btn-modulo text-start fw-bold py-2 px-3 text-decoration-none" sec:authorize="hasAnyRole('ADMIN', 'SECRETARIA', 'MODELOS_CULTOS')">
+                        <i class="bi bi-card-list me-2 fs-5 align-middle" style="color: #6c757d;"></i> Modelos de Cultos
+                        <i class="bi bi-grip-vertical float-end mt-1 opacity-25 text-muted drag-handle"></i>
+                    </a>
+
+                    <a href="/usuarios" data-id="mod-usr" class="btn btn-modulo text-start fw-bold py-2 px-3 text-decoration-none" sec:authorize="hasRole('ADMIN')">
+                        <i class="bi bi-shield-lock-fill me-2 fs-5 align-middle" style="color: #dc3545;"></i> Gestão de Usuários
+                        <i class="bi bi-grip-vertical float-end mt-1 opacity-25 text-muted drag-handle"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div th:replace="~{fragments/base :: scripts-seguranca}"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: window.innerWidth < 768 ? 'listWeek' : 'timeGridWeek',
+            locale: 'pt-br',
+            height: 'auto',
+            nowIndicator: true,
+            handleWindowResize: true,
+            expandRows: true,
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: window.innerWidth < 768 ? 'listWeek,timeGridDay' : 'timeGridWeek,listWeek'
+            },
+            buttonText: { today: 'Hoje', week: 'Semana', list: 'Lista', day: 'Dia' },
+            slotMinTime: '07:00:00',
+            slotMaxTime: '23:00:00',
+            allDaySlot: false,
+            slotLabelFormat: { hour: '2-digit', minute: '2-digit', omitZeroMinute: false, meridiem: 'short' },
+
+            events: '/api/eventos',
+
+            eventClassNames: function(arg) {
+                var status = arg.event.extendedProps.status;
+                if (status === 'APROVADO') return ['evento-aprovado'];
+                if (status === 'PENDENTE') return ['evento-pendente'];
+                if (status === 'REJEITADO') return ['evento-rejeitado'];
+                return [];
+            }
+        });
+        calendar.render();
+
+        window.addEventListener('resize', function() {
+            if (window.innerWidth < 768 && calendar.view.type !== 'listWeek') {
+                calendar.changeView('listWeek');
+                calendar.setOption('headerToolbar', {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'listWeek,timeGridDay'
+                });
+            } else if (window.innerWidth >= 768 && calendar.view.type === 'listWeek') {
+                calendar.changeView('timeGridWeek');
+                calendar.setOption('headerToolbar', {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'timeGridWeek,listWeek'
+                });
+            }
+        });
+    });
+</script>
+
+<script>
+    document.querySelectorAll('.valor-privado').forEach(el => {
+        el.addEventListener('mouseenter', () => el.classList.add('revelado'));
+        el.addEventListener('mouseleave', () => el.classList.remove('revelado'));
+        el.addEventListener('touchstart', (e) => {
+             e.preventDefault();
+             el.classList.toggle('revelado');
+        });
+    });
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const container = document.getElementById('containerModulos');
+        const btnEditar = document.getElementById('btnEditarModulos');
+        if (!container || !btnEditar) return;
+
+        const ordemSalva = JSON.parse(localStorage.getItem('ordemModulosHome'));
+        if (ordemSalva) {
+            ordemSalva.forEach(function(id) {
+                const elemento = container.querySelector(`[data-id="${id}"]`);
+                if (elemento) {
+                    container.appendChild(elemento);
+                }
+            });
+        }
+
+        const sortableInst = new Sortable(container, {
+            animation: 150,
+            disabled: true,
+            handle: '.drag-handle',
+            ghostClass: 'opacity-50',
+            delay: 150,
+            delayOnTouchOnly: true,
+            onEnd: function () {
+                const novaOrdem = Array.from(container.children).map(el => el.getAttribute('data-id'));
+                localStorage.setItem('ordemModulosHome', JSON.stringify(novaOrdem));
+            }
+        });
+
+        let modoEdicao = false;
+
+        btnEditar.addEventListener('click', function() {
+            modoEdicao = !modoEdicao;
+
+            if (modoEdicao) {
+                container.classList.add('modo-edicao');
+                sortableInst.option('disabled', false);
+
+                btnEditar.innerHTML = '<i class="bi bi-check2-all me-1"></i> Salvar';
+                btnEditar.classList.replace('btn-outline-secondary', 'btn-success');
+                btnEditar.classList.add('text-white');
+            } else {
+                container.classList.remove('modo-edicao');
+                sortableInst.option('disabled', true);
+
+                btnEditar.innerHTML = '<i class="bi bi-pencil-fill me-1"></i> Editar';
+                btnEditar.classList.replace('btn-success', 'btn-outline-secondary');
+                btnEditar.classList.remove('text-white');
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,29 @@
+# Publica a imagem no Docker Hub ao enviar código para o GitHub.
+# Requer os secrets: DOCKERHUB_USERNAME e DOCKERHUB_TOKEN (ver passo a passo no repositório).
+
+name: Docker Hub — build e push
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+jobs:
+  push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Login no Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build e push da imagem
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/gestao:latest

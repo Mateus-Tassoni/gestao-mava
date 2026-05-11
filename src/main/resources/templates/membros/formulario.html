@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Cadastro de Membro | Mava</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+        :root { --azul-petroleo: #0c5465; --azul-claro: #d1e7ed; --texto-escuro: #2c3e50; }
+        body { background-color: #f0f2f5; font-family: 'Segoe UI', sans-serif; min-height: 100vh; }
+        .navbar-manancial { background: linear-gradient(135deg, #0c5465, #146c82); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .card-3d { background: #ffffff; border: none; border-radius: 20px; box-shadow: 0 10px 20px rgba(12, 84, 101, 0.08); position: relative; overflow: hidden; }
+        .card-topo-detalhe { height: 6px; width: 100%; position: absolute; top: 0; left: 0; background: var(--azul-petroleo); }
+
+        .form-label { color: var(--texto-escuro); font-weight: 700; font-size: 0.95rem; margin-bottom: 0.4rem; }
+        .input-arredondado { border-radius: 12px; padding: 0.75rem 1rem; border: 1px solid #dee2e6; transition: all 0.2s; background-color: #fff; }
+        .input-arredondado:focus { border-color: var(--azul-petroleo); box-shadow: 0 0 0 0.25rem rgba(12, 84, 101, 0.15); }
+
+        select.input-arredondado { cursor: pointer; background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 1rem center; background-size: 16px 12px; padding-right: 2.5rem; -webkit-appearance: none; -moz-appearance: none; appearance: none; }
+        .input-group-text-moderno { background-color: #f8f9fa; border: 1px solid #dee2e6; border-right: none; border-top-left-radius: 12px; border-bottom-left-radius: 12px; color: #6c757d; }
+        .input-arredondado-group { border-top-left-radius: 0; border-bottom-left-radius: 0; border-left: none; }
+
+        .bloco-secao { background-color: #fcfcfd; border: 1px solid #f0f2f5; border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem; }
+        .titulo-secao { color: var(--azul-petroleo); font-weight: 800; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px; margin-bottom: 1.2rem; display: flex; align-items: center; gap: 8px; }
+
+        .upload-container { display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 2rem; background: linear-gradient(to bottom, #f8f9fa, #ffffff); padding: 2rem; border-radius: 20px; border: 1px dashed #dee2e6; }
+        .avatar-preview { width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 4px solid white; box-shadow: 0 8px 25px rgba(0,0,0,0.15); background-color: #e9ecef; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem; position: relative; overflow: hidden; flex-shrink: 0; }
+        .avatar-img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+
+        input[type="file"]::file-selector-button { border-radius: 50rem; padding: 0.5rem 1.2rem; cursor: pointer; background-color: var(--azul-claro); border: 1px solid var(--azul-claro); color: var(--azul-petroleo); font-weight: 700; margin-right: 15px; transition: all 0.2s; }
+
+        .btn-manancial { background-color: var(--azul-petroleo); color: white; border-radius: 12px; font-weight: 700; transition: all 0.3s ease; }
+        .btn-cancelar { border-radius: 12px; font-weight: 600; color: #6c757d; background: transparent; border: 1px solid transparent; transition: all 0.2s; }
+
+        .hover-scale { transition: transform 0.2s; }
+
+        /* === REGRAS DE HOVER APENAS PARA DESKTOP === */
+        @media (hover: hover) and (pointer: fine) {
+            input[type="file"]::file-selector-button:hover { background-color: var(--azul-petroleo); color: white; }
+            .btn-manancial:hover { background-color: #093e4b; color: white; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(12, 84, 101, 0.2); }
+            .btn-cancelar:hover { background-color: #e9ecef; color: var(--texto-escuro); }
+            .hover-scale:hover { transform: scale(1.05); }
+        }
+
+        /* === AJUSTES MOBILE EXCLUSIVOS === */
+        @media (max-width: 768px) {
+            .card-3d .card-body { padding: 1.5rem !important; }
+            .bloco-secao { padding: 1.2rem; }
+            .upload-container { padding: 1.5rem 1rem; }
+
+            /* Ajuste para o botão de arquivo não vazar na tela */
+            input[type="file"] { font-size: 0.85rem; padding: 0.2rem; }
+            input[type="file"]::file-selector-button { padding: 0.4rem 0.8rem; margin-right: 10px; font-size: 0.8rem; }
+
+            /* Botões de Ação Empilhados */
+            .botoes-acao { flex-direction: column; width: 100%; gap: 10px !important; }
+            .botoes-acao .btn { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark navbar-manancial mb-3 mb-lg-5 sticky-top">
+    <div class="container">
+        <a class="navbar-brand d-flex align-items-center gap-2 gap-md-3" href="/">
+            <img th:src="@{/img/logo.png}" alt="Logo" width="42" height="42" class="bg-white rounded-circle p-1 shadow-sm">
+            <div class="d-flex flex-column text-white">
+                <span class="fw-bold text-uppercase" style="letter-spacing: 1px; font-size: 1rem; line-height: 1.1;">Mava</span>
+            </div>
+        </a>
+        <div class="ms-auto d-flex gap-2 gap-md-3 align-items-center">
+            <span class="text-white opacity-75 d-none d-md-block small text-uppercase fw-bold" style="letter-spacing: 1px;">Secretaria</span>
+            <a href="/membros" class="btn btn-outline-light btn-sm rounded-pill px-3 px-md-4 fw-bold hover-scale text-nowrap">
+                <i class="bi bi-people-fill me-1"></i> <span class="d-none d-sm-inline">Lista de Membros</span><span class="d-inline d-sm-none">Membros</span>
+            </a>
+        </div>
+    </div>
+</nav>
+
+<div class="container pb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-8">
+
+            <div class="mb-3">
+                <a href="javascript:history.back()" class="text-decoration-none text-muted fw-bold d-flex align-items-center hover-scale" style="width: fit-content;">
+                    <i class="bi bi-arrow-left me-2"></i> Voltar
+                </a>
+            </div>
+
+            <div class="card-3d p-0">
+                <div class="card-topo-detalhe"></div>
+                <div class="card-body p-4 p-md-5">
+
+                    <div class="d-flex align-items-center mb-4 mb-md-5 mt-2">
+                        <div class="bg-light rounded-circle d-flex align-items-center justify-content-center me-3 shadow-sm flex-shrink-0" style="width: 55px; height: 55px;">
+                            <i class="bi bi-person-vcard-fill fs-3" style="color: var(--azul-petroleo);"></i>
+                        </div>
+                        <div>
+                            <h4 class="mb-0 fw-bold" style="color: var(--texto-escuro); letter-spacing: -0.5px;">Ficha de Membro</h4>
+                            <small class="text-muted d-block lh-sm mt-1" th:text="${membro.id == null ? 'Preencha os dados para registrar um novo membro.' : 'Atualize as informações do cadastro.'}">Subtítulo dinâmico</small>
+                        </div>
+                    </div>
+
+                    <!-- ============================================== -->
+                    <!-- ALERTAS DE FEEDBACK (ERRO OU SUCESSO)          -->
+                    <!-- ============================================== -->
+                    <div th:if="${mensagemErro}" class="alert alert-danger alert-dismissible fade show shadow-sm rounded-4 mb-4" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        <span th:text="${mensagemErro}"></span>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+
+                    <div th:if="${mensagemSucesso}" class="alert alert-success alert-dismissible fade show shadow-sm rounded-4 mb-4" role="alert">
+                        <i class="bi bi-check-circle-fill me-2"></i>
+                        <span th:text="${mensagemSucesso}"></span>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    <!-- ============================================== -->
+
+                    <form th:action="@{/membros/salvar}" method="post" th:object="${membro}" enctype="multipart/form-data">
+                        <input type="hidden" th:field="*{id}" />
+                        <input type="hidden" th:field="*{fotoUrl}" />
+
+                        <div class="upload-container shadow-sm">
+                            <h6 class="fw-bold mb-3 text-center" style="color: var(--azul-petroleo);">Foto de Perfil / Reconhecimento Facial</h6>
+                            <div class="avatar-preview">
+                                <img id="previewImg" class="avatar-img" th:src="${membro.fotoUrl != null && !membro.fotoUrl.isEmpty() ? '/uploads/' + membro.fotoUrl : ''}" th:style="${membro.fotoUrl != null && !membro.fotoUrl.isEmpty() ? 'display:block;' : 'display:none;'}">
+                                <i id="iconeCamera" class="bi bi-camera-fill text-muted opacity-50" style="font-size: 3.5rem;" th:style="${membro.fotoUrl != null && !membro.fotoUrl.isEmpty() ? 'display:none;' : 'display:block;'}"></i>
+                            </div>
+                            <div style="width: 100%; max-width: 350px;">
+                                <input type="file" name="file" id="inputFoto" class="form-control input-arredondado shadow-sm w-100" accept="image/*" style="padding: 0.3rem;" onchange="previewImagem(event)">
+                            </div>
+                            <small class="text-muted mt-3 fw-semibold text-center lh-sm"><i class="bi bi-info-circle-fill me-1" style="color: var(--azul-petroleo);"></i>A foto deve ter o rosto bem visível para o reconhecimento facial.</small>
+                        </div>
+
+                        <div class="bloco-secao shadow-sm">
+                            <div class="titulo-secao"><i class="bi bi-person-lines-fill fs-5"></i> Dados Pessoais</div>
+                            <div class="row g-3 g-md-4">
+                                <div class="col-12 col-md-7">
+                                    <label class="form-label">Nome Completo <span class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text input-group-text-moderno px-3"><i class="bi bi-person-fill"></i></span>
+                                        <input type="text" th:field="*{nome}" class="form-control input-arredondado input-arredondado-group fs-6 fw-bold" required placeholder="Ex: João da Silva" />
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-5">
+                                    <label class="form-label">CPF</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text input-group-text-moderno px-3"><i class="bi bi-credit-card-2-front-fill"></i></span>
+                                        <input type="tel" th:field="*{cpf}" class="form-control input-arredondado input-arredondado-group" placeholder="000.000.000-00" maxlength="14" oninput="mascaraCPF(this)" />
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label">Data de Nascimento</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text input-group-text-moderno px-3"><i class="bi bi-calendar3"></i></span>
+                                        <input type="date" th:field="*{dataNascimento}" class="form-control input-arredondado input-arredondado-group text-muted fw-bold" max="9999-12-31" oninput="limitarAnoData(this)" />
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label">Estado Civil</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text input-group-text-moderno px-3"><i class="bi bi-heart-half"></i></span>
+                                        <select class="form-control input-arredondado input-arredondado-group fw-semibold" th:field="*{estadoCivil}">
+                                            <option value="" disabled selected>Selecione...</option>
+                                            <option th:each="estado : ${todosEstadosCivis}" th:value="${estado}" th:text="${estado}"></option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bloco-secao shadow-sm">
+                            <div class="titulo-secao"><i class="bi bi-geo-alt-fill fs-5"></i> Contato e Endereço</div>
+                            <div class="row g-3 g-md-4">
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label">Telefone / WhatsApp</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text input-group-text-moderno px-3"><i class="bi bi-whatsapp" style="color: #25D366;"></i></span>
+                                        <input type="tel" th:field="*{telefone}" class="form-control input-arredondado input-arredondado-group fw-bold" placeholder="(11) 90000-0000" maxlength="15" oninput="mascaraTelefone(this)" />
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label">E-mail</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text input-group-text-moderno px-3"><i class="bi bi-envelope-at-fill"></i></span>
+                                        <!-- autocapitalize disabled for emails -->
+                                        <input type="email" th:field="*{email}" class="form-control input-arredondado input-arredondado-group" placeholder="joao@email.com" autocapitalize="none" />
+                                    </div>
+                                </div>
+
+                                <hr class="mt-4 mb-2 d-none d-md-block" style="opacity: 0.1;">
+
+                                <div class="col-12 col-md-3">
+                                    <label class="form-label">CEP</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text input-group-text-moderno px-3"><i class="bi bi-geo-fill"></i></span>
+                                        <input type="tel" th:field="*{cep}" id="campoCep" class="form-control input-arredondado input-arredondado-group fw-bold" placeholder="00000-000" maxlength="9" oninput="mascaraCEP(this)" onblur="buscarCEP(this.value)" />
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-md-7">
+                                    <label class="form-label">Endereço / Logradouro</label>
+                                    <input type="text" th:field="*{logradouro}" id="campoLogradouro" class="form-control input-arredondado" placeholder="Rua, Avenida, Travessa..." />
+                                </div>
+
+                                <div class="col-12 col-md-2">
+                                    <label class="form-label">Número</label>
+                                    <input type="tel" th:field="*{numero}" id="campoNumero" class="form-control input-arredondado fw-bold" placeholder="123" />
+                                </div>
+
+                                <div class="col-12 col-md-5">
+                                    <label class="form-label">Complemento</label>
+                                    <input type="text" th:field="*{complemento}" class="form-control input-arredondado" placeholder="Apto, Bloco, Casa 2..." />
+                                </div>
+
+                                <div class="col-12 col-md-4">
+                                    <label class="form-label">Bairro</label>
+                                    <input type="text" th:field="*{bairro}" id="campoBairro" class="form-control input-arredondado" placeholder="Bairro" />
+                                </div>
+
+                                <div class="col-12 col-md-3">
+                                    <label class="form-label">Cidade</label>
+                                    <input type="text" th:field="*{cidade}" id="campoCidade" class="form-control input-arredondado" placeholder="Cidade" />
+                                </div>
+
+                                <div class="col-md-2 d-none">
+                                    <input type="hidden" th:field="*{uf}" id="campoUf" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bloco-secao border-0 shadow-sm" style="background-color: #f0f7f9;">
+                            <div class="titulo-secao" style="color: var(--texto-escuro);"><i class="bi bi-bank fs-5" style="color: var(--azul-petroleo);"></i> Dados Ministeriais</div>
+                            <div class="row g-3 g-md-4">
+                                <div class="col-12 col-sm-6 col-md-3">
+                                    <label class="form-label text-primary">Cargo / Vínculo</label>
+                                    <select th:field="*{cargo}" class="form-control input-arredondado" style="border-color: #b6effb; font-weight: 700;">
+                                        <option th:each="c : ${cargos}" th:value="${c}" th:text="${c}"></option>
+                                    </select>
+                                </div>
+                                <div class="col-12 col-sm-6 col-md-3">
+                                    <label class="form-label" style="color: #198754;">Status na Igreja</label>
+                                    <select th:field="*{status}" class="form-control input-arredondado" style="border-color: #a3cfbb; font-weight: 700;">
+                                        <option th:each="s : ${statusList}" th:value="${s}" th:text="${s}"></option>
+                                    </select>
+                                </div>
+                                <div class="col-12 col-md-3">
+                                    <label class="form-label">Data de Batismo</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text input-group-text-moderno px-3"><i class="bi bi-water text-primary"></i></span>
+                                        <input type="date" th:field="*{dataBatismo}" class="form-control input-arredondado input-arredondado-group text-muted fw-bold" max="9999-12-31" oninput="limitarAnoData(this)" />
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-3">
+                                    <label class="form-label">Data de Aclamação</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text input-group-text-moderno px-3"><i class="bi bi-people-fill text-info"></i></span>
+                                        <input type="date" th:field="*{dataAclamacao}" class="form-control input-arredondado input-arredondado-group text-muted fw-bold" max="9999-12-31" oninput="limitarAnoData(this)" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="mt-4 mt-md-5 mb-4" style="opacity: 0.1;">
+
+                        <div class="d-flex flex-column flex-md-row justify-content-end gap-2 botoes-acao">
+                            <a href="/membros" class="btn btn-cancelar px-4 py-2 py-md-3 order-2 order-md-1">Cancelar</a>
+                            <button type="submit" class="btn btn-manancial px-5 py-2 py-md-3 shadow-sm order-1 order-md-2">
+                                <i class="bi bi-save2-fill me-2 fs-5 align-middle"></i> Salvar Cadastro
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    // Preview da Imagem
+    function previewImagem(event) {
+        var input = event.target;
+        var reader = new FileReader();
+        reader.onload = function(){
+            var imgElement = document.getElementById('previewImg');
+            var iconElement = document.getElementById('iconeCamera');
+            imgElement.src = reader.result;
+            imgElement.style.display = 'block';
+            iconElement.style.display = 'none';
+        };
+        if(input.files && input.files[0]) {
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    // Trava de 4 dígitos no Ano
+    function limitarAnoData(input) {
+        if (input.value.length > 10) {
+            input.value = input.value.slice(0, 10);
+        }
+    }
+
+    // Máscara de CPF
+    function mascaraCPF(input) {
+        let v = input.value.replace(/\D/g, "");
+        if (v.length > 11) { v = v.substring(0, 11); }
+        v = v.replace(/(\d{3})(\d)/, "$1.$2");
+        v = v.replace(/(\d{3})(\d)/, "$1.$2");
+        v = v.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+        input.value = v;
+    }
+
+    // Máscara de Telefone
+    function mascaraTelefone(input) {
+        let v = input.value.replace(/\D/g, "");
+        if (v.length > 11) v = v.substring(0, 11);
+        if (v.length > 10) { input.value = v.replace(/^(\d{2})(\d{5})(\d{4}).*/, "($1) $2-$3"); }
+        else if (v.length > 5) { input.value = v.replace(/^(\d{2})(\d{4})(\d{0,4}).*/, "($1) $2-$3"); }
+        else if (v.length > 2) { input.value = v.replace(/^(\d{2})(\d{0,5})/, "($1) $2"); }
+        else { input.value = v.replace(/^(\d*)/, "($1"); }
+    }
+
+    // Máscara do CEP
+    function mascaraCEP(input) {
+        let v = input.value.replace(/\D/g, "");
+        if (v.length > 8) v = v.substring(0,8);
+        input.value = v.replace(/^(\d{5})(\d{1,3}).*/, "$1-$2");
+    }
+
+    // Mágica do ViaCEP
+    function buscarCEP(valor) {
+        let cep = valor.replace(/\D/g, '');
+
+        if (cep !== "") {
+            let validacep = /^[0-9]{8}$/;
+
+            if(validacep.test(cep)) {
+                document.getElementById('campoLogradouro').value = "Buscando...";
+                document.getElementById('campoBairro').value = "Buscando...";
+                document.getElementById('campoCidade').value = "Buscando...";
+
+                fetch(`https://viacep.com.br/ws/${cep}/json/`)
+                    .then(res => res.json())
+                    .then(dados => {
+                        if (!("erro" in dados)) {
+                            document.getElementById('campoLogradouro').value = dados.logradouro;
+                            document.getElementById('campoBairro').value = dados.bairro;
+                            document.getElementById('campoCidade').value = dados.localidade;
+                            document.getElementById('campoUf').value = dados.uf;
+                            document.getElementById('campoNumero').focus();
+                        } else {
+                            alert("CEP não encontrado.");
+                            limparCamposEndereco();
+                        }
+                    })
+                    .catch(e => {
+                        alert("Erro ao buscar o CEP.");
+                        limparCamposEndereco();
+                    });
+            } else {
+                alert("Formato de CEP inválido.");
+            }
+        }
+    }
+
+    function limparCamposEndereco() {
+        document.getElementById('campoLogradouro').value = "";
+        document.getElementById('campoBairro').value = "";
+        document.getElementById('campoCidade').value = "";
+        document.getElementById('campoUf').value = "";
+    }
+</script>
+
+<div th:replace="~{fragments/base :: scripts-seguranca}"></div>
+</body>
+</html>

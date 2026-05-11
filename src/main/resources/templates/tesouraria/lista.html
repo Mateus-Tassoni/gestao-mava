@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Tesouraria | Mava</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js'></script>
+    <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.11/locales/pt-br.global.min.js'></script>
+
+    <style>
+        :root {
+            --azul-petroleo: #0c5465;
+            --azul-claro: #d1e7ed;
+            --texto-escuro: #2c3e50;
+            --verde-sucesso: #198754;
+            --vermelho-erro: #dc3545;
+        }
+
+        body {
+            background-color: #f0f2f5;
+            font-family: 'Segoe UI', sans-serif;
+            min-height: 100vh;
+        }
+
+        /* --- NAVBAR --- */
+        .navbar-manancial {
+            background: linear-gradient(135deg, #0c5465, #146c82);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        /* --- PADRÃO MANANCIAL DE CARDS --- */
+        .card-3d {
+            background: #ffffff; border: none; border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(12, 84, 101, 0.08);
+            position: relative; overflow: hidden;
+        }
+
+        .card-topo-detalhe {
+            height: 6px; width: 100%; position: absolute; top: 0; left: 0;
+            background: var(--azul-petroleo);
+        }
+
+        /* --- DASHBOARD BOTÕES --- */
+        .btn-dash { border-radius: 12px; font-weight: 700; padding: 0.6rem 1.2rem; transition: all 0.3s ease; border: none; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-azul { background-color: var(--azul-petroleo); color: white; }
+        .btn-outline-dash { background-color: white; color: var(--azul-petroleo); border: 2px solid var(--azul-claro); }
+
+        /* --- WIDGETS FINANCEIROS (KPIs Premium) --- */
+        .kpi-card {
+            border-radius: 20px; padding: 1.5rem;
+            display: flex; align-items: center; justify-content: space-between;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            transition: transform 0.2s; color: white; height: 100%;
+            border: none;
+        }
+
+        .kpi-bg-entrada { background: linear-gradient(135deg, #198754, #146c43); }
+        .kpi-bg-saida { background: linear-gradient(135deg, #dc3545, #b02a37); }
+        .kpi-bg-saldo { background: linear-gradient(135deg, #0c5465, #05242b); }
+
+        .kpi-titulo { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; opacity: 0.8; margin-bottom: 0.2rem; }
+        .kpi-valor { font-size: 2.2rem; font-weight: 900; line-height: 1; letter-spacing: -1px; }
+
+        .kpi-icon {
+            width: 55px; height: 55px; border-radius: 16px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2rem; background-color: rgba(255,255,255,0.15); flex-shrink: 0;
+        }
+
+        /* --- MODO PRIVACIDADE (BLUR MAGNÍFICO) --- */
+        .valor-confidencial {
+            filter: blur(8px);
+            transition: filter 0.4s ease;
+            user-select: none; cursor: pointer;
+        }
+        .valor-confidencial:hover { filter: blur(0); }
+        .valor-revelado { filter: blur(0) !important; }
+
+        /* --- TABELA MODERNA --- */
+        .table-moderna { border-collapse: separate; border-spacing: 0 8px; margin-top: -8px; }
+        .table-moderna th { text-transform: uppercase; font-size: 0.75rem; letter-spacing: 1px; color: #6c757d; border: none; padding: 0 1rem 10px 1rem; font-weight: 700; white-space: nowrap; }
+        .table-moderna td { vertical-align: middle; background-color: #ffffff; border-top: 1px solid #f8f9fa; border-bottom: 1px solid #f8f9fa; padding: 1.2rem 1rem; transition: all 0.2s; }
+        .table-moderna td:first-child { border-left: 1px solid #f8f9fa; border-top-left-radius: 12px; border-bottom-left-radius: 12px; }
+        .table-moderna td:last-child { border-right: 1px solid #f8f9fa; border-top-right-radius: 12px; border-bottom-right-radius: 12px; }
+        .table-moderna tbody tr { transition: transform 0.2s, box-shadow 0.2s; }
+
+        .badge-categoria {
+            font-weight: 700; padding: 0.4rem 0.8rem; border-radius: 8px; font-size: 0.7rem; letter-spacing: 0.5px;
+            display: inline-block; white-space: nowrap;
+        }
+
+        /* Botões de Ação na Tabela */
+        .btn-acao-tabela { width: 35px; height: 35px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; background-color: transparent; border: none; color: #adb5bd; transition: all 0.2s; }
+
+        .hover-scale { transition: transform 0.2s; }
+
+        /* --- ESTILOS DO CALENDÁRIO --- */
+        .fc-theme-standard .fc-scrollgrid { border-radius: 12px; overflow: hidden; border-color: #dee2e6; }
+        .fc-header-toolbar { padding: 0.5rem 0; margin-bottom: 1rem !important; }
+        .fc-toolbar-title { font-size: 1.25rem !important; font-weight: 700 !important; color: var(--texto-escuro); text-transform: capitalize; }
+        .fc-button-primary { background-color: var(--azul-petroleo) !important; border-color: var(--azul-petroleo) !important; border-radius: 8px !important; text-transform: capitalize !important; font-weight: 600 !important; }
+        .fc-button-active { background-color: #05242b !important; border-color: #05242b !important; }
+        .fc-daygrid-day-number { font-weight: 600; color: #6c757d; text-decoration: none; padding: 8px !important; }
+        .fc-day-today { background-color: #f8f9fa !important; }
+
+        /* --- AJUSTE PREMIUM: QUEBRA DE LINHA NO CALENDÁRIO --- */
+        .fc-event {
+            cursor: pointer; border: none !important; border-radius: 6px !important;
+            padding: 2px !important; font-size: 0.75rem !important; font-weight: 600 !important;
+            margin-bottom: 2px !important; box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .fc-event-main { white-space: normal !important; padding: 4px 6px !important; }
+        .fc-event-title { white-space: normal !important; word-wrap: break-word !important; line-height: 1.3 !important; }
+
+        /* === REGRAS DE HOVER APENAS PARA DESKTOP === */
+        @media (hover: hover) and (pointer: fine) {
+            .btn-dash:hover { transform: translateY(-3px); }
+            .btn-azul:hover { background-color: #093e4b; color: white; box-shadow: 0 6px 15px rgba(12, 84, 101, 0.3); }
+            .btn-outline-dash:hover { background-color: var(--azul-claro); }
+            .kpi-card:hover { transform: translateY(-5px); }
+            .table-moderna tbody tr:hover td { background-color: #f8f9fa; border-color: #e9ecef; }
+            .table-moderna tbody tr:hover { transform: scale(1.005); box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
+            .btn-acao-tabela:hover.edit { background-color: var(--azul-claro); color: var(--azul-petroleo); }
+            .btn-acao-tabela:hover.delete { background-color: #ffe6e6; color: var(--vermelho-erro); }
+            .hover-scale:hover { transform: scale(1.05); }
+            .fc-button-primary:hover { background-color: #093e4b !important; }
+        }
+
+        /* === AJUSTES MOBILE EXCLUSIVOS === */
+        @media (max-width: 768px) {
+            .card-3d { padding: 1.2rem !important; }
+
+            /* Botões do topo e filtros */
+            .botoes-topo { width: 100%; flex-direction: column; }
+            .botoes-topo .btn-dash { width: 100%; }
+            .filtro-box { padding: 1rem; border-radius: 16px; }
+
+            /* KPIs Cards */
+            .kpi-card { padding: 1rem; }
+            .kpi-valor { font-size: 1.8rem; }
+            .kpi-icon { width: 45px; height: 45px; font-size: 1.5rem; }
+
+            /* Calendário Mobile */
+            .fc-toolbar-title { font-size: 1rem !important; }
+            .fc .fc-button { padding: 6px 12px !important; font-size: 0.75rem !important; }
+            .fc-header-toolbar { flex-wrap: wrap; gap: 8px; justify-content: center !important; }
+            .fc-toolbar-chunk { display: flex; justify-content: center; width: 100%; }
+
+            /* Tabela Mobile */
+            .table-moderna td, .table-moderna th { padding: 0.8rem 0.5rem; }
+            .table-moderna td h6 { font-size: 0.95rem !important; }
+            .table-moderna td .small { font-size: 0.75rem; }
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark navbar-manancial mb-3 mb-lg-5 sticky-top">
+    <div class="container">
+        <a class="navbar-brand d-flex align-items-center gap-2 gap-md-3" href="/">
+            <img th:src="@{/img/logo.png}" alt="Logo" width="42" height="42" class="bg-white rounded-circle p-1 shadow-sm">
+            <div class="d-flex flex-column text-white">
+                <span class="fw-bold text-uppercase" style="letter-spacing: 1px; font-size: 1rem; line-height: 1.1;">Mava</span>
+            </div>
+        </a>
+
+        <div class="ms-auto d-flex gap-2 gap-md-3 align-items-center">
+            <span class="text-white opacity-75 d-none d-md-block small text-uppercase fw-bold" style="letter-spacing: 1px;">
+                Tesouraria
+            </span>
+            <a href="/" class="btn btn-outline-light btn-sm rounded-pill px-3 px-md-4 fw-bold hover-scale text-nowrap">
+                <i class="bi bi-grid-3x3-gap-fill me-1"></i> <span class="d-none d-sm-inline">Painel Geral</span><span class="d-inline d-sm-none">Voltar</span>
+            </a>
+        </div>
+    </div>
+</nav>
+
+<div class="container pb-5">
+
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
+        <div>
+            <h4 class="fw-bold mb-1" style="color: var(--texto-escuro);"><i class="bi bi-wallet2 me-2 text-muted"></i>Gestão Financeira</h4>
+            <span class="text-muted small lh-sm d-block">Acompanhamento do livro caixa e balanço contábil.</span>
+        </div>
+
+        <div class="d-flex gap-2 botoes-topo">
+            <button onclick="togglePrivacidade()" id="btnPrivacidade" class="btn-dash btn-outline-dash shadow-sm" title="Ocultar/Mostrar Valores na Tela">
+                <i class="bi bi-eye-slash-fill fs-5" id="iconeOlho"></i> <span id="textoPrivacidade" class="d-none d-sm-inline">Ocultar Valores</span>
+            </button>
+            <a href="/tesouraria/novo" class="btn-dash btn-azul shadow-sm">
+                <i class="bi bi-plus-lg fs-5"></i> Novo Lançamento
+            </a>
+        </div>
+    </div>
+
+    <div class="card-3d p-3 p-md-4 mb-4 filtro-box">
+        <form th:action="@{/tesouraria}" method="get" class="row g-2 g-md-3 align-items-end m-0">
+            <div class="col-6 col-md-4">
+                <label class="form-label small fw-bold" style="color: var(--texto-escuro);"><i class="bi bi-calendar-month me-1"></i> Mês</label>
+                <select name="mes" class="form-select rounded-pill shadow-sm border-0 bg-light">
+                    <option value="1" th:selected="${mesAtual == 1}">Janeiro</option>
+                    <option value="2" th:selected="${mesAtual == 2}">Fevereiro</option>
+                    <option value="3" th:selected="${mesAtual == 3}">Março</option>
+                    <option value="4" th:selected="${mesAtual == 4}">Abril</option>
+                    <option value="5" th:selected="${mesAtual == 5}">Maio</option>
+                    <option value="6" th:selected="${mesAtual == 6}">Junho</option>
+                    <option value="7" th:selected="${mesAtual == 7}">Julho</option>
+                    <option value="8" th:selected="${mesAtual == 8}">Agosto</option>
+                    <option value="9" th:selected="${mesAtual == 9}">Setembro</option>
+                    <option value="10" th:selected="${mesAtual == 10}">Outubro</option>
+                    <option value="11" th:selected="${mesAtual == 11}">Novembro</option>
+                    <option value="12" th:selected="${mesAtual == 12}">Dezembro</option>
+                </select>
+            </div>
+            <div class="col-6 col-md-4">
+                <label class="form-label small fw-bold" style="color: var(--texto-escuro);"><i class="bi bi-calendar-event me-1"></i> Ano</label>
+                <select name="ano" class="form-select rounded-pill shadow-sm border-0 bg-light">
+                    <option value="2024" th:selected="${anoAtual == 2024}">2024</option>
+                    <option value="2025" th:selected="${anoAtual == 2025}">2025</option>
+                    <option value="2026" th:selected="${anoAtual == 2026}">2026</option>
+                    <option value="2027" th:selected="${anoAtual == 2027}">2027</option>
+                    <option value="2028" th:selected="${anoAtual == 2028}">2028</option>
+                    <option value="2029" th:selected="${anoAtual == 2029}">2029</option>
+                    <option value="2030" th:selected="${anoAtual == 2030}">2030</option>
+                </select>
+            </div>
+            <div class="col-12 col-md-4 mt-3 mt-md-0">
+                <button type="submit" class="btn btn-dash btn-outline-dash w-100 rounded-pill shadow-sm d-flex justify-content-center">
+                    <i class="bi bi-funnel-fill me-2"></i> <span class="d-md-none d-lg-inline">Aplicar Filtro</span><span class="d-none d-md-inline d-lg-none">Filtrar</span>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div class="row g-3 g-md-4 mb-4">
+        <div class="col-12 col-md-4">
+            <div class="kpi-card kpi-bg-entrada">
+                <div>
+                    <div class="kpi-titulo">Total Entradas</div>
+                    <div class="kpi-valor valor-confidencial" th:text="${'R$ ' + #numbers.formatDecimal(totalEntradas, 1, 'POINT', 2, 'COMMA')}">R$ 0,00</div>
+                </div>
+                <div class="kpi-icon"><i class="bi bi-arrow-down-right"></i></div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-4">
+            <div class="kpi-card kpi-bg-saida">
+                <div>
+                    <div class="kpi-titulo">Total Saídas</div>
+                    <div class="kpi-valor valor-confidencial" th:text="${'R$ ' + #numbers.formatDecimal(totalSaidas, 1, 'POINT', 2, 'COMMA')}">R$ 0,00</div>
+                </div>
+                <div class="kpi-icon"><i class="bi bi-arrow-up-right"></i></div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-4">
+            <div class="kpi-card kpi-bg-saldo">
+                <div>
+                    <div class="kpi-titulo" style="color: #b6effb;">Saldo do Mês</div>
+                    <div class="kpi-valor valor-confidencial" th:text="${'R$ ' + #numbers.formatDecimal(saldo, 1, 'POINT', 2, 'COMMA')}">R$ 0,00</div>
+                </div>
+                <div class="kpi-icon"><i class="bi bi-safe2"></i></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-3d p-3 p-md-4 mb-4">
+        <div class="card-topo-detalhe"></div>
+        <div class="d-flex align-items-center mb-3 mb-md-4">
+            <div class="bg-light rounded-circle d-flex align-items-center justify-content-center me-3 shadow-sm flex-shrink-0" style="width: 50px; height: 50px;">
+                <i class="bi bi-calendar-week fs-4" style="color: var(--azul-petroleo);"></i>
+            </div>
+            <div>
+                <h5 class="mb-0 fw-bold" style="color: var(--texto-escuro); letter-spacing: -0.5px;">Agenda Financeira</h5>
+                <small class="text-muted lh-sm d-block mt-1">Visão de todas as saídas e contas a pagar planejadas.</small>
+            </div>
+        </div>
+
+        <div id='calendarioFinanceiro'></div>
+    </div>
+
+    <div class="card-3d p-3 p-md-4">
+        <div class="card-topo-detalhe"></div>
+
+        <div class="d-flex justify-content-between align-items-center mb-3 mt-2 ms-1">
+            <h6 class="text-uppercase fw-bold text-muted mb-0 small" style="letter-spacing: 1px;">Extrato de Movimentações</h6>
+        </div>
+
+        <div class="table-responsive mt-2">
+            <table class="table table-moderna align-middle w-100 mb-0">
+                <thead>
+                <tr>
+                    <th class="ps-2 ps-md-3 text-nowrap" style="min-width: 90px;">Data</th>
+                    <th style="min-width: 250px;">Descrição do Lançamento</th>
+                    <th class="text-center text-nowrap" style="min-width: 100px;">Categoria</th>
+                    <th class="text-end text-nowrap" style="min-width: 120px;">Valor</th>
+                    <th class="text-end pe-2 pe-md-3 text-nowrap" style="min-width: 80px;">Ações</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                <tr th:each="l : ${lancamentos}">
+
+                    <td class="ps-2 ps-md-3">
+                        <div class="d-flex flex-column">
+                            <span class="fw-bold text-nowrap" style="color: var(--texto-escuro);" th:text="${#temporals.format(l.data, 'dd/MM/yyyy')}">01/01/2026</span>
+                        </div>
+                    </td>
+
+                    <td>
+                        <div class="d-flex flex-column justify-content-center py-2">
+                            <h6 class="mb-1 fw-bold text-wrap" style="color: var(--texto-escuro); font-size: 1.05rem;" th:text="${l.observacao}">Descrição do pagamento ou doação</h6>
+
+                            <div class="d-flex align-items-center text-muted small fw-semibold text-nowrap" th:if="${l.getNomeExibicao() != null and !l.getNomeExibicao().isEmpty()}">
+                                <i class="bi bi-person-circle me-1 opacity-75"></i>
+                                <span th:text="${l.getNomeExibicao()}" class="text-truncate" style="max-width: 200px;">João Silva</span>
+                            </div>
+                            <div th:unless="${l.getNomeExibicao() != null and !l.getNomeExibicao().isEmpty()}" class="text-muted small fst-italic">Lançamento Geral</div>
+                        </div>
+                    </td>
+
+                    <td class="text-center">
+                        <span th:if="${l.tipo.name() == 'DIZIMO' || l.tipo.name() == 'OFERTA' || l.tipo.name() == 'DOACAO'}"
+                              class="badge bg-success-subtle text-success border border-success badge-categoria">
+                            <span th:text="${l.tipo}">DIZIMO</span>
+                        </span>
+
+                        <span th:if="${l.tipo.name() != 'DIZIMO' && l.tipo.name() != 'OFERTA' && l.tipo.name() != 'DOACAO'}"
+                              class="badge bg-danger-subtle text-danger border border-danger badge-categoria">
+                            <span th:text="${l.tipo}">DESPESA</span>
+                        </span>
+                    </td>
+
+                    <td class="text-end">
+                        <span class="valor-confidencial fw-bold fs-6 text-nowrap"
+                              th:classappend="${l.tipo.name() == 'DIZIMO' || l.tipo.name() == 'OFERTA' || l.tipo.name() == 'DOACAO'} ? 'text-success' : 'text-danger'"
+                              th:text="${(l.tipo.name() == 'DIZIMO' || l.tipo.name() == 'OFERTA' || l.tipo.name() == 'DOACAO' ? '+ ' : '- ') + #numbers.formatDecimal(l.valor, 1, 'POINT', 2, 'COMMA')}">
+                            R$ 100,00
+                        </span>
+                    </td>
+
+                    <td class="text-end pe-2 pe-md-3">
+                        <div class="d-flex justify-content-end gap-1">
+                            <a th:href="@{/tesouraria/editar/{id}(id=${l.id})}" class="btn-acao-tabela edit" title="Editar Lançamento">
+                                <i class="bi bi-pencil-fill fs-5"></i>
+                            </a>
+                            <a th:href="@{/tesouraria/excluir/{id}(id=${l.id})}" class="btn-acao-tabela delete" title="Estornar/Excluir" onclick="return confirm('Atenção: Tem certeza que deseja excluir este lançamento financeiro e alterar o saldo geral do caixa?');">
+                                <i class="bi bi-trash3-fill fs-5"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr th:if="${#lists.isEmpty(lancamentos)}">
+                    <td colspan="5" class="text-center py-5 px-3">
+                        <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 70px; height: 70px;">
+                            <i class="bi bi-safe fs-2 text-muted opacity-50"></i>
+                        </div>
+                        <h6 class="fw-bold text-muted">Nenhuma movimentação neste período.</h6>
+                        <p class="text-muted small mb-0">Selecione outro mês ou inicie um novo registro.</p>
+                    </td>
+                </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    // --- LÓGICA DO BLUR DE PRIVACIDADE ---
+    document.addEventListener("DOMContentLoaded", function() {
+        const modoPrivado = localStorage.getItem("modoPrivacidade");
+        // Verifica se é mobile para aplicar o blur via touchstart
+        const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+
+        if (modoPrivado === "ativo" || modoPrivado === null) {
+            aplicarBlur(true);
+        } else {
+            aplicarBlur(false);
+        }
+
+        if(isTouchDevice) {
+            document.querySelectorAll(".valor-confidencial").forEach(el => {
+                el.addEventListener('touchstart', (e) => {
+                    e.preventDefault(); // Evita scroll ao dar um tap
+                    el.classList.toggle('valor-revelado');
+                });
+            });
+        }
+    });
+
+    function togglePrivacidade() {
+        const icon = document.getElementById("iconeOlho");
+        const estaBorrado = icon.classList.contains("bi-eye-slash-fill");
+
+        if (estaBorrado) {
+            aplicarBlur(false);
+            localStorage.setItem("modoPrivacidade", "inativo");
+        } else {
+            aplicarBlur(true);
+            localStorage.setItem("modoPrivacidade", "ativo");
+        }
+    }
+
+    function aplicarBlur(ativar) {
+        const elementos = document.querySelectorAll(".valor-confidencial");
+        const icon = document.getElementById("iconeOlho");
+        const btn = document.getElementById("btnPrivacidade");
+        const textoPrivacidade = document.getElementById("textoPrivacidade");
+
+        if (ativar) {
+            elementos.forEach(el => el.classList.remove("valor-revelado"));
+            icon.className = "bi bi-eye-slash-fill fs-5";
+            btn.className = "btn-dash btn-outline-dash shadow-sm";
+            textoPrivacidade.innerText = "Valores Ocultos";
+        } else {
+            elementos.forEach(el => el.classList.add("valor-revelado"));
+            icon.className = "bi bi-eye-fill fs-5 text-white";
+            btn.className = "btn-dash btn-azul shadow-sm";
+            textoPrivacidade.innerText = "Ocultar Valores";
+            textoPrivacidade.classList.add("text-white");
+        }
+    }
+
+    // --- LÓGICA DO FULLCALENDAR ---
+    document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendarioFinanceiro');
+        var isMobile = window.innerWidth < 768;
+
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            // Se for mobile, inicia na visualização de lista
+            initialView: isMobile ? 'listMonth' : 'dayGridMonth',
+            locale: 'pt-br',
+            height: 'auto',
+            contentHeight: isMobile ? 'auto' : 500,
+            handleWindowResize: true,
+
+            headerToolbar: {
+                left: isMobile ? 'prev,next' : 'prev,next today',
+                center: 'title',
+                right: isMobile ? 'listMonth,timeGridDay' : 'dayGridMonth,dayGridWeek,listWeek'
+            },
+            buttonText: {
+                today: 'Hoje', month: 'Mês', week: 'Semana', list: 'Lista', day: 'Dia'
+            },
+
+            events: '/tesouraria/api/calendario',
+
+            eventClick: function(info) {
+                info.jsEvent.preventDefault();
+                alert(
+                    'Detalhe do Lançamento\n\n' +
+                    info.event.title + '\n' +
+                    'Data: ' + info.event.start.toLocaleDateString('pt-BR')
+                );
+            }
+        });
+
+        calendar.render();
+
+        // Listener para mudar a visualização se o usuário redimensionar ou virar a tela
+        window.addEventListener('resize', function() {
+            var newIsMobile = window.innerWidth < 768;
+            if (newIsMobile && calendar.view.type !== 'listMonth' && calendar.view.type !== 'timeGridDay') {
+                calendar.changeView('listMonth');
+                calendar.setOption('headerToolbar', {
+                    left: 'prev,next',
+                    center: 'title',
+                    right: 'listMonth,timeGridDay'
+                });
+                calendar.setOption('contentHeight', 'auto');
+            } else if (!newIsMobile && (calendar.view.type === 'listMonth' || calendar.view.type === 'timeGridDay')) {
+                calendar.changeView('dayGridMonth');
+                calendar.setOption('headerToolbar', {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,dayGridWeek,listWeek'
+                });
+                calendar.setOption('contentHeight', 500);
+            }
+        });
+    });
+</script>
+
+<div th:replace="~{fragments/base :: scripts-seguranca}"></div>
+</body>
+</html>

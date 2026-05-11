@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Lançamento Financeiro | Mava</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.bootstrap5.min.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --azul-petroleo: #0c5465;
+            --azul-claro: #d1e7ed;
+            --texto-escuro: #2c3e50;
+            --verde-sucesso: #198754;
+            --vermelho-erro: #dc3545;
+        }
+
+        body {
+            background-color: #f0f2f5;
+            font-family: 'Segoe UI', sans-serif;
+            min-height: 100vh;
+        }
+
+        /* --- NAVBAR --- */
+        .navbar-manancial {
+            background: linear-gradient(135deg, #0c5465, #146c82);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        /* --- PADRÃO MANANCIAL DE CARDS --- */
+        .card-3d {
+            background: #ffffff; border: none; border-radius: 24px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+            position: relative; overflow: hidden;
+        }
+
+        .card-topo-detalhe {
+            height: 8px; width: 100%; position: absolute; top: 0; left: 0;
+            background: var(--azul-petroleo);
+            transition: background-color 0.4s ease;
+        }
+
+        /* --- INPUTS --- */
+        .form-label {
+            color: var(--texto-escuro); font-weight: 700; font-size: 0.95rem; margin-bottom: 0.4rem;
+        }
+
+        .input-arredondado {
+            border-radius: 12px; padding: 0.75rem 1rem; border: 1px solid #dee2e6;
+            transition: all 0.2s; background-color: #fff;
+        }
+        .input-arredondado:focus {
+            border-color: var(--azul-petroleo); box-shadow: 0 0 0 0.25rem rgba(12, 84, 101, 0.15);
+        }
+
+        .input-group-text-moderno {
+            background-color: #f8f9fa; border: 1px solid #dee2e6; border-right: none;
+            border-top-left-radius: 12px; border-bottom-left-radius: 12px; color: #6c757d;
+        }
+        .input-arredondado-group { border-top-left-radius: 0; border-bottom-left-radius: 0; border-left: none; }
+
+        /* Estilo App Bancário para o Valor */
+        .input-valor-gigante {
+            font-size: 2.2rem !important; font-weight: 900 !important; color: var(--texto-escuro);
+            height: 70px; letter-spacing: -1px;
+        }
+        .moeda-gigante {
+            font-size: 1.5rem; font-weight: 700; color: #adb5bd; background: transparent; border-right: none;
+        }
+
+        /* --- ANIMAÇÕES E TRANSIÇÕES JS --- */
+        .transition-element { transition: all 0.4s ease; }
+
+        #boxMembro { transition: opacity 0.3s ease; }
+
+        /* --- BOTÕES --- */
+        .btn-azul { background-color: var(--azul-petroleo); color: white; }
+
+        .btn-cancelar { border-radius: 50rem; font-weight: 600; color: #6c757d; background: transparent; border: 1px solid transparent; transition: all 0.2s; }
+
+        .hover-scale { transition: transform 0.2s; }
+
+        /* === ESTILOS NOVOS: PÍLULAS DE RECORRÊNCIA === */
+        .btn-mes {
+            background-color: #fff; border: 1px solid #dee2e6; color: #6c757d;
+            padding: 0.5rem 1.2rem; transition: all 0.2s;
+        }
+        .btn-mes:hover { border-color: var(--azul-petroleo); color: var(--azul-petroleo); background-color: #f0f7f9; }
+        .btn-mes.ativo {
+            background-color: var(--azul-petroleo); color: white;
+            border-color: var(--azul-petroleo); box-shadow: 0 4px 10px rgba(12, 84, 101, 0.2);
+        }
+        .form-check-input:checked { background-color: var(--azul-petroleo); border-color: var(--azul-petroleo); }
+
+        /* === REGRAS DE HOVER APENAS PARA DESKTOP === */
+        @media (hover: hover) and (pointer: fine) {
+            .btn-azul:hover { background-color: #093e4b; color: white; transform: translateY(-2px); box-shadow: 0 6px 15px rgba(12, 84, 101, 0.3); }
+            .btn-cancelar:hover { background-color: #e9ecef; color: var(--texto-escuro); }
+            .hover-scale:hover { transform: scale(1.05); }
+        }
+
+        /* --- AJUSTE FINO TOM SELECT PARA MANTER SEU DESIGN --- */
+        .ts-control { border-radius: 12px !important; border: 1px solid #dee2e6 !important; padding: 0.75rem 1rem !important; }
+        .ts-control.focus { border-color: var(--azul-petroleo) !important; box-shadow: 0 0 0 0.25rem rgba(12, 84, 101, 0.15) !important; }
+
+        /* === AJUSTES MOBILE EXCLUSIVOS === */
+        @media (max-width: 768px) {
+            .card-3d { padding: 1.5rem !important; }
+
+            .botoes-acao { flex-direction: column; width: 100%; gap: 10px !important; }
+            .botoes-acao .btn { width: 100%; }
+
+            /* Ajustes no input de valor para não quebrar em telas minúsculas */
+            .input-valor-gigante { font-size: 1.8rem !important; height: 60px; }
+            .moeda-gigante { font-size: 1.2rem; }
+
+            /* Ajuste no box de Lançamento/Descrição para alinhar melhor */
+            .info-header { text-align: center; }
+            .info-header h3 { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark navbar-manancial mb-3 mb-lg-5 sticky-top">
+    <div class="container">
+        <a class="navbar-brand d-flex align-items-center gap-2 gap-md-3" href="/">
+            <img th:src="@{/img/logo.png}" alt="Logo" width="42" height="42" class="bg-white rounded-circle p-1 shadow-sm">
+            <div class="d-flex flex-column text-white">
+                <span class="fw-bold text-uppercase" style="letter-spacing: 1px; font-size: 1rem; line-height: 1.1;">Mava</span>
+            </div>
+        </a>
+
+        <div class="ms-auto d-flex gap-2 gap-md-3 align-items-center">
+            <span class="text-white opacity-75 d-none d-md-block small text-uppercase fw-bold" style="letter-spacing: 1px;">
+                Tesouraria
+            </span>
+            <a href="/tesouraria" class="btn btn-outline-light btn-sm rounded-pill px-3 px-md-4 fw-bold hover-scale text-nowrap">
+                <i class="bi bi-wallet2 me-1"></i> <span class="d-none d-sm-inline">Ir para Caixa</span><span class="d-inline d-sm-none">Caixa</span>
+            </a>
+        </div>
+    </div>
+</nav>
+
+<div class="container pb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-8">
+
+            <div class="mb-3">
+                <a href="javascript:history.back()" class="text-decoration-none text-muted fw-bold d-flex align-items-center hover-scale" style="width: fit-content;">
+                    <i class="bi bi-arrow-left me-2"></i> Voltar
+                </a>
+            </div>
+
+            <div class="card-3d p-4 p-md-5">
+                <div id="linhaDinamica" class="card-topo-detalhe"></div>
+
+                <div class="text-center mb-4 mb-md-5 mt-2 info-header">
+                    <div class="d-inline-flex align-items-center justify-content-center bg-light rounded-circle mb-3 shadow-sm" style="width: 70px; height: 70px;">
+                        <i id="iconeDinamico" class="bi bi-cash-stack fs-1 transition-element" style="color: var(--azul-petroleo);"></i>
+                    </div>
+                    <h3 class="fw-bold mb-1" style="color: var(--texto-escuro); letter-spacing: -0.5px;">Registrar Movimentação</h3>
+                    <p class="text-muted fw-semibold mb-0 lh-sm px-2">Preencha os dados do lançamento no livro caixa.</p>
+                </div>
+
+                <form action="/tesouraria/salvar" method="post" th:object="${lancamento}">
+                    <input type="hidden" th:field="*{id}" />
+
+                    <div class="row justify-content-center mb-4 mb-md-5">
+                        <div class="col-12 col-md-10">
+                            <label class="form-label text-center w-100 mb-2" style="font-size: 1.1rem;">Valor do Lançamento <span class="text-danger">*</span></label>
+                            <div class="input-group shadow-sm" style="border-radius: 20px; overflow: hidden;">
+                                <span class="input-group-text moeda-gigante bg-light ps-3 ps-md-4">R$</span>
+                                <input type="tel" th:field="*{valor}" id="inputValor" class="form-control input-valor-gigante border-start-0 border-light bg-light text-center" placeholder="0,00" required autofocus oninput="mascaraMoeda(this, event)" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 g-md-4 mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label">Data da Operação <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text input-group-text-moderno px-3"><i class="bi bi-calendar-event"></i></span>
+                                <input type="date" th:field="*{data}" class="form-control input-arredondado input-arredondado-group text-muted fw-bold" required />
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Tipo de Lançamento <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text input-group-text-moderno px-3"><i class="bi bi-arrow-left-right"></i></span>
+                                <select th:field="*{tipo}" class="form-control input-arredondado input-arredondado-group fw-bold" id="comboTipo" onchange="verificarFluxo()" required style="cursor: pointer;">
+                                    <option value="" disabled selected>Selecione...</option>
+                                    <option th:each="t : ${tipos}" th:value="${t}" th:text="${t}"></option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 g-md-4 mb-4">
+                        <div class="col-md-12" id="boxMembro">
+                            <label class="form-label" style="color: var(--azul-petroleo);">
+                                <i class="bi bi-person-hearts me-1"></i> Membro / Doador <small class="text-muted fw-normal d-block d-sm-inline mt-1 mt-sm-0">(Apenas para entradas)</small>
+                            </label>
+
+                            <select name="nomeInput" id="selectMembro" class="form-control input-arredondado fw-semibold" placeholder="Comece a digitar o nome...">
+                                <option value="" th:selected="${lancamento.membro == null and lancamento.nomeVisitante == null}">-- Deixe em branco para lançamentos gerais --</option>
+
+                                <option th:each="m : ${membros}"
+                                        th:value="${m.nome}"
+                                        th:text="${m.nome}"
+                                        th:selected="${lancamento.membro != null and lancamento.membro.nome == m.nome}"></option>
+
+                                <option th:if="${lancamento.membro == null and lancamento.nomeVisitante != null}"
+                                        th:value="${lancamento.nomeVisitante}"
+                                        th:text="${lancamento.nomeVisitante}"
+                                        selected></option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- ========================================================= -->
+                    <!-- SESSÃO: RECORRÊNCIA FINTECH (APENAS NOVOS LANÇAMENTOS)    -->
+                    <!-- ========================================================= -->
+                    <div class="row mb-4" th:if="${lancamento.id == null}">
+                        <div class="col-12">
+                            <div class="card-3d shadow-sm" style="border-radius: 18px; border: 1px solid #f0f2f5; background-color: #fcfcfd; padding: 1.25rem 1.5rem;">
+
+                                <!-- Cabeçalho com o Switch (Clicável) -->
+                                <div class="d-flex align-items-center justify-content-between" onclick="document.getElementById('switchRecorrencia').click()" style="cursor: pointer;">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <div class="bg-white rounded-circle d-flex align-items-center justify-content-center shadow-sm" style="width: 45px; height: 45px; border: 1px solid #e9ecef;">
+                                            <i class="bi bi-repeat fs-5" style="color: var(--azul-petroleo);"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-0 fw-bold" style="color: var(--texto-escuro);">Tornar Recorrente</h6>
+                                            <small class="text-muted d-none d-sm-block">Agendar este lançamento para os próximos meses</small>
+                                        </div>
+                                    </div>
+                                    <div class="form-check form-switch fs-3 mb-0" onclick="event.stopPropagation();">
+                                        <input class="form-check-input shadow-none m-0" type="checkbox" role="switch" id="switchRecorrencia" onchange="toggleRecorrencia()" style="cursor: pointer;">
+                                    </div>
+                                </div>
+
+                                <!-- Box escondido que desliza com os botões -->
+                                <div id="boxMeses" style="display: none; margin-top: 1.2rem;">
+                                    <hr class="mb-3" style="opacity: 0.1;">
+                                    <label class="form-label text-muted fw-semibold mb-3 fs-6 d-block text-center text-md-start">Em quantas parcelas?</label>
+
+                                    <input type="hidden" name="qtdMeses" id="inputQtdMeses" value="1">
+
+                                    <div class="d-flex flex-wrap gap-2 justify-content-center justify-content-md-start">
+                                        <button type="button" class="btn btn-mes ativo rounded-pill fw-bold" onclick="selecionarMes(2, this)">2x</button>
+                                        <button type="button" class="btn btn-mes rounded-pill fw-bold" onclick="selecionarMes(3, this)">3x</button>
+                                        <button type="button" class="btn btn-mes rounded-pill fw-bold" onclick="selecionarMes(4, this)">4x</button>
+                                        <button type="button" class="btn btn-mes rounded-pill fw-bold" onclick="selecionarMes(6, this)">6x</button>
+                                        <button type="button" class="btn btn-mes rounded-pill fw-bold" onclick="selecionarMes(12, this)">12x (1 Ano)</button>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <!-- ========================================================= -->
+
+                    <div class="row g-3 g-md-4 mb-4">
+                        <div class="col-12">
+                            <label class="form-label">Descrição / Histórico</label>
+                            <textarea th:field="*{observacao}" class="form-control input-arredondado" rows="3" placeholder="Doação referente a campanha X, ou Pagamento da conta de luz mês 10..."></textarea>
+                        </div>
+                    </div>
+
+                    <hr class="mt-4 mt-md-5 mb-4" style="opacity: 0.1;">
+
+                    <div class="d-flex flex-column flex-md-row justify-content-end gap-2 botoes-acao">
+                        <a href="/tesouraria" class="btn btn-cancelar px-4 py-2 py-md-3 order-2 order-md-1">Cancelar</a>
+                        <button type="submit" id="btnSalvar" class="btn btn-azul rounded-pill px-5 py-2 py-md-3 fw-bold transition-element shadow-sm order-1 order-md-2">
+                            <i class="bi bi-check2-all me-2 fs-5 align-middle"></i> Salvar Lançamento
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
+
+<script>
+    // Variável global para controlar o TomSelect
+    var selectMembroTS;
+
+    document.addEventListener('DOMContentLoaded', function() {
+        selectMembroTS = new TomSelect("#selectMembro",{
+            create: true,
+            openOnFocus: false,
+            maxItems: 1,
+            sortField: {
+                field: "text",
+                direction: "asc"
+            }
+        });
+    });
+
+    // --- FUNÇÃO DO INTERRUPTOR DE RECORRÊNCIA ---
+    function toggleRecorrencia() {
+        var isChecked = document.getElementById('switchRecorrencia').checked;
+        var boxMeses = document.getElementById('boxMeses');
+        var inputQtd = document.getElementById('inputQtdMeses');
+
+        if(isChecked) {
+            boxMeses.style.display = 'block';
+            inputQtd.value = 2; // Padrão começa no 2x ao ligar
+            // Reseta visual dos botões e foca no 2x
+            document.querySelectorAll('.btn-mes').forEach(b => b.classList.remove('ativo'));
+            document.querySelectorAll('.btn-mes')[0].classList.add('ativo');
+        } else {
+            boxMeses.style.display = 'none';
+            inputQtd.value = 1; // Se desligou, volta pra 1x (normal)
+        }
+    }
+
+    // --- FUNÇÃO DE CLIQUE NAS PÍLULAS DE MESES ---
+    function selecionarMes(qtd, elementoClicado) {
+        document.getElementById('inputQtdMeses').value = qtd;
+
+        // Remove a cor azul de todos os botões
+        document.querySelectorAll('.btn-mes').forEach(b => b.classList.remove('ativo'));
+
+        // Coloca a cor azul só no botão que foi clicado
+        elementoClicado.classList.add('ativo');
+    }
+
+    // --- FUNÇÃO MÁGICA DA MÁSCARA FINANCEIRA BRASILEIRA ---
+    function mascaraMoeda(input, evento) {
+        var valor = input.value.replace(/\D/g, "");
+        if (valor === "") {
+            input.value = "";
+            return;
+        }
+        valor = (parseInt(valor) / 100).toFixed(2) + "";
+        valor = valor.replace(".", ",");
+        valor = valor.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
+        input.value = valor;
+    }
+
+    // --- FUNÇÃO ORIGINAL DE FLUXO E CORES DA TESOURARIA ---
+    function verificarFluxo() {
+        const combo = document.getElementById("comboTipo");
+        const linha = document.getElementById("linhaDinamica");
+        const icone = document.getElementById("iconeDinamico");
+        const btnSalvar = document.getElementById("btnSalvar");
+        const boxMembro = document.getElementById("boxMembro");
+
+        const valor = combo.value;
+
+        // Lista de ENTRADAS baseada no seu Enum
+        const entradas = ["DIZIMO", "OFERTA", "DOACAO"];
+
+        // Verifica tamanho da tela para não aplicar o py-3 exagerado no mobile no botão dinâmico
+        const paddingClass = window.innerWidth <= 768 ? "py-2" : "py-3";
+
+        // Reseta classes do botão
+        btnSalvar.className = `btn rounded-pill px-5 ${paddingClass} fw-bold transition-element shadow-sm order-1 order-md-2`;
+
+        if (entradas.includes(valor)) {
+            // É ENTRADA (Muda pra Verde)
+            linha.style.backgroundColor = "var(--verde-sucesso)";
+            icone.className = "bi bi-arrow-down-circle-fill fs-1 transition-element";
+            icone.style.color = "var(--verde-sucesso)";
+            btnSalvar.classList.add("btn-success", "text-white");
+            btnSalvar.innerHTML = '<i class="bi bi-arrow-down-circle me-2 fs-5 align-middle"></i> Registrar Entrada';
+
+            // Habilita campo Membro (via TomSelect)
+            boxMembro.style.opacity = "1";
+            boxMembro.style.pointerEvents = "auto";
+            if(selectMembroTS) selectMembroTS.enable();
+
+        } else if (valor !== "") {
+            // É SAÍDA (Muda pra Vermelho)
+            linha.style.backgroundColor = "var(--vermelho-erro)";
+            icone.className = "bi bi-arrow-up-circle-fill fs-1 transition-element";
+            icone.style.color = "var(--vermelho-erro)";
+            btnSalvar.classList.add("btn-danger", "text-white");
+            btnSalvar.innerHTML = '<i class="bi bi-arrow-up-circle me-2 fs-5 align-middle"></i> Registrar Saída';
+
+            // Bloqueia e limpa campo Membro (via TomSelect)
+            boxMembro.style.opacity = "0.4";
+            boxMembro.style.pointerEvents = "none";
+            if(selectMembroTS) {
+                selectMembroTS.clear();
+                selectMembroTS.disable();
+            }
+
+        } else {
+            // ESTADO NEUTRO
+            linha.style.backgroundColor = "var(--azul-petroleo)";
+            icone.className = "bi bi-cash-stack fs-1 transition-element";
+            icone.style.color = "var(--azul-petroleo)";
+            btnSalvar.classList.add("btn-azul");
+            btnSalvar.innerHTML = '<i class="bi bi-check2-all me-2 fs-5 align-middle"></i> Salvar Lançamento';
+
+            boxMembro.style.opacity = "1";
+            boxMembro.style.pointerEvents = "auto";
+            if(selectMembroTS) selectMembroTS.enable();
+        }
+    }
+
+    // Executa no carregamento da tela e quando rotaciona
+    window.onload = function() {
+        setTimeout(verificarFluxo, 100);
+
+        var inputValor = document.getElementById("inputValor");
+        if(inputValor.value !== "") {
+            inputValor.value = inputValor.value.replace(".", ",");
+            mascaraMoeda(inputValor, null);
+        }
+    };
+
+    // Atualiza as classes do botão dinâmico se a tela for redimensionada
+    window.addEventListener('resize', verificarFluxo);
+</script>
+
+<div th:replace="~{fragments/base :: scripts-seguranca}"></div>
+</body>
+</html>

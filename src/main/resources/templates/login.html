@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Login | Mava</title>
+    <!-- Adicionado maximum-scale para evitar zoom indesejado ao focar nos inputs no iOS -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+        :root {
+            --azul-petroleo: #0c5465;
+            --azul-escuro: #05242b;
+            --texto-escuro: #2c3e50;
+            --vermelho-erro: #dc3545;
+            --verde-sucesso: #198754;
+        }
+
+        /* --- BACKGROUND CINEMATOGRÁFICO --- */
+        body {
+            background: linear-gradient(135deg, rgba(12, 84, 101, 0.85), rgba(5, 36, 43, 0.95)), url('/img/fundo.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 15px;
+        }
+
+        /* --- CARD DE LOGIN --- */
+        .login-card {
+            background: #ffffff;
+            width: 100%;
+            max-width: 420px;
+            border-radius: 24px;
+            padding: 3rem 2.5rem;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+            animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card-topo-detalhe {
+            height: 8px; width: 100%; position: absolute; top: 0; left: 0;
+            background: var(--azul-petroleo);
+        }
+
+        /* --- LOGO E TÍTULOS --- */
+        .logo-login {
+            max-height: 70px; display: block; margin: 0 auto;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+            transition: transform 0.3s;
+        }
+
+        .brand-title {
+            font-size: 1.4rem; font-weight: 900; color: var(--texto-escuro);
+            letter-spacing: 1px; margin-top: 1rem; margin-bottom: 0.2rem;
+        }
+        .brand-subtitle { font-size: 0.85rem; font-weight: 600; color: #6c757d; letter-spacing: 0.5px; text-transform: uppercase; }
+
+        /* --- INPUTS PREMIUM --- */
+        .form-label { color: var(--texto-escuro); font-weight: 700; font-size: 0.8rem; margin-bottom: 0.4rem; letter-spacing: 0.5px; text-transform: uppercase; }
+
+        .input-arredondado {
+            border-radius: 12px; padding: 0.8rem 1rem; border: 1px solid #dee2e6;
+            transition: all 0.2s; background-color: #f8f9fa; font-weight: 600;
+        }
+        .input-arredondado:focus {
+            background-color: #ffffff; border-color: var(--azul-petroleo);
+            box-shadow: 0 0 0 0.25rem rgba(12, 84, 101, 0.15);
+        }
+
+        .input-group-text-moderno {
+            background-color: #f8f9fa; border: 1px solid #dee2e6; border-right: none;
+            border-top-left-radius: 12px; border-bottom-left-radius: 12px; color: #adb5bd;
+            padding-left: 1rem; padding-right: 0.5rem; transition: background-color 0.2s;
+        }
+
+        .input-group:focus-within .input-group-text-moderno {
+            background-color: #ffffff; border-color: var(--azul-petroleo); color: var(--azul-petroleo);
+        }
+        .input-arredondado-group { border-top-left-radius: 0; border-bottom-left-radius: 0; border-left: none; }
+
+        /* --- BOTÃO DE ACESSO --- */
+        .btn-entrar {
+            background-color: var(--azul-petroleo); color: white; border-radius: 12px;
+            font-weight: 800; letter-spacing: 1px; padding: 0.9rem;
+            transition: all 0.3s ease; border: none; font-size: 1rem; display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .btn-entrar:active { transform: translateY(0); }
+
+        /* --- ALERTAS CUSTOMIZADOS --- */
+        .alert-login { border-radius: 12px; font-weight: 600; font-size: 0.85rem; padding: 0.8rem 1rem; text-align: left; display: flex; align-items: center; gap: 10px; border: none; }
+        .alert-erro { background-color: #fff5f5; color: var(--vermelho-erro); border-left: 4px solid var(--vermelho-erro); }
+        .alert-sucesso { background-color: #f3faf6; color: var(--verde-sucesso); border-left: 4px solid var(--verde-sucesso); }
+
+        /* --- FOOTER --- */
+        .login-footer { margin-top: 2rem; font-size: 0.75rem; color: #adb5bd; font-weight: 600; letter-spacing: 0.5px; }
+
+        /* === REGRAS DE HOVER APENAS PARA DESKTOP === */
+        @media (hover: hover) and (pointer: fine) {
+            .logo-login:hover { transform: scale(1.05); }
+            .btn-entrar:hover { background-color: #093e4b; transform: translateY(-2px); box-shadow: 0 8px 15px rgba(12, 84, 101, 0.3); }
+        }
+
+        /* === AJUSTES MOBILE EXCLUSIVOS === */
+        @media (max-width: 576px) {
+            .login-card {
+                padding: 2.5rem 1.5rem; /* Reduz o padding lateral no celular para os inputs não ficarem esmagados */
+            }
+            .brand-title {
+                font-size: 1.25rem; /* Ajusta o título para não quebrar a linha */
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="login-card">
+    <div class="card-topo-detalhe"></div>
+
+    <div class="text-center mb-4">
+        <img th:src="@{/img/logo.png}" class="logo-login" alt="Logo Manancial" onerror="this.style.display='none'; document.getElementById('icon-fallback').style.display='block';">
+        <i id="icon-fallback" class="bi bi-church display-1" style="display:none; color: var(--azul-petroleo);"></i>
+
+        <h4 class="brand-title">Mava</h4>
+        <div class="brand-subtitle">Portal de Gestão Integrada</div>
+    </div>
+
+    <div th:if="${param.error}" class="alert alert-login alert-erro mb-4 shadow-sm fade show" role="alert">
+        <i class="bi bi-shield-x fs-5"></i>
+        <span><strong>Acesso negado!</strong> Usuário ou senha incorretos.</span>
+    </div>
+
+    <div th:if="${param.logout}" class="alert alert-login alert-sucesso mb-4 shadow-sm fade show" role="alert">
+        <i class="bi bi-shield-check fs-5"></i>
+        <span>Sessão encerrada com segurança.</span>
+    </div>
+
+    <form th:action="@{/login}" method="post">
+
+        <div class="mb-3">
+            <label class="form-label">Credencial de Acesso</label>
+            <div class="input-group">
+                <span class="input-group-text input-group-text-moderno"><i class="bi bi-person-fill"></i></span>
+                <input type="text" name="username" class="form-control input-arredondado input-arredondado-group" placeholder="Digite seu usuário..." required autofocus>
+            </div>
+        </div>
+
+        <div class="mb-4">
+            <label class="form-label">Senha</label>
+            <div class="input-group">
+                <span class="input-group-text input-group-text-moderno"><i class="bi bi-key-fill"></i></span>
+                <input type="password" name="password" class="form-control input-arredondado input-arredondado-group" style="border-top-right-radius: 0; border-bottom-right-radius: 0;" placeholder="••••••••" required>
+                <button class="btn btn-outline-secondary btn-toggle-senha" type="button" style="border-top-right-radius: 12px; border-bottom-right-radius: 12px; border-color: #dee2e6; background-color: #f8f9fa;">
+                    <i class="bi bi-eye text-muted"></i>
+                </button>
+            </div>
+        </div>
+
+        <button type="submit" class="btn-entrar w-100 mt-2">
+            ACESSAR SISTEMA <i class="bi bi-arrow-right-circle-fill fs-5 ms-1"></i>
+        </button>
+    </form>
+
+    <div class="text-center login-footer">
+        &copy; 2026 MANANCIAL TECNOLOGIA
+    </div>
+
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const botoesSenha = document.querySelectorAll('.btn-toggle-senha');
+
+        botoesSenha.forEach(botao => {
+            botao.addEventListener('click', function() {
+                const inputSenha = this.previousElementSibling;
+                const icone = this.querySelector('i');
+
+                if (inputSenha.type === 'password') {
+                    inputSenha.type = 'text';
+                    icone.classList.remove('bi-eye');
+                    icone.classList.add('bi-eye-slash');
+                } else {
+                    inputSenha.type = 'password';
+                    icone.classList.remove('bi-eye-slash');
+                    icone.classList.add('bi-eye');
+                }
+            });
+        });
+    });
+</script>
+
+</body>
+</html>

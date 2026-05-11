@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Cadastro de Famílias | Mava</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+        :root {
+            --azul-petroleo: #0c5465;
+            --azul-claro: #d1e7ed;
+            --texto-escuro: #2c3e50;
+            --roxo-familia: #6f42c1;
+        }
+
+        body { background-color: #f0f2f5; font-family: 'Segoe UI', sans-serif; min-height: 100vh; }
+        .navbar-manancial { background: linear-gradient(135deg, #0c5465, #146c82); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .card-3d { background: #ffffff; border: none; border-radius: 20px; box-shadow: 0 10px 20px rgba(12, 84, 101, 0.08); position: relative; overflow: hidden; }
+        .card-topo-detalhe { height: 6px; width: 100%; position: absolute; top: 0; left: 0; background: var(--roxo-familia); }
+        .form-label { color: var(--texto-escuro); font-weight: 700; font-size: 0.95rem; margin-bottom: 0.5rem; }
+        .input-arredondado { border-radius: 12px; padding: 0.75rem 1rem; border: 1px solid #dee2e6; transition: all 0.2s; background-color: #fff; }
+        .input-arredondado:focus { border-color: var(--roxo-familia); box-shadow: 0 0 0 0.25rem rgba(111, 66, 193, 0.15); outline: none; }
+        .input-group-text-moderno { background-color: #f8f9fa; border: 1px solid #dee2e6; border-right: none; border-top-left-radius: 12px; border-bottom-left-radius: 12px; color: #6c757d; }
+        .input-arredondado-group { border-top-left-radius: 0; border-bottom-left-radius: 0; border-left: none; }
+        .btn-manancial { background-color: var(--azul-petroleo); color: white; border-radius: 12px; font-weight: 700; transition: all 0.3s ease; }
+        .btn-manancial:hover { background-color: #093e4b; color: white; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(12, 84, 101, 0.2); }
+        .btn-cancelar { border-radius: 12px; font-weight: 600; color: #6c757d; background: transparent; border: 1px solid transparent; transition: all 0.2s; }
+        .btn-cancelar:hover { background-color: #e9ecef; color: var(--texto-escuro); }
+        .hover-scale { transition: transform 0.2s; }
+        .hover-scale:hover { transform: scale(1.05); }
+
+        /* --- AJUSTES DE RESPONSIVIDADE PARA MOBILE --- */
+        @media (max-width: 576px) {
+            .navbar-brand span { font-size: 0.85rem !important; }
+            .card-body { padding: 1.5rem !important; } /* Alivia espaçamento interno do card */
+            .endereco-box { padding: 1.2rem !important; } /* Alivia espaçamento da caixa cinza de endereço */
+            .btn-manancial, .btn-cancelar { width: 100%; text-align: center; } /* Botões em 100% */
+        }
+        @media (min-width: 576px) {
+            .w-sm-auto { width: auto !important; }
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark navbar-manancial mb-4 mb-md-5 sticky-top">
+    <div class="container">
+        <a class="navbar-brand d-flex align-items-center gap-2 gap-md-3" href="/">
+            <img th:src="@{/img/logo.png}" alt="Logo" width="40" height="40" class="bg-white rounded-circle p-1 shadow-sm">
+            <div class="d-flex flex-column text-white">
+                <span class="fw-bold text-uppercase" style="letter-spacing: 1px; font-size: 1rem; line-height: 1.1;">Mava</span>
+            </div>
+        </a>
+
+        <div class="ms-auto d-flex gap-2 gap-md-3 align-items-center">
+            <span class="text-white opacity-75 d-none d-md-block small text-uppercase fw-bold" style="letter-spacing: 1px;">Gestão Social</span>
+            <a href="/familias" class="btn btn-outline-light btn-sm rounded-pill px-3 px-md-4 fw-bold hover-scale">
+                <i class="bi bi-people-fill"></i> <span class="d-none d-sm-inline ms-1">Famílias</span>
+            </a>
+        </div>
+    </div>
+</nav>
+
+<div class="container pb-5">
+    <div class="row justify-content-center">
+        <!-- Flexibilizando coluna para preencher melhor celular/tablet (col-12 col-md-11 col-lg-8) -->
+        <div class="col-12 col-md-11 col-lg-8">
+
+            <div class="mb-3 ps-1">
+                <a href="/familias" class="text-decoration-none text-muted fw-bold d-flex align-items-center hover-scale" style="width: fit-content;">
+                    <i class="bi bi-arrow-left me-2"></i> Voltar para Lista
+                </a>
+            </div>
+
+            <div class="card-3d">
+                <div class="card-topo-detalhe"></div>
+
+                <div class="card-body p-4 p-md-5">
+
+                    <!-- Flex-column no mobile para empilhar o ícone e o texto -->
+                    <div class="d-flex flex-column flex-sm-row align-items-sm-center mb-4 gap-3 gap-sm-0">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center me-sm-3 shadow-sm" style="width: 55px; height: 55px; background-color: #f3ebfc; flex-shrink: 0;">
+                            <i class="bi bi-house-heart-fill fs-3" style="color: var(--roxo-familia);"></i>
+                        </div>
+                        <div>
+                            <h4 class="mb-0 fw-bold" style="color: var(--texto-escuro); letter-spacing: -0.5px;">Cadastro de Família</h4>
+                            <small class="text-muted">Preencha os dados do representante para assistência social.</small>
+                        </div>
+                    </div>
+
+                    <hr class="mb-4" style="opacity: 0.1;">
+
+                    <form th:action="@{/familias/salvar}" th:object="${familia}" method="post">
+
+                        <input type="hidden" th:field="*{id}" th:if="${familia.id != null}" />
+
+                        <div class="row g-3 g-md-4 mb-3">
+                            <!-- Inclusão do col-12 explícito para todas as linhas não quebrarem layout em telas pequenas -->
+                            <div class="col-12 col-md-7">
+                                <label class="form-label">Nome do Representante <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text input-group-text-moderno px-3"><i class="bi bi-person-fill"></i></span>
+                                    <input type="text" th:field="*{nomeRepresentante}" class="form-control input-arredondado input-arredondado-group fs-6 fw-bold" required placeholder="Ex: Maria da Silva Souza" />
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-md-5">
+                                <label class="form-label">CPF / Documento</label>
+                                <div class="input-group">
+                                    <span class="input-group-text input-group-text-moderno px-3"><i class="bi bi-person-vcard-fill"></i></span>
+                                    <input type="text" th:field="*{documento}" class="form-control input-arredondado input-arredondado-group"
+                                           placeholder="000.000.000-00" maxlength="14"
+                                           oninput="mascaraCPF(this)" onblur="verificarCPF(this)" />
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-md-6">
+                                <label class="form-label">Telefone / WhatsApp</label>
+                                <div class="input-group">
+                                    <span class="input-group-text input-group-text-moderno px-3"><i class="bi bi-whatsapp text-success"></i></span>
+                                    <input type="text" th:field="*{telefone}" class="form-control input-arredondado input-arredondado-group" placeholder="(11) 90000-0000" maxlength="15" oninput="mascaraTelefone(this)" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Adicionada classe endereco-box para responsividade de padding -->
+                        <div class="row g-3 mb-4 p-4 rounded-4 endereco-box" style="background-color: #fcfcfd; border: 1px solid #f0f2f5;">
+                            <div class="col-12 mb-2">
+                                <h6 class="fw-bold mb-0" style="color: var(--roxo-familia);"><i class="bi bi-geo-alt-fill me-2"></i>Endereço da Família</h6>
+                            </div>
+
+                            <div class="col-12 col-md-4">
+                                <label class="form-label">CEP</label>
+                                <div class="input-group">
+                                    <span class="input-group-text input-group-text-moderno px-3"><i class="bi bi-geo-fill"></i></span>
+                                    <input type="text" th:field="*{cep}" id="campoCep" class="form-control input-arredondado input-arredondado-group fw-bold" placeholder="00000-000" maxlength="9" oninput="mascaraCEP(this)" onblur="buscarCEP(this.value)" />
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-md-8">
+                                <label class="form-label">Endereço / Logradouro</label>
+                                <input type="text" th:field="*{logradouro}" id="campoLogradouro" class="form-control input-arredondado" placeholder="Rua, Avenida..." />
+                            </div>
+
+                            <div class="col-12 col-md-3">
+                                <label class="form-label">Número</label>
+                                <input type="text" th:field="*{numero}" id="campoNumero" class="form-control input-arredondado fw-bold" placeholder="123" />
+                            </div>
+
+                            <div class="col-12 col-md-9">
+                                <label class="form-label">Complemento</label>
+                                <input type="text" th:field="*{complemento}" class="form-control input-arredondado" placeholder="Apto, Casa 2, Fundo..." />
+                            </div>
+
+                            <div class="col-12 col-md-6">
+                                <label class="form-label">Bairro</label>
+                                <input type="text" th:field="*{bairro}" id="campoBairro" class="form-control input-arredondado" placeholder="Bairro" />
+                            </div>
+
+                            <div class="col-12 col-md-6">
+                                <label class="form-label">Cidade</label>
+                                <input type="text" th:field="*{cidade}" id="campoCidade" class="form-control input-arredondado" placeholder="Cidade" />
+                            </div>
+
+                            <div class="col-md-2 d-none">
+                                <input type="hidden" th:field="*{uf}" id="campoUf" />
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label">Perfil Social (Observações Adicionais)</label>
+                            <textarea th:field="*{perfilSocial}" class="form-control input-arredondado" rows="4" placeholder="Descreva a situação atual da família: desemprego, quantidade de filhos, necessidades específicas..."></textarea>
+                            <div class="form-text mt-2 lh-sm" style="font-size: 0.85rem;"><i class="bi bi-info-circle me-1"></i>Essas informações auxiliam a equipe diaconal na montagem da cesta e no acompanhamento pastoral.</div>
+                        </div>
+
+                        <hr class="mt-4 mt-md-5 mb-4" style="opacity: 0.1;">
+
+                        <!-- Botões empilhados no mobile, lado a lado no desktop -->
+                        <div class="d-flex flex-column-reverse flex-sm-row justify-content-sm-end gap-2 gap-sm-3">
+                            <a href="/familias" class="btn btn-cancelar px-4 py-2 w-sm-auto">Cancelar</a>
+                            <button type="submit" class="btn btn-manancial px-4 py-2 w-sm-auto">
+                                <i class="bi bi-check-lg me-2 fs-5 align-middle"></i> Salvar Cadastro
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    // --- FUNÇÃO: MÁSCARA PADRÃO DE CPF ---
+    function mascaraCPF(input) {
+        let v = input.value.replace(/\D/g, "");
+        if (v.length > 11) { v = v.substring(0, 11); }
+        v = v.replace(/(\d{3})(\d)/, "$1.$2");
+        v = v.replace(/(\d{3})(\d)/, "$1.$2");
+        v = v.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+        input.value = v;
+    }
+
+    // --- FUNÇÃO: CÁLCULO MATEMÁTICO DE CPF ---
+    function validarCPF(cpf) {
+        cpf = cpf.replace(/[^\d]+/g,'');
+
+        if(cpf == '') return false;
+
+        // Elimina CPFs inválidos conhecidos
+        if (cpf.length != 11 ||
+            cpf == "00000000000" || cpf == "11111111111" ||
+            cpf == "22222222222" || cpf == "33333333333" ||
+            cpf == "44444444444" || cpf == "55555555555" ||
+            cpf == "66666666666" || cpf == "77777777777" ||
+            cpf == "88888888888" || cpf == "99999999999")
+                return false;
+
+        // Valida o primeiro dígito
+        let add = 0;
+        for (let i = 0; i < 9; i++) {
+            add += parseInt(cpf.charAt(i)) * (10 - i);
+        }
+        let rev = 11 - (add % 11);
+        if (rev == 10 || rev == 11) rev = 0;
+        if (rev != parseInt(cpf.charAt(9))) return false;
+
+        // Valida o segundo dígito
+        add = 0;
+        for (let i = 0; i < 10; i++) {
+            add += parseInt(cpf.charAt(i)) * (11 - i);
+        }
+        rev = 11 - (add % 11);
+        if (rev == 10 || rev == 11) rev = 0;
+        if (rev != parseInt(cpf.charAt(10))) return false;
+
+        return true;
+    }
+
+    // --- FUNÇÃO: VERIFICA CPF AO SAIR DO CAMPO ---
+    function verificarCPF(input) {
+        let cpfDigitado = input.value;
+
+        if (cpfDigitado.length > 0) {
+            if (!validarCPF(cpfDigitado)) {
+                alert("CPF INVÁLIDO! Por favor, verifique o número digitado.");
+                input.value = "";
+                input.style.borderColor = "#dc3545";
+                input.focus();
+            } else {
+                input.style.borderColor = "#198754";
+            }
+        } else {
+            input.style.borderColor = "#dee2e6"; // Volta a cor normal se apagar tudo
+        }
+    }
+
+    // --- FUNÇÃO: MÁSCARA DE TELEFONE ---
+    function mascaraTelefone(input) {
+        let v = input.value.replace(/\D/g, "");
+        if (v.length > 11) v = v.substring(0, 11);
+        if (v.length > 10) { input.value = v.replace(/^(\d{2})(\d{5})(\d{4}).*/, "($1) $2-$3"); }
+        else if (v.length > 5) { input.value = v.replace(/^(\d{2})(\d{4})(\d{0,4}).*/, "($1) $2-$3"); }
+        else if (v.length > 2) { input.value = v.replace(/^(\d{2})(\d{0,5})/, "($1) $2"); }
+        else { input.value = v.replace(/^(\d*)/, "($1"); }
+    }
+
+    // --- FUNÇÃO: MÁSCARA DO CEP ---
+    function mascaraCEP(input) {
+        let v = input.value.replace(/\D/g, "");
+        if (v.length > 8) v = v.substring(0,8);
+        input.value = v.replace(/^(\d{5})(\d{1,3}).*/, "$1-$2");
+    }
+
+    // --- FUNÇÃO: MÁGICA DO VIACEP ---
+    function buscarCEP(valor) {
+        let cep = valor.replace(/\D/g, '');
+
+        if (cep !== "") {
+            let validacep = /^[0-9]{8}$/;
+
+            if(validacep.test(cep)) {
+                document.getElementById('campoLogradouro').value = "Buscando...";
+                document.getElementById('campoBairro').value = "Buscando...";
+                document.getElementById('campoCidade').value = "Buscando...";
+
+                fetch(`https://viacep.com.br/ws/${cep}/json/`)
+                    .then(res => res.json())
+                    .then(dados => {
+                        if (!("erro" in dados)) {
+                            document.getElementById('campoLogradouro').value = dados.logradouro;
+                            document.getElementById('campoBairro').value = dados.bairro;
+                            document.getElementById('campoCidade').value = dados.localidade;
+                            document.getElementById('campoUf').value = dados.uf;
+
+                            document.getElementById('campoNumero').focus();
+                        } else {
+                            alert("CEP não encontrado.");
+                            limparCamposEndereco();
+                        }
+                    })
+                    .catch(e => {
+                        alert("Erro ao buscar o CEP.");
+                        limparCamposEndereco();
+                    });
+            } else {
+                alert("Formato de CEP inválido.");
+            }
+        }
+    }
+
+    function limparCamposEndereco() {
+        document.getElementById('campoLogradouro').value = "";
+        document.getElementById('campoBairro').value = "";
+        document.getElementById('campoCidade').value = "";
+        document.getElementById('campoUf').value = "";
+    }
+</script>
+
+</body>
+</html>

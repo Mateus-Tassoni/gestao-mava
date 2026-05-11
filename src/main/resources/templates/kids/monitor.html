@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Monitor de Impressão | Mava Kids</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+
+    <style>
+        /* =========================================================
+           1. TEMA DA TELA (PADRÃO MANANCIAL - NÃO AFETA IMPRESSÃO)
+           ========================================================= */
+        @media screen {
+            :root {
+                --azul-petroleo: #0c5465; --azul-claro: #d1e7ed; --texto-escuro: #2c3e50;
+                --rosa-kids: #d63384; --amarelo-kids: #ffc107; --verde-sucesso: #198754;
+            }
+
+            body { background-color: #f0f2f5; font-family: 'Segoe UI', sans-serif; }
+
+            .navbar-manancial { background: linear-gradient(135deg, #0c5465, #146c82); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+
+            .card-3d { background: #ffffff; border: none; border-radius: 20px; box-shadow: 0 10px 20px rgba(12, 84, 101, 0.08); position: relative; overflow: hidden; }
+            .card-topo-detalhe { height: 6px; width: 100%; position: absolute; top: 0; left: 0; background: var(--amarelo-kids); }
+
+            .table-moderna { border-collapse: separate; border-spacing: 0 8px; margin-top: -8px; min-width: 600px; }
+            .table-moderna th { text-transform: uppercase; font-size: 0.75rem; letter-spacing: 1px; color: #6c757d; border: none; padding: 0 1rem 10px 1rem; font-weight: 700; }
+            .table-moderna td { vertical-align: middle; background-color: #ffffff; border-top: 1px solid #f8f9fa; border-bottom: 1px solid #f8f9fa; padding: 1rem; transition: all 0.2s; }
+            .table-moderna td:first-child { border-left: 1px solid #f8f9fa; border-top-left-radius: 12px; border-bottom-left-radius: 12px; }
+            .table-moderna td:last-child { border-right: 1px solid #f8f9fa; border-top-right-radius: 12px; border-bottom-right-radius: 12px; }
+            .table-moderna tbody tr:hover td { background-color: #f8f9fa; border-color: #e9ecef; }
+
+            /* Bolinha piscando de Status */
+            .status-dot { height: 10px; width: 10px; background-color: var(--verde-sucesso); border-radius: 50%; display: inline-block; animation: pulse 1.5s infinite; flex-shrink: 0;}
+            @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(25, 135, 84, 0.7); } 70% { box-shadow: 0 0 0 8px rgba(25, 135, 84, 0); } 100% { box-shadow: 0 0 0 0 rgba(25, 135, 84, 0); } }
+
+            .badge-legenda { background-color: #f8f9fa; border: 1px solid #dee2e6; color: var(--texto-escuro); font-weight: 600; padding: 0.4rem 0.8rem; border-radius: 8px; display: flex; align-items: center; gap: 8px; font-size: 0.8rem; }
+
+            /* Esconde a área de impressão da tela, mas permite o navegador baixar a imagem */
+            #area-impressao { position: absolute; left: -9999px; top: -9999px; }
+
+            /* Ajustes Mobile EXCLUSIVOS de tela */
+            @media (max-width: 576px) {
+                .card-3d { padding: 1.5rem 1rem !important; }
+                .badge-legenda { font-size: 0.75rem; padding: 0.3rem 0.6rem; }
+            }
+        }
+
+        /* =========================================================
+           2. CONFIGURAÇÃO DA IMPRESSORA TÉRMICA (INTOCÁVEL)
+           ========================================================= */
+        @page { size: 100mm 50mm; margin: 0; }
+
+        @media print {
+            body { background: white; margin: 0; padding: 0; }
+            #painel-controle, nav { display: none !important; }
+            .etiqueta { display: flex !important; }
+        }
+
+        /* O Layout da Etiqueta funciona independente de tela ou print */
+        .etiqueta {
+            background-color: white; width: 96mm; height: 46mm; margin-left: auto; margin-right: auto;
+            box-sizing: border-box; border: 2px solid black !important; border-radius: 6px;
+            page-break-after: always; overflow: hidden; display: flex; flex-direction: column;
+            -webkit-print-color-adjust: exact; print-color-adjust: exact;
+        }
+        .etiqueta-crianca { margin-top: 3mm !important; }
+        .etiqueta-responsavel { margin-top: 8mm !important; }
+        .etiqueta:last-child { page-break-after: auto; }
+
+        .area-superior { flex-grow: 1; display: flex; width: 100%; padding: 2mm 2mm 0 2mm; }
+        .col-dados { width: 55%; display: flex; flex-direction: column; justify-content: center; }
+        .nome-principal { font-size: 13pt; font-weight: 900; text-transform: uppercase; line-height: 1; margin-bottom: 2mm; max-height: 12mm; overflow: hidden; color: black; }
+        .numero-gigante { font-size: 42pt; font-weight: 900; line-height: 0.8; letter-spacing: -2px; color: black; }
+
+        .col-qr { width: 30%; display: flex; align-items: center; justify-content: center; }
+        .qr-frame { position: relative; padding: 3px; }
+        .canto { position: absolute; width: 6px; height: 6px; border-color: black; border-style: solid; }
+        .tl { top: 0; left: 0; border-width: 2px 0 0 2px; } .tr { top: 0; right: 0; border-width: 2px 2px 0 0; }
+        .bl { bottom: 0; left: 0; border-width: 0 0 2px 2px; } .br { bottom: 0; right: 0; border-width: 0 2px 2px 0; }
+        .qr-img { width: 22mm; height: 22mm; }
+
+        .col-icones { width: 15%; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 2mm; }
+        .icone-item { width: 7mm; height: 7mm; display: flex; align-items: center; justify-content: center; }
+        .icone-hash { font-size: 24pt; font-weight: 900; line-height: 1; color: black; display: flex; align-items: center; justify-content: center; }
+        svg { width: 100%; height: 100%; fill: black !important; }
+
+        .linha-divisoria { width: 100%; height: 2px; background-color: black; margin-top: 1mm; margin-bottom: 1mm; }
+        .area-inferior { height: 8mm; width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 0 2mm 1mm 2mm; }
+        .texto-esquerda { font-size: 10pt; font-weight: 900; text-transform: uppercase; color: black; }
+        .texto-direita { font-size: 7pt; font-weight: bold; text-transform: uppercase; text-align: right; color: black; }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark navbar-manancial mb-4">
+    <div class="container">
+        <span class="navbar-brand d-flex align-items-center gap-2 gap-md-3">
+            <i class="bi bi-printer-fill fs-4"></i>
+            <div class="d-flex flex-column text-white">
+                <span class="fw-bold text-uppercase" style="letter-spacing: 1px; font-size: 1rem; line-height: 1.1;">Mava</span>
+                <small style="font-size: 0.7rem; opacity: 0.8; letter-spacing: 1px;">Monitor de Impressão</small>
+            </div>
+        </span>
+    </div>
+</nav>
+
+<div id="painel-controle" class="container pb-5" style="max-width: 900px;">
+
+    <div class="card-3d p-4 mb-4">
+        <div class="card-topo-detalhe"></div>
+
+        <!-- Ajuste Mobile: flex-column no celular, flex-md-row em telas maiores -->
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 mt-2 gap-3">
+            <div>
+                <h4 class="fw-bold mb-1" style="color: var(--texto-escuro);">Fila de Impressão Kids</h4>
+                <p class="text-muted small mb-0">Deixe esta tela aberta. Ela identificará novos check-ins e imprimirá automaticamente.</p>
+            </div>
+            <div class="bg-success bg-opacity-10 border border-success rounded-pill px-3 py-2 d-flex align-items-center gap-2 w-100 w-md-auto" style="max-width: max-content;">
+                <span class="status-dot"></span>
+                <span class="fw-bold text-success small text-uppercase" style="letter-spacing: 0.5px;">Sistema Escutando...</span>
+            </div>
+        </div>
+
+        <div class="d-flex flex-wrap gap-2 mb-4 p-3 bg-light rounded-3 border align-items-center">
+            <span class="text-muted small fw-bold text-uppercase w-100 w-sm-auto mb-1 mb-sm-0">Guia de Ícones:</span>
+            <div class="badge-legenda"><i class="bi bi-person-circle fs-5" style="color: var(--azul-petroleo);"></i> Cuidado Especial</div>
+            <div class="badge-legenda"><i class="bi bi-star-fill fs-5" style="color: var(--amarelo-kids);"></i> Visitante</div>
+            <div class="badge-legenda"><i class="bi bi-exclamation-triangle-fill fs-5" style="color: #dc3545;"></i> Alergia</div>
+            <div class="badge-legenda"><i class="bi bi-cake2-fill fs-5" style="color: #6f42c1;"></i> Aniversário</div>
+            <div class="badge-legenda fw-bold fs-5 px-3 py-0"># <span class="fw-normal small ms-1" style="font-size: 0.75rem;">Uso de Imagem</span></div>
+        </div>
+
+        <h6 class="text-muted fw-bold text-uppercase small mb-3" style="letter-spacing: 1px;">Últimas Impressões (Hoje)</h6>
+
+        <div class="table-responsive" style="border-radius: 12px;">
+            <table class="table table-moderna align-middle mb-0">
+                <thead>
+                <tr>
+                    <th class="ps-3 text-nowrap" style="width: 15%;">Hora</th>
+                    <th class="text-nowrap">Nome da Criança</th>
+                    <th class="text-center text-nowrap">Código (ID)</th>
+                    <th class="text-end pe-3 text-nowrap">Ação</th>
+                </tr>
+                </thead>
+                <tbody id="tabela-historico">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<div id="area-impressao"></div>
+
+<script>
+    // === ÍCONES SVG ===
+    const SVG_BOLO = `<svg viewBox="0 0 512 512"><path d="M416 192h-16c0-17.67-14.33-32-32-32h-64c-17.67 0-32 14.33-32 32h-32c0-17.67-14.33-32-32-32h-64c-17.67 0-32 14.33-32 32H96c-35.35 0-64 28.65-64 64v128h448V256c0-35.35-28.65-64-64-64zM240 48c0-26.51 21.49-48 48-48s48 21.49 48 48v80h-96V48zm232 336H40v48c0 26.51 21.49 48 48 48h336c26.51 0 48-21.49 48-48v-48z"/></svg>`;
+    const SVG_ALERTA = `<svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>`;
+    const SVG_ESTRELA = `<svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>`;
+    const SVG_ESPECIAL = `<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 5c-1.34 0-4 .67-4 2v2h8v-2c0-1.33-2.66-2-4-2z"/></svg>`;
+
+    let ocupado = false;
+    const dataHoje = new Date().toLocaleDateString('pt-BR');
+
+    function ehAniversariante(dataString) {
+        if (!dataString) return false;
+        try {
+            const partes = dataString.split('-');
+            if (partes.length !== 3) return false;
+            const mesNiver = parseInt(partes[1]) - 1;
+            const diaNiver = parseInt(partes[2]);
+            const hoje = new Date();
+            const niver = new Date(hoje.getFullYear(), mesNiver, diaNiver);
+            niver.setHours(0,0,0,0); hoje.setHours(0,0,0,0);
+            return Math.ceil(Math.abs(niver - hoje) / (1000 * 60 * 60 * 24)) <= 7;
+        } catch(e) { return false; }
+    }
+
+    async function carregarHistorico() {
+        try {
+            const r = await fetch('/api/historico/hoje');
+            if(!r.ok) return;
+            const lista = await r.json();
+            const tbody = document.getElementById('tabela-historico');
+            tbody.innerHTML = '';
+            lista.forEach(c => {
+                let h = new Date(c.dataHora).toLocaleTimeString().substring(0,5);
+                // Adicionado 'text-nowrap' dinamicamente nas TDs para evitar quebra no mobile
+                tbody.innerHTML += `
+                    <tr>
+                        <td class="ps-3 text-muted fw-semibold text-nowrap"><i class="bi bi-clock me-1 opacity-50"></i> ${h}</td>
+                        <td class="fw-bold text-nowrap" style="color: var(--texto-escuro); font-size: 1.05rem;">${c.crianca.nomeCompleto}</td>
+                        <td class="text-center text-nowrap"><span class="badge bg-warning text-dark border border-warning px-3 py-1 shadow-sm" style="font-size: 0.9rem; letter-spacing: 1px;">${c.codigoEtiqueta}</span></td>
+                        <td class="text-end pe-3 text-nowrap"><button class="btn btn-sm btn-outline-info rounded-circle" style="width: 35px; height: 35px;" onclick="reimprimir(${c.id})" title="Reimprimir Etiqueta"><i class="bi bi-printer-fill"></i></button></td>
+                    </tr>`;
+            });
+
+            if(lista.length === 0) {
+                 tbody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-muted fst-italic">Nenhuma etiqueta impressa ainda.</td></tr>`;
+            }
+        } catch(e) {}
+    }
+
+    async function verificarFila() {
+        if (ocupado) return;
+        try {
+            const r = await fetch('/api/impressao/pendentes');
+            if(!r.ok) return;
+            const lista = await r.json();
+            if (lista.length > 0) { ocupado = true; imprimir(lista); }
+        } catch(e){}
+    }
+
+    async function reimprimir(id) {
+        if(confirm('Deseja reenviar esta etiqueta para a fila de impressão?')) {
+            await fetch('/api/reimprimir/' + id, { method: 'POST' });
+            verificarFila();
+        }
+    }
+
+    function imprimir(lista) {
+        const area = document.getElementById('area-impressao');
+        area.innerHTML = '';
+        lista.forEach(i => {
+            area.innerHTML += gerarEtiqueta(i, "CRIANÇA");
+            area.innerHTML += gerarEtiqueta(i, "RESPONSÁVEL");
+        });
+
+        setTimeout(async () => {
+            window.print();
+            for(const i of lista) await fetch('/api/impressao/confirmar/' + i.id, { method: 'POST' });
+            area.innerHTML = '';
+            ocupado = false;
+            carregarHistorico();
+        }, 1500);
+    }
+
+    function gerarEtiqueta(checkin, tipo) {
+        const c = checkin.crianca;
+        const qrUrl = `https://quickchart.io/qr?size=150&text=${checkin.codigoEtiqueta}`;
+        let nomeDisplay, infoEsquerda, iconesHtml = '';
+
+        if (tipo === "CRIANÇA") {
+            nomeDisplay = c.nomeCompleto.toUpperCase();
+            infoEsquerda = c.idade ? `SALA ${c.idade} ANOS` : "SALA KIDS";
+
+            if (ehAniversariante(c.dataNascimento)) iconesHtml += `<div class="icone-item">${SVG_BOLO}</div>`;
+            if (c.necessidadesEspeciais === true) iconesHtml += `<div class="icone-item">${SVG_ESPECIAL}</div>`;
+            if (c.alergias && c.alergias.trim().length > 0) iconesHtml += `<div class="icone-item">${SVG_ALERTA}</div>`;
+            if (c.visitante === true || c.visitante === "true") iconesHtml += `<div class="icone-item">${SVG_ESTRELA}</div>`;
+            if (c.permissaoImagem === true || c.permissaoImagem === "true") iconesHtml += `<div class="icone-hash">#</div>`;
+
+        } else {
+            nomeDisplay = checkin.responsavel ? checkin.responsavel.nome.toUpperCase() : "RESPONSÁVEL";
+            if(nomeDisplay.length > 25) nomeDisplay = nomeDisplay.substring(0,25);
+            infoEsquerda = "RESPONSÁVEL";
+
+            if (c.permissaoImagem === true || c.permissaoImagem === "true") iconesHtml += `<div class="icone-hash">#</div>`;
+        }
+
+        const classeMargem = (tipo === "CRIANÇA") ? "etiqueta-crianca" : "etiqueta-responsavel";
+
+        return `
+        <div class="etiqueta ${classeMargem}">
+            <div class="area-superior">
+                <div class="col-dados">
+                    <div class="nome-principal">${nomeDisplay}</div>
+                    <div class="numero-gigante">${checkin.codigoEtiqueta}</div>
+                </div>
+                <div class="col-qr">
+                    <div class="qr-frame"><div class="canto tl"></div><div class="canto tr"></div><div class="canto bl"></div><div class="canto br"></div><img src="${qrUrl}" class="qr-img"></div>
+                </div>
+                <div class="col-icones">${iconesHtml}</div>
+            </div>
+            <div class="linha-divisoria"></div>
+            <div class="area-inferior"><div class="texto-esquerda">${infoEsquerda}</div><div class="texto-direita">Mava<br>${dataHoje}</div></div>
+        </div>`;
+    }
+
+    // Rotinas Automáticas
+    setInterval(verificarFila, 3000);
+    setInterval(carregarHistorico, 10000);
+    carregarHistorico();
+</script>
+</body>
+</html>
