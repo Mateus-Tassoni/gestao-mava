@@ -1,118 +1,149 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Estoque Social | Mava</title>
+    <title>Portal MAVA | Estoque Social</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
     <style>
         :root {
-            --azul-petroleo: #0c5465;
-            --azul-claro: #d1e7ed;
-            --texto-escuro: #2c3e50;
-            --roxo-familia: #6f42c1;
-            --amarelo-mov: #ffc107;
-            --verde-cesta: #198754;
+            /* Paleta MAVA - Light Premium */
+            --mava-ouro: #c5a059;
+            --mava-ouro-light: #dfc48c;
+            --mava-grafite: #111111;
+            --mava-bg-light: #f4f6f9;
+            --texto-escuro: #2d3436;
+            --texto-muted: #636e72;
+            --mava-success: #198754;
+            --mava-danger: #dc3545;
+            --cinza-subtil: #e2e8f0;
         }
 
         body {
-            background-color: #f0f2f5;
-            font-family: 'Segoe UI', sans-serif;
+            background-color: var(--mava-bg-light);
+            font-family: 'Poppins', sans-serif;
             min-height: 100vh;
+            color: var(--texto-escuro);
         }
 
-        /* --- NAVBAR --- */
-        .navbar-manancial {
-            background: linear-gradient(135deg, #0c5465, #146c82);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        /* --- NAVBAR GRAFITE --- */
+        .navbar-mava {
+            background: var(--mava-grafite);
+            border-bottom: 2px solid var(--mava-ouro);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .navbar-brand img { background: transparent !important; filter: drop-shadow(0 0 5px rgba(197, 160, 89, 0.4)); }
+
+        /* --- PADRÃO MAVA DE CARDS --- */
+        .card-3d {
+            background: #ffffff;
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.04);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
         /* --- BOTÕES DO DASHBOARD --- */
         .btn-dash {
-            border-radius: 12px; font-weight: 700; padding: 0.6rem 1.2rem;
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); border: none;
+            border-radius: 12px; font-weight: 600; padding: 0.6rem 1.2rem;
+            transition: all 0.3s ease; border: 1px solid var(--cinza-subtil);
             display: flex; align-items: center; justify-content: center; gap: 8px;
+            background-color: #ffffff; color: var(--texto-muted);
         }
-        .btn-dash:hover { transform: translateY(-3px); }
 
-        .btn-roxo { background-color: var(--roxo-familia); color: white; }
-        .btn-roxo:hover { background-color: #59339d; color: white; box-shadow: 0 6px 15px rgba(111, 66, 193, 0.3); }
+        .btn-dash.novo { background-color: var(--mava-ouro); color: white; border: none; box-shadow: 0 4px 10px rgba(197, 160, 89, 0.2); }
+        .btn-dash.novo:hover { background-color: #b38f4d; transform: translateY(-2px); box-shadow: 0 6px 15px rgba(197, 160, 89, 0.3); }
 
-        .btn-amarelo { background-color: var(--amarelo-mov); color: #000; }
-        .btn-amarelo:hover { background-color: #e0a800; color: #000; box-shadow: 0 6px 15px rgba(255, 193, 7, 0.3); }
-
-        .btn-verde { background-color: var(--verde-cesta); color: white; }
-        .btn-verde:hover { background-color: #146c43; color: white; box-shadow: 0 6px 15px rgba(25, 135, 84, 0.3); }
-
-        .btn-azul { background-color: var(--azul-petroleo); color: white; }
-        .btn-azul:hover { background-color: #093e4b; color: white; box-shadow: 0 6px 15px rgba(12, 84, 101, 0.3); }
+        .btn-dash.familia:hover { background-color: #f8fafc; color: var(--mava-grafite); border-color: var(--mava-grafite); transform: translateY(-2px); }
+        .btn-dash.movimentar:hover { background-color: #fff5f5; color: var(--mava-danger); border-color: var(--mava-danger); transform: translateY(-2px); }
+        .btn-dash.cesta:hover { background-color: #f3faf6; color: var(--mava-success); border-color: var(--mava-success); transform: translateY(-2px); }
 
         /* --- INPUT BUSCA --- */
-        .input-arredondado { border-radius: 12px; padding: 0.6rem 1rem; border: 1px solid #dee2e6; transition: all 0.2s; }
-        .input-arredondado:focus { border-color: var(--azul-petroleo); box-shadow: 0 0 0 0.25rem rgba(12, 84, 101, 0.15); outline: none; }
-        .search-group .btn { border-top-right-radius: 12px; border-bottom-right-radius: 12px; background-color: var(--azul-claro); color: var(--azul-petroleo); border: 1px solid var(--azul-claro); font-weight: bold; }
-        .search-group .btn:hover { background-color: #b6effb; }
+        .input-arredondado { border-radius: 12px; padding: 0.6rem 1rem; border: 1px solid var(--cinza-subtil); transition: all 0.2s; color: var(--texto-escuro); }
+        .input-arredondado:focus { border-color: var(--mava-ouro); box-shadow: 0 0 0 0.25rem rgba(197, 160, 89, 0.15); outline: none; }
+        .search-group .btn { border-top-right-radius: 12px; border-bottom-right-radius: 12px; background-color: var(--mava-ouro); color: white; border: 1px solid var(--mava-ouro); font-weight: 600; }
+        .search-group .btn:hover { background-color: #b38f4d; border-color: #b38f4d; }
         .search-group .input-arredondado { border-top-right-radius: 0; border-bottom-right-radius: 0; border-right: none; }
 
         /* --- CARDS DE PRODUTO --- */
         .produto-card {
-            background: #ffffff; border: none; border-radius: 20px;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.06);
+            background: #ffffff; border: 1px solid var(--cinza-subtil); border-radius: 20px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.03);
             transition: all 0.3s ease; position: relative; overflow: hidden;
             display: flex; flex-direction: column; height: 100%;
         }
-        .produto-card:hover { transform: translateY(-5px); box-shadow: 0 12px 24px rgba(12, 84, 101, 0.12); }
 
         .card-faixa { height: 6px; width: 100%; position: absolute; top: 0; left: 0; }
-        .faixa-alimentos { background: #fd7e14; }
-        .faixa-limpeza { background: #0dcaf0; }
-        .faixa-higiene { background: #d63384; }
-        .faixa-vestuario { background: #6f42c1; }
-        .faixa-outros { background: var(--azul-petroleo); }
+
+        /* Novas Faixas de Categoria UI Premium */
+        .faixa-alimentos { background: var(--mava-ouro); }
+        .faixa-limpeza { background: #0ea5e9; } /* Azul sutil */
+        .faixa-higiene { background: #8b5cf6; } /* Púrpura sutil */
+        .faixa-vestuario { background: #64748b; } /* Cinza Ardósia */
+        .faixa-outros { background: var(--mava-grafite); }
 
         .produto-icone {
             width: 50px; height: 50px; border-radius: 14px;
             display: flex; align-items: center; justify-content: center; font-size: 1.5rem;
         }
 
+        /* Cores de Fundo dos Ícones Premium */
+        .bg-ouro-premium { background-color: rgba(197, 160, 89, 0.1); color: var(--mava-ouro); }
+        .bg-limpeza-premium { background-color: rgba(14, 165, 233, 0.1); color: #0ea5e9; }
+        .bg-higiene-premium { background-color: rgba(139, 92, 246, 0.1); color: #8b5cf6; }
+        .bg-vestuario-premium { background-color: rgba(100, 116, 139, 0.1); color: #64748b; }
+        .bg-outros-premium { background-color: rgba(17, 17, 17, 0.05); color: var(--mava-grafite); }
+
         .estoque-numero { font-size: 2.2rem; font-weight: 800; line-height: 1; letter-spacing: -1px; }
-        .progress-estoque { height: 8px; border-radius: 4px; background-color: #e9ecef; overflow: hidden; }
+        .progress-estoque { height: 8px; border-radius: 4px; background-color: var(--cinza-subtil); overflow: hidden; }
         .progress-bar { border-radius: 4px; }
 
         .btn-card-acao {
-            background-color: #f8f9fa; border: 1px solid #e9ecef; color: #6c757d;
+            background-color: #f8fafc; border: 1px solid var(--cinza-subtil); color: var(--texto-muted);
             border-radius: 10px; width: 38px; height: 38px;
             display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s;
         }
-        .btn-card-acao:hover.edit { background-color: var(--azul-claro); color: var(--azul-petroleo); border-color: var(--azul-petroleo); }
-        .btn-card-acao:hover.delete { background-color: #ffe6e6; color: #dc3545; border-color: #dc3545; }
 
-        /* --- ALERTAS --- */
-        .alert-premium { background-color: #ffffff; border-left: 5px solid #dc3545; border-radius: 12px; box-shadow: 0 5px 15px rgba(220, 53, 69, 0.15); color: var(--texto-escuro); }
-        .alert-success-premium { background-color: #ffffff; border-left: 5px solid #198754; border-radius: 12px; box-shadow: 0 5px 15px rgba(25, 135, 84, 0.15); color: var(--texto-escuro); }
+        /* --- ALERTAS MAVA PREMIUM --- */
+        .alert-premium { background-color: #ffffff; border-left: 5px solid var(--mava-danger); border-radius: 12px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); color: var(--texto-escuro); border-top: none; border-right: none; border-bottom: none; }
+        .alert-success-premium { background-color: #ffffff; border-left: 5px solid var(--mava-success); border-radius: 12px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); color: var(--texto-escuro); border-top: none; border-right: none; border-bottom: none; }
 
+        .hover-scale { transition: transform 0.2s; }
+
+        /* === REGRAS DE HOVER APENAS PARA DESKTOP === */
+        @media (hover: hover) and (pointer: fine) {
+            .produto-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.06); border-color: #cbd5e1; }
+            .btn-card-acao:hover.edit { background-color: rgba(197, 160, 89, 0.1); color: var(--mava-ouro); border-color: var(--mava-ouro-light); }
+            .btn-card-acao:hover.delete { background-color: #f8d7da; color: var(--mava-danger); border-color: #f5c2c7; }
+            .hover-scale:hover { transform: scale(1.05); }
+        }
+
+        /* === AJUSTES DE RESPONSIVIDADE PARA MOBILE === */
         @media (max-width: 576px) {
             .navbar-brand span { font-size: 0.85rem !important; }
             .alert-premium, .alert-success-premium { padding: 1rem !important; flex-direction: column; text-align: center; gap: 10px !important; position: relative; }
             .alert-premium .btn-close, .alert-success-premium .btn-close { position: absolute; top: 10px; right: 10px; }
+            .alert-premium > div:first-child, .alert-success-premium > div:first-child { margin: 0 auto; }
         }
     </style>
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-dark navbar-manancial mb-4 mb-md-5 sticky-top">
+<nav class="navbar navbar-expand-lg navbar-dark navbar-mava mb-4 mb-md-5 sticky-top">
     <div class="container">
         <a class="navbar-brand d-flex align-items-center gap-2 gap-md-3" href="/">
-            <img th:src="@{/img/logo.png}" alt="Logo" width="40" height="40" class="bg-white rounded-circle p-1 shadow-sm">
+            <img th:src="@{/img/logo.png}" alt="Logo MAVA" width="40" height="40">
             <div class="d-flex flex-column text-white">
-                <span class="fw-bold text-uppercase" style="letter-spacing: 1px; font-size: 1rem; line-height: 1.1;">Mava</span>
+                <span class="fw-bold text-uppercase" style="letter-spacing: 2px; font-size: 1rem; line-height: 1.1; color: var(--mava-ouro);">MAVA</span>
             </div>
         </a>
         <div class="ms-auto">
-            <a href="/" class="btn btn-outline-light btn-sm rounded-pill px-3 px-md-4 fw-bold">
-                <i class="bi bi-house-door-fill"></i> <span class="d-none d-sm-inline ms-1">Início</span>
+            <a href="/" class="btn btn-sm rounded-pill px-3 px-md-4 fw-bold hover-scale" style="background: transparent; color: #cbd5e1; border: 1px solid #64748b;">
+                <i class="bi bi-house-door-fill d-inline d-sm-none"></i> <span class="d-none d-sm-inline">Início</span>
             </a>
         </div>
     </div>
@@ -121,44 +152,44 @@
 <div class="container pb-5">
 
     <div th:if="${mensagemErro}" class="alert alert-premium alert-dismissible fade show mb-4 d-flex align-items-center gap-3 p-4" role="alert">
-        <div class="bg-danger bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; flex-shrink: 0;">
-            <i class="bi bi-shield-lock-fill fs-4 text-danger"></i>
+        <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 50px; height: 50px; background-color: #f8d7da;">
+            <i class="bi bi-shield-lock-fill fs-4" style="color: var(--mava-danger);"></i>
         </div>
         <div>
             <h6 class="alert-heading fw-bold mb-1 text-danger">Ação Bloqueada!</h6>
-            <span class="small fw-semibold text-muted" th:text="${mensagemErro}">Erro.</span>
+            <span class="small fw-medium text-muted lh-sm d-block" th:text="${mensagemErro}">Erro.</span>
         </div>
         <button type="button" class="btn-close ms-md-auto" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 
     <div th:if="${mensagemSucesso}" class="alert alert-success-premium alert-dismissible fade show mb-4 d-flex align-items-center gap-3 p-4" role="alert">
-        <div class="bg-success bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; flex-shrink: 0;">
-            <i class="bi bi-check-circle-fill fs-4 text-success"></i>
+        <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 50px; height: 50px; background-color: #d1e7dd;">
+            <i class="bi bi-check-circle-fill fs-4" style="color: var(--mava-success);"></i>
         </div>
         <div>
             <h6 class="alert-heading fw-bold mb-1 text-success">Sucesso!</h6>
-            <span class="small fw-semibold text-muted" th:text="${mensagemSucesso}">Ação realizada.</span>
+            <span class="small fw-medium text-muted lh-sm d-block" th:text="${mensagemSucesso}">Ação realizada.</span>
         </div>
         <button type="button" class="btn-close ms-md-auto" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 
     <div class="d-flex flex-column flex-xl-row justify-content-between align-items-start align-items-xl-center mb-4 gap-3">
         <div>
-            <h4 class="fw-bold mb-1" style="color: var(--texto-escuro);"><i class="bi bi-boxes me-2 text-muted"></i>Gestão de Almoxarifado</h4>
-            <span class="text-muted small">Controle o inventário, registre famílias e faça doações.</span>
+            <h4 class="fw-bold mb-1" style="color: var(--mava-grafite);"><i class="bi bi-boxes me-2" style="color: var(--mava-ouro);"></i>Gestão de Almoxarifado</h4>
+            <span class="text-muted small fw-medium">Controle o inventário, registre famílias e faça doações.</span>
         </div>
 
         <div class="d-flex flex-column flex-sm-row flex-wrap gap-2 w-100 w-xl-auto">
-            <a th:href="@{/familias}" class="btn-dash btn-roxo shadow-sm flex-grow-1 text-nowrap">
+            <a th:href="@{/familias}" class="btn-dash familia flex-grow-1 text-nowrap">
                 <i class="bi bi-people-fill"></i> Famílias
             </a>
-            <a th:href="@{/estoque/movimentar}" class="btn-dash btn-amarelo shadow-sm flex-grow-1 text-nowrap">
+            <a th:href="@{/estoque/movimentar}" class="btn-dash movimentar flex-grow-1 text-nowrap">
                 <i class="bi bi-arrow-left-right"></i> Entradas / Saídas
             </a>
-            <a th:href="@{/estoque/cesta}" class="btn-dash btn-verde shadow-sm flex-grow-1 text-nowrap">
+            <a th:href="@{/estoque/cesta}" class="btn-dash cesta flex-grow-1 text-nowrap">
                 <i class="bi bi-basket-fill"></i> Montar Cesta
             </a>
-            <a th:href="@{/estoque/novo}" class="btn-dash btn-azul shadow-sm flex-grow-1 text-nowrap">
+            <a th:href="@{/estoque/novo}" class="btn-dash novo shadow-sm flex-grow-1 text-nowrap">
                 <i class="bi bi-plus-lg"></i> Novo Item
             </a>
         </div>
@@ -168,10 +199,10 @@
         <div class="col-12 col-md-6 col-lg-4">
             <form th:action="@{/estoque/lista}" method="get">
                 <div class="input-group search-group shadow-sm" style="border-radius: 12px;">
-                    <span class="input-group-text bg-white border-end-0" style="border-top-left-radius: 12px; border-bottom-left-radius: 12px;">
+                    <span class="input-group-text bg-white border-end-0" style="border-top-left-radius: 12px; border-bottom-left-radius: 12px; border-color: var(--cinza-subtil);">
                         <i class="bi bi-search text-muted"></i>
                     </span>
-                    <input type="text" name="busca" class="form-control input-arredondado border-start-0 ps-0" placeholder="Buscar produto..." th:value="${busca}">
+                    <input type="text" name="busca" class="form-control input-arredondado border-start-0 ps-0 fw-medium" placeholder="Buscar produto..." th:value="${busca}">
                     <button class="btn px-4" type="submit">Filtrar</button>
                 </div>
             </form>
@@ -193,24 +224,24 @@
                 <div class="d-flex justify-content-between align-items-start mb-3">
                     <div class="d-flex gap-3 align-items-center">
                         <div class="produto-icone"
-                             th:classappend="${p.categoria.name() == 'ALIMENTOS' ? 'bg-warning bg-opacity-10 text-warning' :
-                                              (p.categoria.name() == 'LIMPEZA' ? 'bg-info bg-opacity-10 text-info' :
-                                              (p.categoria.name() == 'HIGIENE' ? 'bg-danger bg-opacity-10 text-danger' :
-                                              (p.categoria.name() == 'VESTUARIO' ? 'bg-primary bg-opacity-10 text-primary' : 'bg-secondary bg-opacity-10 text-secondary')))}">
+                             th:classappend="${p.categoria.name() == 'ALIMENTOS' ? 'bg-ouro-premium' :
+                                              (p.categoria.name() == 'LIMPEZA' ? 'bg-limpeza-premium' :
+                                              (p.categoria.name() == 'HIGIENE' ? 'bg-higiene-premium' :
+                                              (p.categoria.name() == 'VESTUARIO' ? 'bg-vestuario-premium' : 'bg-outros-premium')))}">
                             <i class="bi" th:classappend="${p.categoria.name() == 'ALIMENTOS' ? 'bi-basket' :
                                                           (p.categoria.name() == 'LIMPEZA' ? 'bi-droplet-half' :
                                                           (p.categoria.name() == 'HIGIENE' ? 'bi-emoji-smile' :
                                                           (p.categoria.name() == 'VESTUARIO' ? 'bi-tag' : 'bi-box-seam')))}"></i>
                         </div>
                         <div>
-                            <h5 class="fw-bold mb-0 text-truncate" style="max-width: 150px; color: var(--texto-escuro);" th:text="${p.nome}">Nome</h5>
-                            <small class="text-muted fw-semibold" style="font-size: 0.75rem; letter-spacing: 0.5px;" th:text="${p.categoria}">CATEGORIA</small>
+                            <h5 class="fw-bold mb-0 text-truncate" style="max-width: 150px; color: var(--mava-grafite);" th:text="${p.nome}">Nome</h5>
+                            <small class="text-muted fw-semibold" style="font-size: 0.75rem; letter-spacing: 1px;" th:text="${p.categoria}">CATEGORIA</small>
                         </div>
                     </div>
 
                     <div class="d-flex gap-1">
                         <a th:href="@{/estoque/editar/{id}(id=${p.id})}" class="btn-card-acao edit" title="Editar"><i class="bi bi-pencil-fill"></i></a>
-                        <a th:href="@{/estoque/excluir/{id}(id=${p.id})}" class="btn-card-acao delete" title="Excluir" onclick="return confirm('Deseja excluir?')"><i class="bi bi-trash3-fill"></i></a>
+                        <a th:href="@{/estoque/excluir/{id}(id=${p.id})}" class="btn-card-acao delete" title="Excluir" onclick="return confirm('ATENÇÃO: Deseja realmente excluir este produto? Todo o histórico de movimentações também será apagado.');"><i class="bi bi-trash3-fill"></i></a>
                     </div>
                 </div>
 
@@ -219,7 +250,7 @@
                         <span class="estoque-numero" th:classappend="${p.quantidadeAtual <= p.estoqueMinimo} ? 'text-danger' : 'text-success'" th:text="${p.quantidadeAtual}">0</span>
                         <span class="text-muted fw-bold" th:text="${p.unidade}">UN</span>
                     </div>
-                    <small class="text-muted"><i class="bi bi-bell-fill me-1 opacity-50"></i> Mínimo ideal: <span th:text="${p.estoqueMinimo}"></span></small>
+                    <small class="text-muted fw-medium"><i class="bi bi-bell-fill me-1" style="color: var(--mava-ouro); opacity: 0.6;"></i> Mínimo ideal: <span th:text="${p.estoqueMinimo}"></span></small>
                 </div>
 
                 <div class="progress-estoque mb-4">
@@ -230,38 +261,39 @@
                 </div>
 
                 <!-- Spacer para empurrar o bloco de validades pro fundo do card -->
-                <div class="mt-auto pt-2 border-top">
+                <div class="mt-auto pt-2 border-top" style="border-color: var(--cinza-subtil) !important;">
                     <!-- BOTÃO COLLAPSE USANDO INDEX (100% SEGURO) -->
-                    <button class="btn btn-light w-100 text-start fw-bold shadow-sm d-flex justify-content-between align-items-center"
-                            style="border-radius: 12px; color: var(--texto-escuro);"
-                            type="button" data-bs-toggle="collapse" th:data-bs-target="|#box-lote-${stat.index}|" aria-expanded="false">
-                        <span><i class="bi bi-calendar-range me-2" style="color: var(--azul-petroleo);"></i> Lotes e Validades</span>
+                    <button class="btn w-100 text-start fw-bold d-flex justify-content-between align-items-center"
+                            style="border-radius: 12px; color: var(--texto-escuro); background-color: #f8fafc; border: 1px solid var(--cinza-subtil);"
+                            type="button" data-bs-toggle="collapse" th:data-bs-target="|#box-lote-${stat.index}|" aria-expanded="false"
+                            onmouseover="this.style.borderColor='var(--mava-ouro)'; this.style.backgroundColor='#ffffff';" onmouseout="this.style.borderColor='var(--cinza-subtil)'; this.style.backgroundColor='#f8fafc';">
+                        <span><i class="bi bi-calendar-range me-2" style="color: var(--mava-ouro);"></i> Lotes e Validades</span>
                         <i class="bi bi-chevron-down small text-muted"></i>
                     </button>
 
                     <!-- CONTEÚDO QUE EXPANDE (Totalmente isolado pelo INDEX) -->
                     <div class="collapse mt-2" th:id="|box-lote-${stat.index}|">
-                        <div class="d-flex flex-column gap-2 bg-white p-3 border" style="border-radius: 12px;">
+                        <div class="d-flex flex-column gap-2 p-3 border" style="border-radius: 12px; background-color: #ffffff; border-color: var(--cinza-subtil) !important;">
 
                             <div th:if="${lotesPorProduto != null and lotesPorProduto.containsKey(p.id)}"
                                  th:each="lote : ${lotesPorProduto.get(p.id)}"
-                                 class="d-flex justify-content-between align-items-center border-bottom pb-2">
+                                 class="d-flex justify-content-between align-items-center border-bottom pb-2" style="border-color: var(--cinza-subtil) !important;">
 
                                 <div class="d-flex flex-column">
-                                    <span class="small fw-bold text-muted" th:text="${lote.quantidade} + ' ' + ${p.unidade} + ' (' + ${lote.tipo} + ')'">10 UN</span>
-                                    <small class="text-muted" style="font-size: 0.7rem;" th:text="'Entrou em: ' + ${#temporals.format(lote.dataHora, 'dd/MM/yyyy')}"></small>
+                                    <span class="small fw-bold" style="color: var(--mava-grafite);" th:text="${lote.quantidade} + ' ' + ${p.unidade} + ' (' + ${lote.tipo} + ')'">10 UN</span>
+                                    <small class="text-muted fw-medium" style="font-size: 0.7rem;" th:text="'Entrou em: ' + ${#temporals.format(lote.dataHora, 'dd/MM/yyyy')}"></small>
                                 </div>
 
                                 <span th:with="hoje=${#temporals.createToday()}, limite=${hoje.plusDays(30)}, vencido=${lote.dataValidade.isBefore(hoje)}, alerta=${(lote.dataValidade.isEqual(hoje) or lote.dataValidade.isAfter(hoje)) and lote.dataValidade.isBefore(limite)}"
-                                      th:classappend="${vencido} ? 'bg-danger text-white' : (${alerta} ? 'bg-warning text-dark' : 'bg-success-subtle text-success border border-success')"
-                                      class="badge p-2 shadow-sm" style="font-size: 0.75rem;">
+                                      th:classappend="${vencido} ? 'bg-danger text-white' : (${alerta} ? 'bg-warning text-dark' : 'bg-success text-white')"
+                                      class="badge p-2 shadow-sm" style="font-size: 0.75rem; font-weight: 600; letter-spacing: 0.5px;">
                                     <i class="bi" th:classappend="${vencido} ? 'bi-x-octagon-fill' : (${alerta} ? 'bi-exclamation-triangle-fill' : 'bi-check-circle-fill')"></i>
                                     Vence: <span th:text="${#temporals.format(lote.dataValidade, 'dd/MM/yyyy')}"></span>
                                 </span>
                             </div>
 
                             <div th:unless="${lotesPorProduto != null and lotesPorProduto.containsKey(p.id)}" class="text-center py-2">
-                                <small class="text-muted fst-italic">Sem lotes perecíveis.</small>
+                                <small class="text-muted fw-medium fst-italic">Sem lotes perecíveis registrados.</small>
                             </div>
 
                         </div>
@@ -273,9 +305,11 @@
 
         <div class="col-12" th:if="${#lists.isEmpty(produtos)}">
             <div class="card-3d p-5 text-center">
-                <i class="bi bi-inbox display-1 text-muted opacity-25 mb-3 d-block"></i>
-                <h4 class="fw-bold text-muted">Seu almoxarifado está vazio</h4>
-                <p class="text-muted">Utilize o botão "Novo Item" para adicionar produtos ao seu estoque.</p>
+                <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3 shadow-sm" style="width: 80px; height: 80px; background-color: rgba(197, 160, 89, 0.1);">
+                    <i class="bi bi-inbox fs-1" style="color: var(--mava-ouro);"></i>
+                </div>
+                <h4 class="fw-bold" style="color: var(--mava-grafite);">Seu almoxarifado está vazio</h4>
+                <p class="text-muted fw-medium">Utilize o botão "Novo Item" para adicionar produtos ao seu estoque.</p>
             </div>
         </div>
 

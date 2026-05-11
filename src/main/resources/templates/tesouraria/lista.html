@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Tesouraria | Mava</title>
+    <title>Portal MAVA | Tesouraria</title>
 
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
@@ -13,60 +14,71 @@
 
     <style>
         :root {
-            --azul-petroleo: #0c5465;
-            --azul-claro: #d1e7ed;
-            --texto-escuro: #2c3e50;
-            --verde-sucesso: #198754;
-            --vermelho-erro: #dc3545;
+            /* Paleta MAVA - Light Premium */
+            --mava-ouro: #c5a059;
+            --mava-ouro-light: #dfc48c;
+            --mava-grafite: #111111;
+            --mava-bg-light: #f4f6f9;
+            --texto-escuro: #2d3436;
+            --texto-muted: #636e72;
+            --mava-success: #198754;
+            --mava-danger: #dc3545;
+            --cinza-subtil: #e2e8f0;
         }
 
         body {
-            background-color: #f0f2f5;
-            font-family: 'Segoe UI', sans-serif;
+            background-color: var(--mava-bg-light);
+            font-family: 'Poppins', sans-serif;
             min-height: 100vh;
+            color: var(--texto-escuro);
         }
 
-        /* --- NAVBAR --- */
-        .navbar-manancial {
-            background: linear-gradient(135deg, #0c5465, #146c82);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        /* --- NAVBAR GRAFITE --- */
+        .navbar-mava {
+            background: var(--mava-grafite);
+            border-bottom: 2px solid var(--mava-ouro);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
+        .navbar-brand img { background: transparent !important; filter: drop-shadow(0 0 5px rgba(197, 160, 89, 0.4)); }
 
-        /* --- PADRÃO MANANCIAL DE CARDS --- */
+        /* --- PADRÃO MAVA DE CARDS --- */
         .card-3d {
-            background: #ffffff; border: none; border-radius: 20px;
-            box-shadow: 0 10px 20px rgba(12, 84, 101, 0.08);
+            background: #ffffff; border: none; border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.04);
             position: relative; overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
         .card-topo-detalhe {
-            height: 6px; width: 100%; position: absolute; top: 0; left: 0;
-            background: var(--azul-petroleo);
+            height: 4px; width: 100%; position: absolute; top: 0; left: 0;
+            background: linear-gradient(90deg, transparent, var(--mava-ouro), transparent);
         }
 
         /* --- DASHBOARD BOTÕES --- */
-        .btn-dash { border-radius: 12px; font-weight: 700; padding: 0.6rem 1.2rem; transition: all 0.3s ease; border: none; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .btn-azul { background-color: var(--azul-petroleo); color: white; }
-        .btn-outline-dash { background-color: white; color: var(--azul-petroleo); border: 2px solid var(--azul-claro); }
+        .btn-dash { border-radius: 12px; font-weight: 600; padding: 0.6rem 1.2rem; transition: all 0.3s ease; border: none; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-mava { background-color: var(--mava-ouro); color: white; box-shadow: 0 4px 10px rgba(197, 160, 89, 0.2); }
+        .btn-outline-mava { background-color: #ffffff; color: var(--texto-muted); border: 1px solid var(--cinza-subtil); }
 
         /* --- WIDGETS FINANCEIROS (KPIs Premium) --- */
         .kpi-card {
-            border-radius: 20px; padding: 1.5rem;
+            border-radius: 16px; padding: 1.5rem;
             display: flex; align-items: center; justify-content: space-between;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.06);
             transition: transform 0.2s; color: white; height: 100%;
-            border: none;
+            border: none; position: relative; overflow: hidden;
         }
 
-        .kpi-bg-entrada { background: linear-gradient(135deg, #198754, #146c43); }
-        .kpi-bg-saida { background: linear-gradient(135deg, #dc3545, #b02a37); }
-        .kpi-bg-saldo { background: linear-gradient(135deg, #0c5465, #05242b); }
+        /* Mantemos o Verde e Vermelho para finanças, mas com gradientes refinados */
+        .kpi-bg-entrada { background: linear-gradient(135deg, #198754, #125735); }
+        .kpi-bg-saida { background: linear-gradient(135deg, #dc3545, #a32230); }
+        /* O Saldo ganha a identidade Ouro da MAVA */
+        .kpi-bg-saldo { background: linear-gradient(135deg, var(--mava-ouro), #9e7f45); }
 
-        .kpi-titulo { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; opacity: 0.8; margin-bottom: 0.2rem; }
-        .kpi-valor { font-size: 2.2rem; font-weight: 900; line-height: 1; letter-spacing: -1px; }
+        .kpi-titulo { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; opacity: 0.9; margin-bottom: 0.2rem; }
+        .kpi-valor { font-size: 2.2rem; font-weight: 800; line-height: 1; letter-spacing: -1px; }
 
         .kpi-icon {
-            width: 55px; height: 55px; border-radius: 16px;
+            width: 55px; height: 55px; border-radius: 14px;
             display: flex; align-items: center; justify-content: center;
             font-size: 2rem; background-color: rgba(255,255,255,0.15); flex-shrink: 0;
         }
@@ -82,52 +94,62 @@
 
         /* --- TABELA MODERNA --- */
         .table-moderna { border-collapse: separate; border-spacing: 0 8px; margin-top: -8px; }
-        .table-moderna th { text-transform: uppercase; font-size: 0.75rem; letter-spacing: 1px; color: #6c757d; border: none; padding: 0 1rem 10px 1rem; font-weight: 700; white-space: nowrap; }
-        .table-moderna td { vertical-align: middle; background-color: #ffffff; border-top: 1px solid #f8f9fa; border-bottom: 1px solid #f8f9fa; padding: 1.2rem 1rem; transition: all 0.2s; }
-        .table-moderna td:first-child { border-left: 1px solid #f8f9fa; border-top-left-radius: 12px; border-bottom-left-radius: 12px; }
-        .table-moderna td:last-child { border-right: 1px solid #f8f9fa; border-top-right-radius: 12px; border-bottom-right-radius: 12px; }
+        .table-moderna th { text-transform: uppercase; font-size: 0.75rem; letter-spacing: 1.5px; color: var(--texto-muted); border: none; padding: 0 1rem 10px 1rem; font-weight: 700; white-space: nowrap; }
+        .table-moderna td { vertical-align: middle; background-color: #ffffff; border-top: 1px solid #f8fafc; border-bottom: 1px solid #f8fafc; padding: 1.2rem 1rem; transition: all 0.2s; }
+        .table-moderna td:first-child { border-left: 1px solid #f8fafc; border-top-left-radius: 12px; border-bottom-left-radius: 12px; }
+        .table-moderna td:last-child { border-right: 1px solid #f8fafc; border-top-right-radius: 12px; border-bottom-right-radius: 12px; }
         .table-moderna tbody tr { transition: transform 0.2s, box-shadow 0.2s; }
 
         .badge-categoria {
-            font-weight: 700; padding: 0.4rem 0.8rem; border-radius: 8px; font-size: 0.7rem; letter-spacing: 0.5px;
+            font-weight: 600; padding: 0.4rem 0.8rem; border-radius: 8px; font-size: 0.7rem; letter-spacing: 0.5px;
             display: inline-block; white-space: nowrap;
         }
 
         /* Botões de Ação na Tabela */
-        .btn-acao-tabela { width: 35px; height: 35px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; background-color: transparent; border: none; color: #adb5bd; transition: all 0.2s; }
+        .btn-acao-tabela { width: 35px; height: 35px; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; background-color: transparent; border: 1px solid transparent; color: #cbd5e1; transition: all 0.2s; }
 
         .hover-scale { transition: transform 0.2s; }
 
-        /* --- ESTILOS DO CALENDÁRIO --- */
-        .fc-theme-standard .fc-scrollgrid { border-radius: 12px; overflow: hidden; border-color: #dee2e6; }
-        .fc-header-toolbar { padding: 0.5rem 0; margin-bottom: 1rem !important; }
-        .fc-toolbar-title { font-size: 1.25rem !important; font-weight: 700 !important; color: var(--texto-escuro); text-transform: capitalize; }
-        .fc-button-primary { background-color: var(--azul-petroleo) !important; border-color: var(--azul-petroleo) !important; border-radius: 8px !important; text-transform: capitalize !important; font-weight: 600 !important; }
-        .fc-button-active { background-color: #05242b !important; border-color: #05242b !important; }
-        .fc-daygrid-day-number { font-weight: 600; color: #6c757d; text-decoration: none; padding: 8px !important; }
-        .fc-day-today { background-color: #f8f9fa !important; }
+        /* --- ESTILOS DO CALENDÁRIO MAVA --- */
+        .fc { font-family: 'Poppins', sans-serif; --fc-border-color: var(--cinza-subtil); }
+        .fc-theme-standard .fc-scrollgrid { border-radius: 12px; overflow: hidden; border-color: var(--cinza-subtil) !important; }
+        .fc-theme-standard td, .fc-theme-standard th { border-color: var(--cinza-subtil) !important; }
+        .fc-header-toolbar { padding: 0.5rem 0; margin-bottom: 1.5rem !important; }
+        .fc-toolbar-title { font-size: 1.3rem !important; font-weight: 800 !important; color: var(--mava-grafite); text-transform: uppercase; }
 
-        /* --- AJUSTE PREMIUM: QUEBRA DE LINHA NO CALENDÁRIO --- */
+        .fc-button-primary {
+            background-color: #ffffff !important; border-color: var(--cinza-subtil) !important; color: var(--texto-escuro) !important;
+            border-radius: 8px !important; text-transform: uppercase !important; font-weight: 600 !important; font-size: 0.75rem !important; letter-spacing: 0.5px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important; transition: all 0.2s !important;
+        }
+        .fc-button-active { background-color: var(--mava-ouro) !important; border-color: var(--mava-ouro) !important; color: #ffffff !important; box-shadow: 0 4px 10px rgba(197, 160, 89, 0.2) !important; }
+
+        .fc-col-header-cell { background-color: #f8fafc; border-bottom: 2px solid var(--cinza-subtil) !important; padding: 8px 0 !important; }
+        .fc-daygrid-day-number { font-weight: 600; color: var(--texto-escuro); text-decoration: none; padding: 8px !important; font-size: 0.85rem; }
+        .fc-day-today { background-color: #fcfaf5 !important; }
+        .fc-day-today .fc-daygrid-day-number { color: #ffffff; background-color: var(--mava-ouro); border-radius: 8px; width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center; margin: 4px; }
+
+        /* Ajuste de Quebra de Linha Evento */
         .fc-event {
             cursor: pointer; border: none !important; border-radius: 6px !important;
             padding: 2px !important; font-size: 0.75rem !important; font-weight: 600 !important;
-            margin-bottom: 2px !important; box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 3px !important; box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
-        .fc-event-main { white-space: normal !important; padding: 4px 6px !important; }
+        .fc-event-main { white-space: normal !important; padding: 4px 6px !important; color: var(--texto-escuro); }
         .fc-event-title { white-space: normal !important; word-wrap: break-word !important; line-height: 1.3 !important; }
 
         /* === REGRAS DE HOVER APENAS PARA DESKTOP === */
         @media (hover: hover) and (pointer: fine) {
-            .btn-dash:hover { transform: translateY(-3px); }
-            .btn-azul:hover { background-color: #093e4b; color: white; box-shadow: 0 6px 15px rgba(12, 84, 101, 0.3); }
-            .btn-outline-dash:hover { background-color: var(--azul-claro); }
-            .kpi-card:hover { transform: translateY(-5px); }
-            .table-moderna tbody tr:hover td { background-color: #f8f9fa; border-color: #e9ecef; }
+            .btn-dash:hover { transform: translateY(-2px); }
+            .btn-mava:hover { background-color: #b38f4d; color: white; box-shadow: 0 6px 15px rgba(197, 160, 89, 0.3); }
+            .btn-outline-mava:hover { border-color: var(--mava-ouro); color: var(--mava-ouro); background-color: rgba(197, 160, 89, 0.05); }
+            .kpi-card:hover { transform: translateY(-4px); box-shadow: 0 12px 25px rgba(0,0,0,0.1); }
+            .table-moderna tbody tr:hover td { background-color: #f8fafc; border-color: #e2e8f0; }
             .table-moderna tbody tr:hover { transform: scale(1.005); box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
-            .btn-acao-tabela:hover.edit { background-color: var(--azul-claro); color: var(--azul-petroleo); }
-            .btn-acao-tabela:hover.delete { background-color: #ffe6e6; color: var(--vermelho-erro); }
+            .btn-acao-tabela:hover.edit { background-color: rgba(197, 160, 89, 0.1); color: var(--mava-ouro); border-color: var(--mava-ouro-light); }
+            .btn-acao-tabela:hover.delete { background-color: #f8d7da; color: var(--mava-danger); border-color: #f5c2c7; }
             .hover-scale:hover { transform: scale(1.05); }
-            .fc-button-primary:hover { background-color: #093e4b !important; }
+            .fc-button-primary:not(.fc-button-active):hover { background-color: #f8fafc !important; border-color: var(--mava-ouro) !important; color: var(--mava-ouro) !important; }
         }
 
         /* === AJUSTES MOBILE EXCLUSIVOS === */
@@ -145,8 +167,8 @@
             .kpi-icon { width: 45px; height: 45px; font-size: 1.5rem; }
 
             /* Calendário Mobile */
-            .fc-toolbar-title { font-size: 1rem !important; }
-            .fc .fc-button { padding: 6px 12px !important; font-size: 0.75rem !important; }
+            .fc-toolbar-title { font-size: 1.1rem !important; }
+            .fc .fc-button { padding: 6px 12px !important; font-size: 0.7rem !important; }
             .fc-header-toolbar { flex-wrap: wrap; gap: 8px; justify-content: center !important; }
             .fc-toolbar-chunk { display: flex; justify-content: center; width: 100%; }
 
@@ -159,20 +181,20 @@
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-dark navbar-manancial mb-3 mb-lg-5 sticky-top">
+<nav class="navbar navbar-expand-lg navbar-dark navbar-mava mb-3 mb-lg-5 sticky-top">
     <div class="container">
         <a class="navbar-brand d-flex align-items-center gap-2 gap-md-3" href="/">
-            <img th:src="@{/img/logo.png}" alt="Logo" width="42" height="42" class="bg-white rounded-circle p-1 shadow-sm">
+            <img th:src="@{/img/logo.png}" alt="Logo MAVA" width="42" height="42">
             <div class="d-flex flex-column text-white">
-                <span class="fw-bold text-uppercase" style="letter-spacing: 1px; font-size: 1rem; line-height: 1.1;">Mava</span>
+                <span class="fw-bold text-uppercase" style="letter-spacing: 2px; font-size: 1rem; line-height: 1.1; color: var(--mava-ouro);">MAVA</span>
             </div>
         </a>
 
         <div class="ms-auto d-flex gap-2 gap-md-3 align-items-center">
-            <span class="text-white opacity-75 d-none d-md-block small text-uppercase fw-bold" style="letter-spacing: 1px;">
+            <span class="text-white opacity-75 d-none d-md-block small text-uppercase fw-bold" style="letter-spacing: 1px; color: #cbd5e1 !important;">
                 Tesouraria
             </span>
-            <a href="/" class="btn btn-outline-light btn-sm rounded-pill px-3 px-md-4 fw-bold hover-scale text-nowrap">
+            <a href="/" class="btn btn-sm rounded-pill px-3 px-md-4 fw-bold hover-scale text-nowrap" style="background: transparent; color: #cbd5e1; border: 1px solid #64748b;">
                 <i class="bi bi-grid-3x3-gap-fill me-1"></i> <span class="d-none d-sm-inline">Painel Geral</span><span class="d-inline d-sm-none">Voltar</span>
             </a>
         </div>
@@ -183,25 +205,25 @@
 
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
         <div>
-            <h4 class="fw-bold mb-1" style="color: var(--texto-escuro);"><i class="bi bi-wallet2 me-2 text-muted"></i>Gestão Financeira</h4>
+            <h4 class="fw-bold mb-1" style="color: var(--mava-grafite);"><i class="bi bi-wallet2 me-2" style="color: var(--mava-ouro);"></i>Gestão Financeira</h4>
             <span class="text-muted small lh-sm d-block">Acompanhamento do livro caixa e balanço contábil.</span>
         </div>
 
         <div class="d-flex gap-2 botoes-topo">
-            <button onclick="togglePrivacidade()" id="btnPrivacidade" class="btn-dash btn-outline-dash shadow-sm" title="Ocultar/Mostrar Valores na Tela">
+            <button onclick="togglePrivacidade()" id="btnPrivacidade" class="btn-dash btn-outline-mava shadow-sm" title="Ocultar/Mostrar Valores na Tela">
                 <i class="bi bi-eye-slash-fill fs-5" id="iconeOlho"></i> <span id="textoPrivacidade" class="d-none d-sm-inline">Ocultar Valores</span>
             </button>
-            <a href="/tesouraria/novo" class="btn-dash btn-azul shadow-sm">
+            <a href="/tesouraria/novo" class="btn-dash btn-mava shadow-sm">
                 <i class="bi bi-plus-lg fs-5"></i> Novo Lançamento
             </a>
         </div>
     </div>
 
-    <div class="card-3d p-3 p-md-4 mb-4 filtro-box">
+    <div class="card-3d p-3 p-md-4 mb-4 filtro-box" style="border: 1px solid var(--cinza-subtil);">
         <form th:action="@{/tesouraria}" method="get" class="row g-2 g-md-3 align-items-end m-0">
             <div class="col-6 col-md-4">
-                <label class="form-label small fw-bold" style="color: var(--texto-escuro);"><i class="bi bi-calendar-month me-1"></i> Mês</label>
-                <select name="mes" class="form-select rounded-pill shadow-sm border-0 bg-light">
+                <label class="form-label small fw-bold" style="color: var(--texto-escuro);"><i class="bi bi-calendar-month me-1" style="color: var(--mava-ouro);"></i> Mês</label>
+                <select name="mes" class="form-select rounded-pill shadow-sm border-0" style="background-color: #f8fafc; font-weight: 500;">
                     <option value="1" th:selected="${mesAtual == 1}">Janeiro</option>
                     <option value="2" th:selected="${mesAtual == 2}">Fevereiro</option>
                     <option value="3" th:selected="${mesAtual == 3}">Março</option>
@@ -217,8 +239,8 @@
                 </select>
             </div>
             <div class="col-6 col-md-4">
-                <label class="form-label small fw-bold" style="color: var(--texto-escuro);"><i class="bi bi-calendar-event me-1"></i> Ano</label>
-                <select name="ano" class="form-select rounded-pill shadow-sm border-0 bg-light">
+                <label class="form-label small fw-bold" style="color: var(--texto-escuro);"><i class="bi bi-calendar-event me-1" style="color: var(--mava-ouro);"></i> Ano</label>
+                <select name="ano" class="form-select rounded-pill shadow-sm border-0" style="background-color: #f8fafc; font-weight: 500;">
                     <option value="2024" th:selected="${anoAtual == 2024}">2024</option>
                     <option value="2025" th:selected="${anoAtual == 2025}">2025</option>
                     <option value="2026" th:selected="${anoAtual == 2026}">2026</option>
@@ -229,7 +251,7 @@
                 </select>
             </div>
             <div class="col-12 col-md-4 mt-3 mt-md-0">
-                <button type="submit" class="btn btn-dash btn-outline-dash w-100 rounded-pill shadow-sm d-flex justify-content-center">
+                <button type="submit" class="btn btn-dash btn-outline-mava w-100 rounded-pill shadow-sm d-flex justify-content-center">
                     <i class="bi bi-funnel-fill me-2"></i> <span class="d-md-none d-lg-inline">Aplicar Filtro</span><span class="d-none d-md-inline d-lg-none">Filtrar</span>
                 </button>
             </div>
@@ -260,7 +282,7 @@
         <div class="col-12 col-md-4">
             <div class="kpi-card kpi-bg-saldo">
                 <div>
-                    <div class="kpi-titulo" style="color: #b6effb;">Saldo do Mês</div>
+                    <div class="kpi-titulo" style="color: #fffaf0;">Saldo do Mês</div>
                     <div class="kpi-valor valor-confidencial" th:text="${'R$ ' + #numbers.formatDecimal(saldo, 1, 'POINT', 2, 'COMMA')}">R$ 0,00</div>
                 </div>
                 <div class="kpi-icon"><i class="bi bi-safe2"></i></div>
@@ -270,12 +292,12 @@
 
     <div class="card-3d p-3 p-md-4 mb-4">
         <div class="card-topo-detalhe"></div>
-        <div class="d-flex align-items-center mb-3 mb-md-4">
-            <div class="bg-light rounded-circle d-flex align-items-center justify-content-center me-3 shadow-sm flex-shrink-0" style="width: 50px; height: 50px;">
-                <i class="bi bi-calendar-week fs-4" style="color: var(--azul-petroleo);"></i>
+        <div class="d-flex align-items-center mb-3 mb-md-4 mt-1">
+            <div class="rounded-circle d-flex align-items-center justify-content-center me-3 shadow-sm flex-shrink-0" style="width: 50px; height: 50px; background-color: rgba(197, 160, 89, 0.1);">
+                <i class="bi bi-calendar-week fs-4" style="color: var(--mava-ouro);"></i>
             </div>
             <div>
-                <h5 class="mb-0 fw-bold" style="color: var(--texto-escuro); letter-spacing: -0.5px;">Agenda Financeira</h5>
+                <h5 class="mb-0 fw-bold" style="color: var(--mava-grafite); letter-spacing: -0.5px;">Agenda Financeira</h5>
                 <small class="text-muted lh-sm d-block mt-1">Visão de todas as saídas e contas a pagar planejadas.</small>
             </div>
         </div>
@@ -307,16 +329,16 @@
 
                     <td class="ps-2 ps-md-3">
                         <div class="d-flex flex-column">
-                            <span class="fw-bold text-nowrap" style="color: var(--texto-escuro);" th:text="${#temporals.format(l.data, 'dd/MM/yyyy')}">01/01/2026</span>
+                            <span class="fw-bold text-nowrap" style="color: var(--mava-grafite);" th:text="${#temporals.format(l.data, 'dd/MM/yyyy')}">01/01/2026</span>
                         </div>
                     </td>
 
                     <td>
                         <div class="d-flex flex-column justify-content-center py-2">
-                            <h6 class="mb-1 fw-bold text-wrap" style="color: var(--texto-escuro); font-size: 1.05rem;" th:text="${l.observacao}">Descrição do pagamento ou doação</h6>
+                            <h6 class="mb-1 fw-bold text-wrap" style="color: var(--mava-grafite); font-size: 1.05rem;" th:text="${l.observacao}">Descrição do pagamento ou doação</h6>
 
                             <div class="d-flex align-items-center text-muted small fw-semibold text-nowrap" th:if="${l.getNomeExibicao() != null and !l.getNomeExibicao().isEmpty()}">
-                                <i class="bi bi-person-circle me-1 opacity-75"></i>
+                                <i class="bi bi-person-circle me-1 opacity-75" style="color: var(--mava-ouro);"></i>
                                 <span th:text="${l.getNomeExibicao()}" class="text-truncate" style="max-width: 200px;">João Silva</span>
                             </div>
                             <div th:unless="${l.getNomeExibicao() != null and !l.getNomeExibicao().isEmpty()}" class="text-muted small fst-italic">Lançamento Geral</div>
@@ -357,10 +379,10 @@
 
                 <tr th:if="${#lists.isEmpty(lancamentos)}">
                     <td colspan="5" class="text-center py-5 px-3">
-                        <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 70px; height: 70px;">
-                            <i class="bi bi-safe fs-2 text-muted opacity-50"></i>
+                        <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 70px; height: 70px; background-color: rgba(197, 160, 89, 0.1);">
+                            <i class="bi bi-safe fs-2" style="color: var(--mava-ouro);"></i>
                         </div>
-                        <h6 class="fw-bold text-muted">Nenhuma movimentação neste período.</h6>
+                        <h6 class="fw-bold" style="color: var(--mava-grafite);">Nenhuma movimentação neste período.</h6>
                         <p class="text-muted small mb-0">Selecione outro mês ou inicie um novo registro.</p>
                     </td>
                 </tr>
@@ -418,12 +440,13 @@
         if (ativar) {
             elementos.forEach(el => el.classList.remove("valor-revelado"));
             icon.className = "bi bi-eye-slash-fill fs-5";
-            btn.className = "btn-dash btn-outline-dash shadow-sm";
+            btn.className = "btn-dash btn-outline-mava shadow-sm";
             textoPrivacidade.innerText = "Valores Ocultos";
+            textoPrivacidade.classList.remove("text-white");
         } else {
             elementos.forEach(el => el.classList.add("valor-revelado"));
             icon.className = "bi bi-eye-fill fs-5 text-white";
-            btn.className = "btn-dash btn-azul shadow-sm";
+            btn.className = "btn-dash btn-mava shadow-sm";
             textoPrivacidade.innerText = "Ocultar Valores";
             textoPrivacidade.classList.add("text-white");
         }

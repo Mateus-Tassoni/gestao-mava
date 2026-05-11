@@ -1,42 +1,99 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Cadastro de Famílias | Mava</title>
+    <title>Portal MAVA | Cadastro de Famílias</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
     <style>
         :root {
-            --azul-petroleo: #0c5465;
-            --azul-claro: #d1e7ed;
-            --texto-escuro: #2c3e50;
-            --roxo-familia: #6f42c1;
+            /* Paleta MAVA - Light Premium */
+            --mava-ouro: #c5a059;
+            --mava-ouro-light: #dfc48c;
+            --mava-grafite: #111111;
+            --mava-bg-light: #f4f6f9;
+            --texto-escuro: #2d3436;
+            --texto-muted: #636e72;
+            --mava-success: #198754;
+            --mava-danger: #dc3545;
+            --cinza-subtil: #e2e8f0;
         }
 
-        body { background-color: #f0f2f5; font-family: 'Segoe UI', sans-serif; min-height: 100vh; }
-        .navbar-manancial { background: linear-gradient(135deg, #0c5465, #146c82); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
-        .card-3d { background: #ffffff; border: none; border-radius: 20px; box-shadow: 0 10px 20px rgba(12, 84, 101, 0.08); position: relative; overflow: hidden; }
-        .card-topo-detalhe { height: 6px; width: 100%; position: absolute; top: 0; left: 0; background: var(--roxo-familia); }
-        .form-label { color: var(--texto-escuro); font-weight: 700; font-size: 0.95rem; margin-bottom: 0.5rem; }
-        .input-arredondado { border-radius: 12px; padding: 0.75rem 1rem; border: 1px solid #dee2e6; transition: all 0.2s; background-color: #fff; }
-        .input-arredondado:focus { border-color: var(--roxo-familia); box-shadow: 0 0 0 0.25rem rgba(111, 66, 193, 0.15); outline: none; }
-        .input-group-text-moderno { background-color: #f8f9fa; border: 1px solid #dee2e6; border-right: none; border-top-left-radius: 12px; border-bottom-left-radius: 12px; color: #6c757d; }
-        .input-arredondado-group { border-top-left-radius: 0; border-bottom-left-radius: 0; border-left: none; }
-        .btn-manancial { background-color: var(--azul-petroleo); color: white; border-radius: 12px; font-weight: 700; transition: all 0.3s ease; }
-        .btn-manancial:hover { background-color: #093e4b; color: white; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(12, 84, 101, 0.2); }
-        .btn-cancelar { border-radius: 12px; font-weight: 600; color: #6c757d; background: transparent; border: 1px solid transparent; transition: all 0.2s; }
-        .btn-cancelar:hover { background-color: #e9ecef; color: var(--texto-escuro); }
-        .hover-scale { transition: transform 0.2s; }
-        .hover-scale:hover { transform: scale(1.05); }
+        body {
+            background-color: var(--mava-bg-light);
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+            color: var(--texto-escuro);
+        }
 
-        /* --- AJUSTES DE RESPONSIVIDADE PARA MOBILE --- */
+        /* --- NAVBAR GRAFITE --- */
+        .navbar-mava {
+            background: var(--mava-grafite);
+            border-bottom: 2px solid var(--mava-ouro);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .navbar-brand img { background: transparent !important; filter: drop-shadow(0 0 5px rgba(197, 160, 89, 0.4)); }
+
+        /* --- PADRÃO MAVA DE CARDS --- */
+        .card-3d {
+            background: #ffffff; border: none; border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.04);
+            position: relative; overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        .card-topo-detalhe {
+            height: 4px; width: 100%; position: absolute; top: 0; left: 0;
+            background: linear-gradient(90deg, transparent, var(--mava-ouro), transparent);
+        }
+
+        /* --- INPUTS --- */
+        .form-label { color: var(--texto-escuro); font-weight: 600; font-size: 0.95rem; margin-bottom: 0.5rem; }
+
+        .input-arredondado {
+            border-radius: 12px; padding: 0.75rem 1rem; border: 1px solid var(--cinza-subtil);
+            transition: all 0.2s; background-color: #fff; color: var(--texto-escuro);
+        }
+        .input-arredondado:focus {
+            border-color: var(--mava-ouro); box-shadow: 0 0 0 0.25rem rgba(197, 160, 89, 0.15); outline: none;
+        }
+
+        .input-group-text-moderno {
+            background-color: #f8fafc; border: 1px solid var(--cinza-subtil); border-right: none;
+            border-top-left-radius: 12px; border-bottom-left-radius: 12px; color: var(--texto-muted);
+        }
+        .input-arredondado-group { border-top-left-radius: 0; border-bottom-left-radius: 0; border-left: none; }
+
+        /* --- BOTÕES --- */
+        .btn-mava {
+            background-color: var(--mava-ouro); color: white; border-radius: 12px;
+            font-weight: 600; transition: all 0.3s ease; border: none;
+            box-shadow: 0 4px 10px rgba(197, 160, 89, 0.2);
+        }
+        .btn-cancelar {
+            border-radius: 12px; font-weight: 600; color: var(--texto-muted);
+            background: transparent; border: 1px solid transparent; transition: all 0.2s;
+        }
+
+        .hover-scale { transition: transform 0.2s; }
+
+        /* === REGRAS DE HOVER APENAS PARA DESKTOP === */
+        @media (hover: hover) and (pointer: fine) {
+            .card-3d:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(0,0,0,0.06); }
+            .btn-mava:hover { background-color: #b38f4d; color: white; transform: translateY(-2px); box-shadow: 0 6px 15px rgba(197, 160, 89, 0.3); }
+            .btn-cancelar:hover { background-color: #e2e8f0; color: var(--texto-escuro); }
+            .hover-scale:hover { transform: scale(1.05); }
+        }
+
+        /* === AJUSTES DE RESPONSIVIDADE PARA MOBILE === */
         @media (max-width: 576px) {
             .navbar-brand span { font-size: 0.85rem !important; }
-            .card-body { padding: 1.5rem !important; } /* Alivia espaçamento interno do card */
-            .endereco-box { padding: 1.2rem !important; } /* Alivia espaçamento da caixa cinza de endereço */
-            .btn-manancial, .btn-cancelar { width: 100%; text-align: center; } /* Botões em 100% */
+            .card-body { padding: 1.5rem !important; }
+            .endereco-box { padding: 1.2rem !important; }
+            .btn-mava, .btn-cancelar { width: 100%; text-align: center; }
         }
         @media (min-width: 576px) {
             .w-sm-auto { width: auto !important; }
@@ -45,18 +102,18 @@
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-dark navbar-manancial mb-4 mb-md-5 sticky-top">
+<nav class="navbar navbar-expand-lg navbar-dark navbar-mava mb-4 mb-md-5 sticky-top">
     <div class="container">
         <a class="navbar-brand d-flex align-items-center gap-2 gap-md-3" href="/">
-            <img th:src="@{/img/logo.png}" alt="Logo" width="40" height="40" class="bg-white rounded-circle p-1 shadow-sm">
+            <img th:src="@{/img/logo.png}" alt="Logo MAVA" width="40" height="40">
             <div class="d-flex flex-column text-white">
-                <span class="fw-bold text-uppercase" style="letter-spacing: 1px; font-size: 1rem; line-height: 1.1;">Mava</span>
+                <span class="fw-bold text-uppercase" style="letter-spacing: 2px; font-size: 1rem; line-height: 1.1; color: var(--mava-ouro);">MAVA</span>
             </div>
         </a>
 
         <div class="ms-auto d-flex gap-2 gap-md-3 align-items-center">
-            <span class="text-white opacity-75 d-none d-md-block small text-uppercase fw-bold" style="letter-spacing: 1px;">Gestão Social</span>
-            <a href="/familias" class="btn btn-outline-light btn-sm rounded-pill px-3 px-md-4 fw-bold hover-scale">
+            <span class="text-white opacity-75 d-none d-md-block small text-uppercase fw-bold" style="letter-spacing: 1px; color: #cbd5e1 !important;">Gestão Social</span>
+            <a href="/familias" class="btn btn-sm rounded-pill px-3 px-md-4 fw-bold hover-scale text-nowrap" style="background: transparent; color: #cbd5e1; border: 1px solid #64748b;">
                 <i class="bi bi-people-fill"></i> <span class="d-none d-sm-inline ms-1">Famílias</span>
             </a>
         </div>
@@ -65,7 +122,6 @@
 
 <div class="container pb-5">
     <div class="row justify-content-center">
-        <!-- Flexibilizando coluna para preencher melhor celular/tablet (col-12 col-md-11 col-lg-8) -->
         <div class="col-12 col-md-11 col-lg-8">
 
             <div class="mb-3 ps-1">
@@ -79,30 +135,28 @@
 
                 <div class="card-body p-4 p-md-5">
 
-                    <!-- Flex-column no mobile para empilhar o ícone e o texto -->
-                    <div class="d-flex flex-column flex-sm-row align-items-sm-center mb-4 gap-3 gap-sm-0">
-                        <div class="rounded-circle d-flex align-items-center justify-content-center me-sm-3 shadow-sm" style="width: 55px; height: 55px; background-color: #f3ebfc; flex-shrink: 0;">
-                            <i class="bi bi-house-heart-fill fs-3" style="color: var(--roxo-familia);"></i>
+                    <div class="d-flex flex-column flex-sm-row align-items-sm-center mb-4 gap-3 gap-sm-0 mt-2">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center me-sm-3 shadow-sm flex-shrink-0" style="width: 55px; height: 55px; background-color: rgba(197, 160, 89, 0.1);">
+                            <i class="bi bi-house-heart-fill fs-3" style="color: var(--mava-ouro);"></i>
                         </div>
                         <div>
-                            <h4 class="mb-0 fw-bold" style="color: var(--texto-escuro); letter-spacing: -0.5px;">Cadastro de Família</h4>
-                            <small class="text-muted">Preencha os dados do representante para assistência social.</small>
+                            <h4 class="mb-0 fw-bold" style="color: var(--mava-grafite); letter-spacing: -0.5px;">Cadastro de Família</h4>
+                            <small class="text-muted fw-medium">Preencha os dados do representante para assistência social.</small>
                         </div>
                     </div>
 
-                    <hr class="mb-4" style="opacity: 0.1;">
+                    <hr class="mb-4" style="border-color: var(--cinza-subtil); opacity: 0.5;">
 
                     <form th:action="@{/familias/salvar}" th:object="${familia}" method="post">
 
                         <input type="hidden" th:field="*{id}" th:if="${familia.id != null}" />
 
                         <div class="row g-3 g-md-4 mb-3">
-                            <!-- Inclusão do col-12 explícito para todas as linhas não quebrarem layout em telas pequenas -->
                             <div class="col-12 col-md-7">
                                 <label class="form-label">Nome do Representante <span class="text-danger">*</span></label>
                                 <div class="input-group">
-                                    <span class="input-group-text input-group-text-moderno px-3"><i class="bi bi-person-fill"></i></span>
-                                    <input type="text" th:field="*{nomeRepresentante}" class="form-control input-arredondado input-arredondado-group fs-6 fw-bold" required placeholder="Ex: Maria da Silva Souza" />
+                                    <span class="input-group-text input-group-text-moderno px-3"><i class="bi bi-person-fill" style="color: var(--mava-ouro);"></i></span>
+                                    <input type="text" th:field="*{nomeRepresentante}" class="form-control input-arredondado input-arredondado-group fs-6 fw-medium" required placeholder="Ex: Maria da Silva Souza" />
                                 </div>
                             </div>
 
@@ -110,7 +164,7 @@
                                 <label class="form-label">CPF / Documento</label>
                                 <div class="input-group">
                                     <span class="input-group-text input-group-text-moderno px-3"><i class="bi bi-person-vcard-fill"></i></span>
-                                    <input type="text" th:field="*{documento}" class="form-control input-arredondado input-arredondado-group"
+                                    <input type="text" th:field="*{documento}" class="form-control input-arredondado input-arredondado-group fw-medium"
                                            placeholder="000.000.000-00" maxlength="14"
                                            oninput="mascaraCPF(this)" onblur="verificarCPF(this)" />
                                 </div>
@@ -119,16 +173,15 @@
                             <div class="col-12 col-md-6">
                                 <label class="form-label">Telefone / WhatsApp</label>
                                 <div class="input-group">
-                                    <span class="input-group-text input-group-text-moderno px-3"><i class="bi bi-whatsapp text-success"></i></span>
-                                    <input type="text" th:field="*{telefone}" class="form-control input-arredondado input-arredondado-group" placeholder="(11) 90000-0000" maxlength="15" oninput="mascaraTelefone(this)" />
+                                    <span class="input-group-text input-group-text-moderno px-3"><i class="bi bi-whatsapp" style="color: #25D366;"></i></span>
+                                    <input type="text" th:field="*{telefone}" class="form-control input-arredondado input-arredondado-group fw-bold" placeholder="(11) 90000-0000" maxlength="15" oninput="mascaraTelefone(this)" />
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Adicionada classe endereco-box para responsividade de padding -->
-                        <div class="row g-3 mb-4 p-4 rounded-4 endereco-box" style="background-color: #fcfcfd; border: 1px solid #f0f2f5;">
+                        <div class="row g-3 mb-4 p-4 rounded-4 endereco-box" style="background-color: #f8fafc; border: 1px solid var(--cinza-subtil);">
                             <div class="col-12 mb-2">
-                                <h6 class="fw-bold mb-0" style="color: var(--roxo-familia);"><i class="bi bi-geo-alt-fill me-2"></i>Endereço da Família</h6>
+                                <h6 class="fw-bold mb-0" style="color: var(--mava-grafite);"><i class="bi bi-geo-alt-fill me-2" style="color: var(--mava-ouro);"></i>Endereço da Família</h6>
                             </div>
 
                             <div class="col-12 col-md-4">
@@ -141,7 +194,7 @@
 
                             <div class="col-12 col-md-8">
                                 <label class="form-label">Endereço / Logradouro</label>
-                                <input type="text" th:field="*{logradouro}" id="campoLogradouro" class="form-control input-arredondado" placeholder="Rua, Avenida..." />
+                                <input type="text" th:field="*{logradouro}" id="campoLogradouro" class="form-control input-arredondado fw-medium" placeholder="Rua, Avenida..." />
                             </div>
 
                             <div class="col-12 col-md-3">
@@ -151,17 +204,17 @@
 
                             <div class="col-12 col-md-9">
                                 <label class="form-label">Complemento</label>
-                                <input type="text" th:field="*{complemento}" class="form-control input-arredondado" placeholder="Apto, Casa 2, Fundo..." />
+                                <input type="text" th:field="*{complemento}" class="form-control input-arredondado fw-medium" placeholder="Apto, Casa 2, Fundo..." />
                             </div>
 
                             <div class="col-12 col-md-6">
                                 <label class="form-label">Bairro</label>
-                                <input type="text" th:field="*{bairro}" id="campoBairro" class="form-control input-arredondado" placeholder="Bairro" />
+                                <input type="text" th:field="*{bairro}" id="campoBairro" class="form-control input-arredondado fw-medium" placeholder="Bairro" />
                             </div>
 
                             <div class="col-12 col-md-6">
                                 <label class="form-label">Cidade</label>
-                                <input type="text" th:field="*{cidade}" id="campoCidade" class="form-control input-arredondado" placeholder="Cidade" />
+                                <input type="text" th:field="*{cidade}" id="campoCidade" class="form-control input-arredondado fw-medium" placeholder="Cidade" />
                             </div>
 
                             <div class="col-md-2 d-none">
@@ -171,16 +224,15 @@
 
                         <div class="mb-4">
                             <label class="form-label">Perfil Social (Observações Adicionais)</label>
-                            <textarea th:field="*{perfilSocial}" class="form-control input-arredondado" rows="4" placeholder="Descreva a situação atual da família: desemprego, quantidade de filhos, necessidades específicas..."></textarea>
-                            <div class="form-text mt-2 lh-sm" style="font-size: 0.85rem;"><i class="bi bi-info-circle me-1"></i>Essas informações auxiliam a equipe diaconal na montagem da cesta e no acompanhamento pastoral.</div>
+                            <textarea th:field="*{perfilSocial}" class="form-control input-arredondado fw-medium" rows="4" placeholder="Descreva a situação atual da família: desemprego, quantidade de filhos, necessidades específicas..."></textarea>
+                            <div class="form-text mt-2 lh-sm fw-medium" style="font-size: 0.85rem;"><i class="bi bi-info-circle me-1" style="color: var(--mava-ouro);"></i>Essas informações auxiliam a equipe diaconal na montagem da cesta e no acompanhamento pastoral.</div>
                         </div>
 
-                        <hr class="mt-4 mt-md-5 mb-4" style="opacity: 0.1;">
+                        <hr class="mt-4 mt-md-5 mb-4" style="border-color: var(--cinza-subtil); opacity: 0.5;">
 
-                        <!-- Botões empilhados no mobile, lado a lado no desktop -->
                         <div class="d-flex flex-column-reverse flex-sm-row justify-content-sm-end gap-2 gap-sm-3">
-                            <a href="/familias" class="btn btn-cancelar px-4 py-2 w-sm-auto">Cancelar</a>
-                            <button type="submit" class="btn btn-manancial px-4 py-2 w-sm-auto">
+                            <a href="/familias" class="btn btn-cancelar px-4 py-2 w-sm-auto text-center">Cancelar</a>
+                            <button type="submit" class="btn btn-mava px-4 py-2 w-sm-auto">
                                 <i class="bi bi-check-lg me-2 fs-5 align-middle"></i> Salvar Cadastro
                             </button>
                         </div>
@@ -250,13 +302,13 @@
             if (!validarCPF(cpfDigitado)) {
                 alert("CPF INVÁLIDO! Por favor, verifique o número digitado.");
                 input.value = "";
-                input.style.borderColor = "#dc3545";
+                input.style.borderColor = "var(--mava-danger)";
                 input.focus();
             } else {
-                input.style.borderColor = "#198754";
+                input.style.borderColor = "var(--mava-success)";
             }
         } else {
-            input.style.borderColor = "#dee2e6"; // Volta a cor normal se apagar tudo
+            input.style.borderColor = "var(--cinza-subtil)"; // Volta a cor normal se apagar tudo
         }
     }
 

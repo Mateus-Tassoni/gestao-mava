@@ -1,99 +1,109 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Cadastro Kids | Mava</title>
+    <title>Portal MAVA | Cadastro Kids</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
 
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
 
     <style>
         :root {
-            --azul-petroleo: #0c5465;
-            --azul-claro: #d1e7ed;
-            --texto-escuro: #2c3e50;
-            --amarelo-kids: #ffc107;
-            --roxo-claro: #f3ebfc;
+            /* Paleta MAVA - Light Premium */
+            --mava-ouro: #c5a059;
+            --mava-ouro-light: #dfc48c;
+            --mava-grafite: #111111;
+            --mava-bg-light: #f4f6f9;
+            --texto-escuro: #2d3436;
+            --texto-muted: #636e72;
+            --mava-danger: #dc3545;
+            --cinza-subtil: #e2e8f0;
         }
 
         body {
-            background-color: #f0f2f5;
-            font-family: 'Segoe UI', sans-serif;
+            background-color: var(--mava-bg-light);
+            font-family: 'Poppins', sans-serif;
             min-height: 100vh;
+            color: var(--texto-escuro);
         }
 
-        /* --- NAVBAR --- */
-        .navbar-manancial {
-            background: linear-gradient(135deg, #0c5465, #146c82);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        /* --- NAVBAR GRAFITE --- */
+        .navbar-mava {
+            background: var(--mava-grafite);
+            border-bottom: 2px solid var(--mava-ouro);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
+        .navbar-brand img { background: transparent !important; filter: drop-shadow(0 0 5px rgba(197, 160, 89, 0.4)); }
 
-        /* --- PADRÃO MANANCIAL DE CARDS --- */
+        /* --- PADRÃO MAVA DE CARDS --- */
         .card-3d {
-            background: #ffffff; border: none; border-radius: 20px;
-            box-shadow: 0 10px 20px rgba(12, 84, 101, 0.08);
+            background: #ffffff; border: none; border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.04);
             position: relative; overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
         .card-topo-detalhe {
-            height: 6px; width: 100%; position: absolute; top: 0; left: 0;
-            background: var(--amarelo-kids);
+            height: 4px; width: 100%; position: absolute; top: 0; left: 0;
+            background: linear-gradient(90deg, transparent, var(--mava-ouro), transparent);
         }
 
         /* --- INPUTS E FORMULÁRIOS --- */
         .form-label {
-            color: var(--texto-escuro); font-weight: 700; font-size: 0.95rem; margin-bottom: 0.5rem;
+            color: var(--texto-escuro); font-weight: 600; font-size: 0.95rem; margin-bottom: 0.5rem;
         }
 
         .input-arredondado {
-            border-radius: 12px; padding: 0.75rem 1rem; border: 1px solid #dee2e6;
-            transition: all 0.2s; background-color: #fff;
+            border-radius: 12px; padding: 0.75rem 1rem; border: 1px solid var(--cinza-subtil);
+            transition: all 0.2s; background-color: #fff; color: var(--texto-escuro);
         }
         .input-arredondado:focus {
-            border-color: var(--azul-petroleo); box-shadow: 0 0 0 0.25rem rgba(12, 84, 101, 0.15);
+            border-color: var(--mava-ouro); box-shadow: 0 0 0 0.25rem rgba(197, 160, 89, 0.15); outline: none;
         }
 
         .input-group-text-moderno {
-            background-color: #f8f9fa; border: 1px solid #dee2e6; border-right: none;
-            border-top-left-radius: 12px; border-bottom-left-radius: 12px; color: #6c757d;
+            background-color: #f8fafc; border: 1px solid var(--cinza-subtil); border-right: none;
+            border-top-left-radius: 12px; border-bottom-left-radius: 12px; color: var(--texto-muted);
         }
         .input-arredondado-group {
             border-top-left-radius: 0; border-bottom-left-radius: 0; border-left: none;
         }
 
-        /* Hack do CSS para deixar o Select2 igual ao Input-Arredondado */
+        /* Customização Select2 para o Padrão MAVA */
         .select2-container--bootstrap-5 .select2-selection {
             border-radius: 12px !important;
-            border: 1px solid #dee2e6 !important;
+            border: 1px solid var(--cinza-subtil) !important;
             min-height: 46px !important;
             padding: 0.375rem 0.75rem !important;
             display: flex; align-items: center;
+            color: var(--texto-escuro) !important;
         }
         .select2-container--bootstrap-5.select2-container--focus .select2-selection {
-            border-color: var(--azul-petroleo) !important;
-            box-shadow: 0 0 0 0.25rem rgba(12, 84, 101, 0.15) !important;
+            border-color: var(--mava-ouro) !important;
+            box-shadow: 0 0 0 0.25rem rgba(197, 160, 89, 0.15) !important;
         }
 
-        /* --- CARDS DE CHECKBOX PREMIUM --- */
+        /* --- CARDS DE CHECKBOX PREMIUM MAVA --- */
         .check-card-custom {
             display: block; position: relative; cursor: pointer;
-            background-color: #f8f9fa; border: 2px solid #e9ecef;
+            background-color: #ffffff; border: 1px solid var(--cinza-subtil);
             border-radius: 16px; padding: 1.2rem; transition: all 0.2s ease;
             height: 100%;
         }
 
         .check-card-custom:hover {
-            border-color: #ced4da; transform: translateY(-2px); background-color: #ffffff;
+            border-color: #cbd5e1; transform: translateY(-2px); background-color: #f8fafc;
         }
 
         .check-card-custom:has(input:checked) {
-            border-color: var(--azul-petroleo);
-            background-color: var(--azul-claro);
-            box-shadow: 0 4px 10px rgba(12, 84, 101, 0.1);
+            border-color: var(--mava-ouro);
+            background-color: rgba(197, 160, 89, 0.05);
+            box-shadow: 0 4px 10px rgba(197, 160, 89, 0.15);
         }
 
         .check-card-custom input[type="checkbox"] {
@@ -101,20 +111,20 @@
         }
 
         /* --- BOTÕES --- */
-        .btn-manancial { background-color: var(--azul-petroleo); color: white; border-radius: 12px; font-weight: 700; transition: all 0.3s ease; }
-        .btn-manancial:hover { background-color: #093e4b; color: white; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(12, 84, 101, 0.2); }
-        .btn-cancelar { border-radius: 12px; font-weight: 600; color: #6c757d; background: transparent; border: 1px solid transparent; transition: all 0.2s; }
-        .btn-cancelar:hover { background-color: #e9ecef; color: var(--texto-escuro); }
+        .btn-mava { background-color: var(--mava-ouro); color: white; border-radius: 12px; font-weight: 600; transition: all 0.3s ease; border: none; box-shadow: 0 4px 10px rgba(197, 160, 89, 0.2); }
+        .btn-mava:hover { background-color: #b38f4d; color: white; transform: translateY(-2px); box-shadow: 0 6px 15px rgba(197, 160, 89, 0.3); }
+        .btn-cancelar { border-radius: 12px; font-weight: 600; color: var(--texto-muted); background: transparent; border: 1px solid transparent; transition: all 0.2s; }
+        .btn-cancelar:hover { background-color: #e2e8f0; color: var(--texto-escuro); }
 
         .hover-scale { transition: transform 0.2s; }
         .hover-scale:hover { transform: scale(1.05); }
 
-        /* --- AJUSTES DE RESPONSIVIDADE PARA MOBILE --- */
+        /* === AJUSTES DE RESPONSIVIDADE PARA MOBILE === */
         @media (max-width: 576px) {
             .navbar-brand span { font-size: 0.85rem !important; }
-            .card-body { padding: 1.5rem !important; } /* Reduz o padding em telas pequenas */
+            .card-body { padding: 1.5rem !important; }
             .check-card-custom { padding: 1rem; }
-            .btn-manancial, .btn-cancelar { width: 100%; text-align: center; } /* Botões 100% de largura */
+            .btn-mava, .btn-cancelar { width: 100%; text-align: center; }
         }
         @media (min-width: 576px) {
             .w-sm-auto { width: auto !important; }
@@ -123,21 +133,20 @@
 </head>
 <body>
 
-<!-- Margem inferior da navbar ajustada para telas menores (mb-4 mb-md-5) -->
-<nav class="navbar navbar-expand-lg navbar-dark navbar-manancial mb-4 mb-md-5 sticky-top">
+<nav class="navbar navbar-expand-lg navbar-dark navbar-mava mb-4 mb-md-5 sticky-top">
     <div class="container">
         <a class="navbar-brand d-flex align-items-center gap-2 gap-md-3" href="/">
-            <img th:src="@{/img/logo.png}" alt="Logo" width="40" height="40" class="bg-white rounded-circle p-1 shadow-sm">
+            <img th:src="@{/img/logo.png}" alt="Logo MAVA" width="40" height="40">
             <div class="d-flex flex-column text-white">
-                <span class="fw-bold text-uppercase" style="letter-spacing: 1px; font-size: 1rem; line-height: 1.1;">Mava</span>
+                <span class="fw-bold text-uppercase" style="letter-spacing: 2px; font-size: 1rem; line-height: 1.1; color: var(--mava-ouro);">MAVA</span>
             </div>
         </a>
 
         <div class="ms-auto d-flex gap-2 gap-md-3 align-items-center">
-            <span class="text-white opacity-75 d-none d-md-block small text-uppercase fw-bold" style="letter-spacing: 1px;">
+            <span class="text-white opacity-75 d-none d-md-block small text-uppercase fw-bold" style="letter-spacing: 1px; color: #cbd5e1 !important;">
                 Ministério Infantil
             </span>
-            <a href="/kids/gestao" class="btn btn-outline-light btn-sm rounded-pill px-3 px-md-4 fw-bold hover-scale">
+            <a href="/kids/gestao" class="btn btn-sm rounded-pill px-3 px-md-4 fw-bold hover-scale" style="background: transparent; color: #cbd5e1; border: 1px solid #64748b;">
                 <i class="bi bi-list-ul"></i> <span class="d-none d-sm-inline ms-1">Ir para Gestão</span>
             </a>
         </div>
@@ -146,7 +155,6 @@
 
 <div class="container pb-5">
     <div class="row justify-content-center">
-        <!-- Removida a limitação rígida col-md-10 para preencher melhor no tablet/mobile -->
         <div class="col-12 col-md-11 col-lg-8">
 
             <div class="mb-3 ps-1">
@@ -158,48 +166,46 @@
             <div class="card-3d">
                 <div class="card-topo-detalhe"></div>
 
-                <!-- Classes de padding originais mantidas com override na Media Query para mobile -->
                 <div class="card-body p-4 p-md-5">
 
                     <div class="d-flex flex-column flex-sm-row align-items-sm-center mb-4 gap-3 gap-sm-0">
-                        <div class="rounded-circle d-flex align-items-center justify-content-center me-sm-3 shadow-sm" style="width: 55px; height: 55px; background-color: #fff8e6; flex-shrink: 0;">
-                            <i class="bi bi-emoji-smile-fill fs-3" style="color: var(--amarelo-kids);"></i>
+                        <div class="rounded-circle d-flex align-items-center justify-content-center me-sm-3 shadow-sm" style="width: 55px; height: 55px; background-color: rgba(197, 160, 89, 0.1); flex-shrink: 0;">
+                            <i class="bi bi-emoji-smile-fill fs-3" style="color: var(--mava-ouro);"></i>
                         </div>
                         <div>
-                            <h4 class="mb-0 fw-bold" style="color: var(--texto-escuro); letter-spacing: -0.5px;">Cadastro da Criança</h4>
-                            <small class="text-muted">Preencha os dados e configure as permissões da etiqueta.</small>
+                            <h4 class="mb-0 fw-bold" style="color: var(--mava-grafite); letter-spacing: -0.5px;">Cadastro da Criança</h4>
+                            <small class="text-muted fw-medium">Preencha os dados e configure as permissões da etiqueta.</small>
                         </div>
                     </div>
 
-                    <hr class="mb-4" style="opacity: 0.1;">
+                    <hr class="mb-4" style="border-color: var(--cinza-subtil); opacity: 0.5;">
 
                     <form th:action="@{/kids/salvar}" th:object="${crianca}" method="post">
 
                         <input type="hidden" th:field="*{id}">
 
                         <div class="row g-3 g-md-4 mb-4">
-                            <!-- col-12 adicionado explicitamente para não bugar o mobile -->
                             <div class="col-12 col-lg-6">
                                 <label class="form-label">Nome Completo <span class="text-danger">*</span></label>
                                 <div class="input-group">
-                                    <span class="input-group-text input-group-text-moderno px-3"><i class="bi bi-person-fill"></i></span>
+                                    <span class="input-group-text input-group-text-moderno px-3"><i class="bi bi-person-fill" style="color: var(--mava-ouro);"></i></span>
                                     <input type="text" class="form-control input-arredondado input-arredondado-group fw-bold fs-6" th:field="*{nomeCompleto}" required placeholder="Ex: Ana Clara Sousa">
                                 </div>
                             </div>
 
                             <div class="col-6 col-lg-3">
                                 <label class="form-label">Idade <span class="text-danger">*</span></label>
-                                <input type="number" class="form-control input-arredondado text-center fw-bold text-primary" th:field="*{idade}" required min="0" max="15">
+                                <input type="number" class="form-control input-arredondado text-center fw-bold" style="color: var(--mava-grafite);" th:field="*{idade}" required min="0" max="15">
                             </div>
 
                             <div class="col-6 col-lg-3">
                                 <label class="form-label text-muted">Nascimento</label>
-                                <input type="date" class="form-control input-arredondado text-muted" th:field="*{dataNascimento}">
+                                <input type="date" class="form-control input-arredondado text-muted fw-medium" th:field="*{dataNascimento}">
                             </div>
                         </div>
 
-                        <div class="mb-4 p-3 rounded-3" style="background-color: #f8f9fa; border: 1px dashed #ced4da;">
-                            <label class="form-label fw-bold text-primary mb-2"><i class="bi bi-person-hearts me-2"></i>Vincular Responsável <span class="text-danger">*</span></label>
+                        <div class="mb-4 p-3 rounded-3" style="background-color: #f8fafc; border: 1px solid var(--cinza-subtil);">
+                            <label class="form-label fw-bold mb-2" style="color: var(--mava-grafite);"><i class="bi bi-person-hearts me-2" style="color: var(--mava-ouro);"></i>Vincular Responsável <span class="text-danger">*</span></label>
 
                             <select class="form-control select-busca" th:field="*{responsavel}" required>
                                 <option value=""></option>
@@ -209,63 +215,62 @@
                                 </option>
                             </select>
 
-                            <div class="form-text mt-2 lh-sm" style="font-size: 0.85rem;"><i class="bi bi-info-circle me-1"></i>O check-in no totem será realizado usando o número de telefone deste responsável.</div>
+                            <div class="form-text mt-2 lh-sm fw-medium" style="font-size: 0.85rem;"><i class="bi bi-info-circle me-1"></i>O check-in no totem será realizado usando o número de telefone deste responsável.</div>
                         </div>
 
                         <div class="mb-4">
-                            <label class="form-label text-danger fw-bold"><i class="bi bi-exclamation-triangle-fill me-1"></i> Alergias ou Observações</label>
-                            <textarea class="form-control input-arredondado" th:field="*{alergias}" rows="2" placeholder="Ex: Intolerância à lactose, não pode comer amendoim..."></textarea>
+                            <label class="form-label fw-bold" style="color: var(--mava-danger);"><i class="bi bi-exclamation-triangle-fill me-1"></i> Alergias ou Observações</label>
+                            <textarea class="form-control input-arredondado fw-medium" th:field="*{alergias}" rows="2" placeholder="Ex: Intolerância à lactose, não pode comer amendoim..."></textarea>
                         </div>
 
-                        <hr class="mt-4 mt-md-5 mb-4" style="opacity: 0.1;">
+                        <hr class="mt-4 mt-md-5 mb-4" style="border-color: var(--cinza-subtil); opacity: 0.5;">
 
                         <div class="d-flex align-items-center mb-3">
-                            <i class="bi bi-tags-fill fs-5 me-2" style="color: var(--azul-petroleo);"></i>
-                            <h5 class="mb-0 fw-bold" style="color: var(--texto-escuro);">Configurações da Etiqueta</h5>
+                            <i class="bi bi-tags-fill fs-5 me-2" style="color: var(--mava-ouro);"></i>
+                            <h5 class="mb-0 fw-bold" style="color: var(--mava-grafite);">Configurações da Etiqueta</h5>
                         </div>
 
                         <!-- Configurações empilham no mobile e ficam lado a lado no desktop -->
                         <div class="row g-3 mb-4">
                             <div class="col-12 col-md-4">
-                                <label class="check-card-custom">
+                                <label class="check-card-custom shadow-sm">
                                     <input type="checkbox" th:field="*{permissaoImagem}" id="checkImg">
                                     <div class="d-flex flex-column text-center">
-                                        <i class="bi bi-camera-fill fs-2 mb-2 text-primary"></i>
+                                        <i class="bi bi-camera-fill fs-2 mb-2" style="color: var(--mava-ouro);"></i>
                                         <span class="fw-bold text-dark mb-1">Uso de Imagem</span>
-                                        <span class="small text-muted lh-sm" style="font-size: 0.75rem;">Imprime o símbolo (#) indicando liberação para redes sociais.</span>
+                                        <span class="small text-muted lh-sm fw-medium" style="font-size: 0.75rem;">Imprime o símbolo (#) indicando liberação para redes sociais.</span>
                                     </div>
                                 </label>
                             </div>
 
                             <div class="col-12 col-md-4">
-                                <label class="check-card-custom">
+                                <label class="check-card-custom shadow-sm">
                                     <input type="checkbox" th:field="*{necessidadesEspeciais}" id="checkNec">
                                     <div class="d-flex flex-column text-center">
                                         <i class="bi bi-heart-pulse-fill fs-2 mb-2 text-danger"></i>
                                         <span class="fw-bold text-dark mb-1">Cuidado Especial</span>
-                                        <span class="small text-muted lh-sm" style="font-size: 0.75rem;">Atenção redobrada da equipe e necessidade de cuidador.</span>
+                                        <span class="small text-muted lh-sm fw-medium" style="font-size: 0.75rem;">Atenção redobrada da equipe e necessidade de cuidador.</span>
                                     </div>
                                 </label>
                             </div>
 
                             <div class="col-12 col-md-4">
-                                <label class="check-card-custom">
+                                <label class="check-card-custom shadow-sm">
                                     <input type="checkbox" th:field="*{visitante}" id="checkVis">
                                     <div class="d-flex flex-column text-center">
-                                        <i class="bi bi-star-fill fs-2 mb-2" style="color: var(--amarelo-kids);"></i>
+                                        <i class="bi bi-star-fill fs-2 mb-2" style="color: var(--mava-ouro);"></i>
                                         <span class="fw-bold text-dark mb-1">Visitante</span>
-                                        <span class="small text-muted lh-sm" style="font-size: 0.75rem;">Imprime a estrela para acolhimento especial na 1ª vez.</span>
+                                        <span class="small text-muted lh-sm fw-medium" style="font-size: 0.75rem;">Imprime a estrela para acolhimento especial na 1ª vez.</span>
                                     </div>
                                 </label>
                             </div>
                         </div>
 
-                        <hr class="mt-4 mb-4" style="opacity: 0.1;">
+                        <hr class="mt-4 mb-4" style="border-color: var(--cinza-subtil); opacity: 0.5;">
 
-                        <!-- Flex-column-reverse no mobile para colocar o 'Salvar' em cima, e row no desktop -->
                         <div class="d-flex flex-column-reverse flex-sm-row justify-content-sm-end gap-2 gap-sm-3">
                             <a href="/kids/gestao" class="btn btn-cancelar px-4 py-2 w-sm-auto">Cancelar</a>
-                            <button type="submit" class="btn btn-manancial px-4 py-2 w-sm-auto">
+                            <button type="submit" class="btn btn-mava px-4 py-2 w-sm-auto">
                                 <i class="bi bi-save me-2"></i> Salvar Cadastro
                             </button>
                         </div>

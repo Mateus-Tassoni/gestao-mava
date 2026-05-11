@@ -1,136 +1,133 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Detalhes do Evento | Mava</title>
+    <title>Portal MAVA | Detalhes do Evento</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
     <style>
         :root {
-            --azul-petroleo: #0c5465;
-            --azul-claro: #d1e7ed;
-            --texto-escuro: #2c3e50;
-            --verde-whatsapp: #25D366;
+            /* Paleta MAVA - Light Premium */
+            --mava-ouro: #c5a059;
+            --mava-ouro-light: #dfc48c;
+            --mava-grafite: #111111;
+            --mava-bg-light: #f4f6f9;
+            --texto-escuro: #2d3436;
+            --texto-muted: #636e72;
+            --mava-success: #198754;
+            --cinza-subtil: #e2e8f0;
         }
 
         body {
-            background-color: #f0f2f5;
-            font-family: 'Segoe UI', sans-serif;
+            background-color: var(--mava-bg-light);
+            font-family: 'Poppins', sans-serif;
             min-height: 100vh;
+            color: var(--texto-escuro);
         }
 
-        /* --- NAVBAR --- */
-        .navbar-manancial {
-            background: linear-gradient(135deg, #0c5465, #146c82);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        /* --- NAVBAR GRAFITE --- */
+        .navbar-mava {
+            background: var(--mava-grafite);
+            border-bottom: 2px solid var(--mava-ouro);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
+        .navbar-brand img { background: transparent !important; filter: drop-shadow(0 0 5px rgba(197, 160, 89, 0.4)); }
 
-        /* --- PADRÃO MANANCIAL DE CARDS --- */
+        /* --- PADRÃO MAVA DE CARDS --- */
         .card-3d {
             background: #ffffff;
             border: none;
-            border-radius: 20px;
-            box-shadow: 0 10px 20px rgba(12, 84, 101, 0.08);
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.04);
             position: relative;
             overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
         .card-topo-detalhe {
-            height: 6px;
-            width: 100%;
-            position: absolute;
-            top: 0;
-            left: 0;
-            background: var(--azul-petroleo);
+            height: 4px; width: 100%; position: absolute; top: 0; left: 0;
+            background: linear-gradient(90deg, transparent, var(--mava-ouro), transparent);
         }
 
         /* --- BLOCOS DE DADOS (Data, Local, etc) --- */
         .data-block {
-            background-color: #f8f9fa;
-            border-radius: 12px;
+            background-color: #f8fafc;
+            border-radius: 16px;
             padding: 1.2rem;
             display: flex;
             align-items: flex-start;
             gap: 15px;
             height: 100%;
-            border: 1px solid #f0f2f5;
+            border: 1px solid var(--cinza-subtil);
             transition: transform 0.2s;
-        }
-        .data-block:hover {
-            transform: translateY(-2px);
-            border-color: var(--azul-claro);
-            background-color: #ffffff;
-            box-shadow: 0 4px 12px rgba(12, 84, 101, 0.05);
         }
 
         .icon-box-data {
-            width: 45px; height: 45px;
-            border-radius: 12px;
+            width: 45px; height: 45px; border-radius: 12px;
             display: flex; align-items: center; justify-content: center;
-            background-color: var(--azul-claro);
-            color: var(--azul-petroleo);
-            font-size: 1.2rem;
-            flex-shrink: 0;
+            background-color: rgba(197, 160, 89, 0.1); color: var(--mava-ouro);
+            font-size: 1.2rem; flex-shrink: 0; border: 1px solid var(--mava-ouro-light);
         }
 
         /* --- TABELA MODERNA --- */
-        .table-moderna { border-collapse: separate; border-spacing: 0 8px; margin-top: -8px; min-width: 500px; } /* Min-width para ativar scroll suave no celular */
-        .table-moderna th { text-transform: uppercase; font-size: 0.75rem; letter-spacing: 1px; color: #6c757d; border: none; padding: 0 1rem 10px 1rem; font-weight: 700; }
-        .table-moderna td { vertical-align: middle; background-color: #ffffff; border-top: 1px solid #f8f9fa; border-bottom: 1px solid #f8f9fa; padding: 1.2rem 1rem; transition: all 0.2s; }
-        .table-moderna td:first-child { border-left: 1px solid #f8f9fa; border-top-left-radius: 12px; border-bottom-left-radius: 12px; }
-        .table-moderna td:last-child { border-right: 1px solid #f8f9fa; border-top-right-radius: 12px; border-bottom-right-radius: 12px; }
+        .table-moderna { border-collapse: separate; border-spacing: 0 8px; margin-top: -8px; min-width: 500px; }
+        .table-moderna th { text-transform: uppercase; font-size: 0.75rem; letter-spacing: 1.5px; color: var(--texto-muted); border: none; padding: 0 1rem 10px 1rem; font-weight: 700; }
+        .table-moderna td { vertical-align: middle; background-color: #ffffff; border-top: 1px solid #f8fafc; border-bottom: 1px solid #f8fafc; padding: 1.2rem 1rem; transition: all 0.2s; }
+        .table-moderna td:first-child { border-left: 1px solid #f8fafc; border-top-left-radius: 12px; border-bottom-left-radius: 12px; }
+        .table-moderna td:last-child { border-right: 1px solid #f8fafc; border-top-right-radius: 12px; border-bottom-right-radius: 12px; }
         .table-moderna tbody tr { transition: transform 0.2s, box-shadow 0.2s; }
-        .table-moderna tbody tr:hover td { background-color: #f8f9fa; border-color: #e9ecef; }
-        .table-moderna tbody tr:hover { transform: scale(1.005); box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
 
         /* --- BADGES --- */
         .badge-template {
-            background-color: var(--azul-claro);
-            color: var(--azul-petroleo);
-            border: 1px solid var(--azul-petroleo);
-            font-weight: 700;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
+            background-color: #ffffff; color: var(--mava-ouro);
+            border: 1px solid var(--mava-ouro); font-weight: 600;
+            padding: 0.5rem 1rem; border-radius: 8px; letter-spacing: 0.5px;
         }
 
         .badge-whatsapp {
-            background-color: rgba(37, 211, 102, 0.1);
-            color: #128C7E;
-            border: 1px solid rgba(37, 211, 102, 0.3);
-            font-weight: 700;
-            padding: 0.6rem 1.2rem;
-            border-radius: 50rem;
-            letter-spacing: 0.5px;
-            white-space: nowrap; /* Evita que o texto da badge quebre no celular */
+            background-color: rgba(37, 211, 102, 0.1); color: #128C7E;
+            border: 1px solid rgba(37, 211, 102, 0.3); font-weight: 600;
+            padding: 0.6rem 1.2rem; border-radius: 50rem; letter-spacing: 0.5px;
+            white-space: nowrap;
         }
 
         .hover-scale { transition: transform 0.2s; }
-        .hover-scale:hover { transform: scale(1.05); }
 
-        /* --- AJUSTES DE RESPONSIVIDADE PARA MOBILE --- */
+        /* === REGRAS DE HOVER APENAS PARA DESKTOP === */
+        @media (hover: hover) and (pointer: fine) {
+            .card-3d:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(0,0,0,0.06); }
+            .data-block:hover { transform: translateY(-2px); border-color: var(--mava-ouro-light); background-color: #ffffff; box-shadow: 0 6px 15px rgba(0,0,0,0.03); }
+            .table-moderna tbody tr:hover td { background-color: #f8fafc; border-color: #e2e8f0; }
+            .table-moderna tbody tr:hover { transform: scale(1.005); box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
+            .hover-scale:hover { transform: scale(1.05); }
+        }
+
+        /* === AJUSTES DE RESPONSIVIDADE PARA MOBILE === */
         @media (max-width: 576px) {
             .navbar-brand span { font-size: 0.85rem !important; }
-            .card-3d { padding: 1.5rem !important; } /* Alivia o espaçamento do card principal */
-            .data-block { padding: 1rem !important; } /* Alivia o padding interno dos blocos de dados */
+            .card-3d { padding: 1.5rem !important; }
+            .data-block { padding: 1rem !important; }
             .table-moderna td, .table-moderna th { padding-left: 0.75rem; padding-right: 0.75rem; }
         }
     </style>
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-dark navbar-manancial mb-4 mb-md-5 sticky-top">
+<nav class="navbar navbar-expand-lg navbar-dark navbar-mava mb-4 mb-md-5 sticky-top">
     <div class="container">
         <a class="navbar-brand d-flex align-items-center gap-2 gap-md-3" href="/">
-            <img th:src="@{/img/logo.png}" alt="Logo" width="40" height="40" class="bg-white rounded-circle p-1 shadow-sm">
+            <img th:src="@{/img/logo.png}" alt="Logo MAVA" width="40" height="40">
             <div class="d-flex flex-column text-white">
-                <span class="fw-bold text-uppercase" style="letter-spacing: 1px; font-size: 1rem; line-height: 1.1;">Mava</span>
+                <span class="fw-bold text-uppercase" style="letter-spacing: 2px; font-size: 1rem; line-height: 1.1; color: var(--mava-ouro);">MAVA</span>
             </div>
         </a>
 
         <div class="ms-auto">
-            <a href="/eventos" class="btn btn-outline-light btn-sm rounded-pill px-3 px-md-4 fw-bold hover-scale">
+            <a href="/eventos" class="btn btn-sm rounded-pill px-3 px-md-4 fw-bold hover-scale" style="background: transparent; color: #cbd5e1; border: 1px solid #64748b;">
                 <i class="bi bi-list-task"></i> <span class="d-none d-sm-inline ms-1">Ir para Agenda</span>
             </a>
         </div>
@@ -139,7 +136,6 @@
 
 <div class="container pb-5">
     <div class="row justify-content-center">
-        <!-- Mantém col-lg-9 para desktop, e preenche 100% no mobile automaticamente via row -->
         <div class="col-12 col-lg-9 col-xl-8">
 
             <div class="mb-3 ps-1">
@@ -148,13 +144,12 @@
                 </a>
             </div>
 
-            <!-- Cabeçalho empilha no mobile (text-center) e fica lado a lado no desktop -->
-            <div class="d-flex flex-column flex-sm-row align-items-center align-items-sm-start text-center text-sm-start gap-3 mb-4">
-                <div class="bg-white rounded-circle d-flex align-items-center justify-content-center shadow-sm flex-shrink-0" style="width: 55px; height: 55px; border: 2px solid var(--azul-petroleo);">
-                    <i class="bi bi-calendar-check-fill fs-3" style="color: var(--azul-petroleo);"></i>
+            <div class="d-flex flex-column flex-sm-row align-items-center align-items-sm-start text-center text-sm-start gap-3 mb-4 mt-2">
+                <div class="rounded-circle d-flex align-items-center justify-content-center shadow-sm flex-shrink-0" style="width: 55px; height: 55px; background-color: rgba(197, 160, 89, 0.1); border: 2px solid var(--mava-ouro-light);">
+                    <i class="bi bi-calendar-check-fill fs-3" style="color: var(--mava-ouro);"></i>
                 </div>
                 <div>
-                    <h3 class="mb-0 fw-bold" style="color: var(--texto-escuro); letter-spacing: -0.5px;" th:text="${evento.nome}">Nome do Evento</h3>
+                    <h3 class="mb-0 fw-bold" style="color: var(--mava-grafite); letter-spacing: -0.5px;" th:text="${evento.nome}">Nome do Evento</h3>
                     <span class="text-muted small text-uppercase fw-bold" style="letter-spacing: 1px;">Detalhes da Reserva</span>
                 </div>
             </div>
@@ -168,8 +163,8 @@
                             <div class="data-block">
                                 <div class="icon-box-data shadow-sm"><i class="bi bi-clock-history"></i></div>
                                 <div>
-                                    <p class="mb-1 text-muted small fw-bold text-uppercase">Data e Hora</p>
-                                    <h5 class="mb-0 fw-bold" style="color: var(--texto-escuro);" th:text="${#temporals.format(evento.dataHoraInicio, 'dd/MM/yyyy • HH:mm')}">00/00/0000 00:00</h5>
+                                    <p class="mb-1 text-muted small fw-bold text-uppercase" style="letter-spacing: 1px;">Data e Hora</p>
+                                    <h5 class="mb-0 fw-bold" style="color: var(--mava-grafite);" th:text="${#temporals.format(evento.dataHoraInicio, 'dd/MM/yyyy • HH:mm')}">00/00/0000 00:00</h5>
                                 </div>
                             </div>
                         </div>
@@ -178,9 +173,8 @@
                             <div class="data-block">
                                 <div class="icon-box-data shadow-sm"><i class="bi bi-geo-alt-fill"></i></div>
                                 <div>
-                                    <p class="mb-1 text-muted small fw-bold text-uppercase">Local</p>
-                                    <!-- Removi o text-truncate fixo para garantir que todo o local seja lido no mobile sem cortar -->
-                                    <h5 class="mb-0 fw-bold" style="color: var(--texto-escuro);" th:text="${evento.local}">Templo Principal</h5>
+                                    <p class="mb-1 text-muted small fw-bold text-uppercase" style="letter-spacing: 1px;">Local</p>
+                                    <h5 class="mb-0 fw-bold" style="color: var(--mava-grafite);" th:text="${evento.local}">Templo Principal</h5>
                                 </div>
                             </div>
                         </div>
@@ -189,7 +183,6 @@
                             <div class="data-block py-3 align-items-sm-center">
                                 <div class="icon-box-data shadow-sm" style="width: 35px; height: 35px; font-size: 1rem;"><i class="bi bi-tags-fill"></i></div>
 
-                                <!-- Flex-column no celular para o título não espremer a badge, lado a lado em telas maiores -->
                                 <div class="flex-grow-1 d-flex flex-column flex-sm-row justify-content-sm-between align-items-start align-items-sm-center gap-2">
                                     <p class="mb-0 text-muted fw-bold">Modelo de Organização Base</p>
 
@@ -197,7 +190,7 @@
                                           th:if="${evento.tipoEvento != null}"
                                           th:text="${evento.tipoEvento.nome}">Template Padrão</span>
 
-                                    <span class="badge bg-secondary opacity-75 fs-6 px-3 py-2 rounded-pill shadow-sm"
+                                    <span class="badge fs-6 px-3 py-2 rounded-pill shadow-sm" style="background-color: #f8fafc; color: var(--texto-muted); border: 1px solid var(--cinza-subtil); font-weight: 600;"
                                           th:unless="${evento.tipoEvento != null}">
                                         <i class="bi bi-wrench-adjustable me-1"></i> Personalizado
                                     </span>
@@ -209,14 +202,13 @@
                 </div>
             </div>
 
-            <!-- Título da Tabela ajustado para empilhar bem em telas bem pequenas -->
             <div class="d-flex flex-column flex-sm-row align-items-sm-center text-center text-sm-start mb-3 ms-1 gap-2 gap-sm-0">
-                <i class="bi bi-diagram-3-fill fs-4 me-sm-2" style="color: var(--azul-petroleo);"></i>
-                <h5 class="mb-0 fw-bold" style="color: var(--texto-escuro);">Equipes Convocadas</h5>
+                <i class="bi bi-diagram-3-fill fs-4 me-sm-2" style="color: var(--mava-ouro);"></i>
+                <h5 class="mb-0 fw-bold" style="color: var(--mava-grafite);">Equipes Convocadas</h5>
             </div>
 
             <div class="card-3d p-4">
-                <div class="card-topo-detalhe" style="background: #6c757d;"></div>
+                <div class="card-topo-detalhe" style="background: linear-gradient(90deg, transparent, #9ca3af, transparent);"></div>
 
                 <div class="table-responsive mt-2" style="border-radius: 12px;">
                     <table class="table table-moderna w-100 mb-0">
@@ -231,10 +223,10 @@
                         <tr th:each="item : ${evento.estrutura}">
                             <td class="ps-3 align-middle text-nowrap">
                                 <div class="d-flex align-items-center gap-3">
-                                    <div class="bg-light rounded p-2 text-muted shadow-sm d-none d-sm-block">
+                                    <div class="rounded p-2 text-muted shadow-sm d-none d-sm-block" style="background-color: #f8fafc; border: 1px solid var(--cinza-subtil);">
                                         <i class="bi bi-people-fill"></i>
                                     </div>
-                                    <span class="fw-bold fs-6" style="color: var(--texto-escuro);" th:text="${item.ministerio.nome}">Nome do Ministério</span>
+                                    <span class="fw-bold fs-6" style="color: var(--mava-grafite);" th:text="${item.ministerio.nome}">Nome do Ministério</span>
                                 </div>
                             </td>
 
@@ -247,11 +239,11 @@
 
                         <tr th:if="${#lists.isEmpty(evento.estrutura)}">
                             <td colspan="2" class="text-center py-5 border-0">
-                                <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
-                                    <i class="bi bi-slash-circle fs-3 text-muted opacity-50"></i>
+                                <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px; background-color: rgba(197, 160, 89, 0.1);">
+                                    <i class="bi bi-slash-circle fs-3" style="color: var(--mava-ouro);"></i>
                                 </div>
-                                <h6 class="fw-bold text-muted">Nenhuma equipe escalada</h6>
-                                <p class="text-muted small mb-0">Este evento não exigiu a convocação automática de equipes.</p>
+                                <h6 class="fw-bold" style="color: var(--mava-grafite);">Nenhuma equipe escalada</h6>
+                                <p class="text-muted small mb-0 fw-medium">Este evento não exigiu a convocação automática de equipes.</p>
                             </td>
                         </tr>
 

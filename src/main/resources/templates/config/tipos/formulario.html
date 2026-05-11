@@ -1,125 +1,140 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title th:text="${tipoEvento.id != null ? 'Editar Modelo | Mava' : 'Novo Modelo | Mava'}">Novo Modelo | Mava</title>
+    <title th:text="${tipoEvento.id != null ? 'Portal MAVA | Editar Modelo' : 'Portal MAVA | Novo Modelo'}">Portal MAVA | Novo Modelo</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
     <style>
         :root {
-            --azul-petroleo: #0c5465;
-            --texto-escuro: #2c3e50;
+            /* Paleta MAVA - Light Premium */
+            --mava-ouro: #c5a059;
+            --mava-ouro-light: #dfc48c;
+            --mava-grafite: #111111;
+            --mava-bg-light: #f4f6f9;
+            --texto-escuro: #2d3436;
+            --texto-muted: #636e72;
+            --mava-danger: #dc3545;
+            --cinza-subtil: #e2e8f0;
         }
 
         body {
-            background-color: #f0f2f5;
-            font-family: 'Segoe UI', sans-serif;
+            background-color: var(--mava-bg-light);
+            font-family: 'Poppins', sans-serif;
             min-height: 100vh;
+            color: var(--texto-escuro);
         }
 
-        /* --- PADRÃO MANANCIAL DE CARDS --- */
+        /* --- PADRÃO MAVA DE CARDS --- */
         .card-3d {
             background: #ffffff;
-            border: none;
-            border-radius: 20px;
-            box-shadow: 0 10px 20px rgba(12, 84, 101, 0.08);
+            border: 1px solid var(--cinza-subtil);
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.04);
             position: relative;
             overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
         .card-topo-detalhe {
-            height: 6px;
+            height: 4px;
             width: 100%;
             position: absolute;
             top: 0;
             left: 0;
-            background: var(--azul-petroleo);
+            background: linear-gradient(90deg, transparent, var(--mava-ouro), transparent);
         }
 
-        /* --- PADRÃO MANANCIAL DE FORMULÁRIOS --- */
+        /* --- PADRÃO MAVA DE FORMULÁRIOS --- */
         .form-label {
-            color: var(--texto-escuro);
-            font-weight: 700;
+            color: var(--mava-grafite);
+            font-weight: 600;
             font-size: 0.95rem;
         }
 
         .input-arredondado {
             border-radius: 12px;
             padding: 0.75rem 1rem;
-            border: 1px solid #dee2e6;
+            border: 1px solid var(--cinza-subtil);
             transition: all 0.2s;
+            color: var(--texto-escuro);
+            background-color: #ffffff;
         }
 
         .input-arredondado:focus {
-            border-color: var(--azul-petroleo);
-            box-shadow: 0 0 0 0.25rem rgba(12, 84, 101, 0.15);
+            border-color: var(--mava-ouro);
+            box-shadow: 0 0 0 0.25rem rgba(197, 160, 89, 0.15);
             outline: none;
         }
 
-        /* --- CAIXA DE EQUIPES E SWITCHES --- */
+        .input-arredondado::placeholder {
+            color: #cbd5e1;
+            font-weight: 500;
+        }
+
+        /* --- CAIXA DE EQUIPES E SWITCHES MAVA --- */
         .box-equipes {
-            background: #f8f9fa;
-            border-radius: 15px;
-            border: 1px solid #e9ecef;
+            background: #f8fafc;
+            border-radius: 16px;
+            border: 1px solid var(--cinza-subtil);
             padding: 1.5rem;
         }
 
         .form-switch .form-check-input {
             cursor: pointer;
+            border-color: #cbd5e1;
         }
 
         .form-switch .form-check-input:checked {
-            background-color: var(--azul-petroleo);
-            border-color: var(--azul-petroleo);
+            background-color: var(--mava-ouro);
+            border-color: var(--mava-ouro);
         }
 
         .form-switch .form-check-input:focus {
-            box-shadow: 0 0 0 0.25rem rgba(12, 84, 101, 0.25);
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%230c5465'/%3e%3c/svg%3e");
+            box-shadow: 0 0 0 0.25rem rgba(197, 160, 89, 0.25);
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23c5a059'/%3e%3c/svg%3e");
         }
 
         /* --- BOTÕES --- */
-        .btn-manancial {
-            background-color: var(--azul-petroleo);
+        .btn-mava {
+            background-color: var(--mava-ouro);
             color: white;
             border-radius: 12px;
-            font-weight: 700;
+            font-weight: 600;
             transition: all 0.3s ease;
             border: none;
-        }
-
-        .btn-manancial:hover {
-            background-color: #093e4b;
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(12, 84, 101, 0.2);
+            box-shadow: 0 4px 10px rgba(197, 160, 89, 0.2);
         }
 
         .btn-cancelar {
             border-radius: 12px;
             font-weight: 600;
-            color: #6c757d;
+            color: var(--texto-muted);
             background: transparent;
             border: 1px solid transparent;
             transition: all 0.2s;
             display: inline-block;
         }
 
-        .btn-cancelar:hover {
-            background-color: #e9ecef;
-            color: var(--texto-escuro);
-        }
-
         .hover-scale { transition: transform 0.2s; }
-        .hover-scale:hover { transform: scale(1.05); }
+
+        /* === REGRAS DE HOVER APENAS PARA DESKTOP === */
+        @media (hover: hover) and (pointer: fine) {
+            .card-3d:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(0,0,0,0.06); }
+            .btn-mava:hover { background-color: #b38f4d; color: white; transform: translateY(-2px); box-shadow: 0 6px 15px rgba(197, 160, 89, 0.3); }
+            .btn-cancelar:hover { background-color: #e2e8f0; color: var(--texto-escuro); }
+            .hover-scale:hover { transform: scale(1.05); }
+        }
 
         /* --- AJUSTES DE RESPONSIVIDADE PARA MOBILE --- */
         @media (max-width: 576px) {
-            .card-body { padding: 1.5rem !important; } /* Alivia o padding excessivo no celular */
-            .box-equipes { padding: 1rem !important; } /* Reduz o padding da caixa cinza */
-            .btn-manancial, .btn-cancelar { width: 100%; text-align: center; } /* Botões 100% de largura */
+            .card-body { padding: 1.5rem !important; }
+            .box-equipes { padding: 1.2rem !important; }
+            .btn-mava, .btn-cancelar { width: 100%; text-align: center; }
         }
         @media (min-width: 576px) {
             .w-sm-auto { width: auto !important; }
@@ -128,10 +143,8 @@
 </head>
 <body>
 
-<!-- Ajuste nas margens verticais para o mobile não ficar com tanto espaço vazio (mt-4 mb-4) -->
 <div class="container mt-4 mt-md-5 mb-4 mb-md-5">
     <div class="row justify-content-center">
-        <!-- Flexível: Ocupa toda a tela no celular (col-12) e centraliza no desktop -->
         <div class="col-12 col-md-10 col-lg-8">
 
             <div class="mb-3 ps-1">
@@ -143,22 +156,20 @@
             <div class="card-3d">
                 <div class="card-topo-detalhe"></div>
 
-                <!-- Padding responsivo: menor no celular (p-4), padrão no desktop (p-5) -->
                 <div class="card-body p-4 p-md-5">
 
-                    <!-- Flex-column no mobile para empilhar o ícone e o texto -->
-                    <div class="d-flex flex-column flex-sm-row align-items-sm-center text-center text-sm-start mb-4 gap-3 gap-sm-0">
-                        <div class="bg-light rounded-circle d-flex align-items-center justify-content-center me-sm-3 shadow-sm mx-auto mx-sm-0 flex-shrink-0" style="width: 50px; height: 50px;">
-                            <i class="bi bi-card-list fs-4" style="color: var(--azul-petroleo);"></i>
+                    <div class="d-flex flex-column flex-sm-row align-items-sm-center text-center text-sm-start mb-4 gap-3 gap-sm-0 mt-2">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center me-sm-3 shadow-sm mx-auto mx-sm-0 flex-shrink-0" style="width: 55px; height: 55px; background-color: rgba(197, 160, 89, 0.1);">
+                            <i class="bi bi-card-list fs-3" style="color: var(--mava-ouro);"></i>
                         </div>
                         <div>
-                            <h4 class="mb-0 fw-bold" style="color: var(--azul-petroleo); letter-spacing: -0.5px;"
+                            <h4 class="mb-0 fw-bold" style="color: var(--mava-grafite); letter-spacing: -0.5px;"
                                 th:text="${tipoEvento.id != null ? 'Editar Modelo' : 'Criar Novo Modelo'}">Criar Novo Modelo</h4>
-                            <small class="text-muted">Configure a estrutura base para os cultos.</small>
+                            <small class="text-muted fw-medium lh-sm d-block mt-1">Configure a estrutura base para os cultos.</small>
                         </div>
                     </div>
 
-                    <hr class="mb-4" style="opacity: 0.1;">
+                    <hr class="mb-4" style="border-color: var(--cinza-subtil); opacity: 0.5;">
 
                     <form action="/config/tipos/salvar" method="post" th:object="${tipoEvento}">
 
@@ -166,25 +177,23 @@
 
                         <div class="mb-4">
                             <label class="form-label">Nome do Modelo <span class="text-danger">*</span></label>
-                            <input type="text" th:field="*{nome}" class="form-control input-arredondado" placeholder="Ex: Culto de Celebração (Domingo)" required />
+                            <input type="text" th:field="*{nome}" class="form-control input-arredondado fw-medium" placeholder="Ex: Culto de Celebração (Domingo)" required />
                         </div>
 
                         <div class="mb-4">
                             <label class="form-label d-block mb-2">Equipes Necessárias <span class="text-danger">*</span></label>
-                            <p class="text-muted small mb-3 lh-sm">Marque as equipes que serão notificadas e convocadas automaticamente ao agendar este modelo.</p>
+                            <p class="text-muted small fw-medium mb-3 lh-sm">Marque as equipes que serão notificadas e convocadas automaticamente ao agendar este modelo.</p>
 
-                            <div class="box-equipes">
+                            <div class="box-equipes shadow-sm">
                                 <div class="row g-3">
-                                    <!-- Adicionada classe col-12 para empilhar no celular e col-md-6 para 2 colunas no desktop -->
                                     <div class="col-12 col-md-6" th:each="min : ${todosMinisterios}">
                                         <div class="form-check form-switch d-flex align-items-center">
                                             <input class="form-check-input fs-5 mt-0 me-2 flex-shrink-0" type="checkbox"
                                                    th:field="*{estruturaPadrao}"
                                                    th:value="${min.id}"
                                                    th:id="${'min_' + min.id}">
-                                            <!-- lh-sm adicionado para evitar que nomes longos fiquem desproporcionais se quebrarem de linha -->
-                                            <label class="form-check-label fw-semibold pt-1 lh-sm" th:for="${'min_' + min.id}"
-                                                   th:text="${min.nome}" style="cursor: pointer; color: #495057;">
+                                            <label class="form-check-label fw-medium pt-1 lh-sm" th:for="${'min_' + min.id}"
+                                                   th:text="${min.nome}" style="cursor: pointer; color: var(--texto-escuro);">
                                                 Nome da Equipe
                                             </label>
                                         </div>
@@ -193,13 +202,12 @@
                             </div>
                         </div>
 
-                        <hr class="mt-4 mt-md-5 mb-4" style="opacity: 0.1;">
+                        <hr class="mt-4 mt-md-5 mb-4" style="border-color: var(--cinza-subtil); opacity: 0.5;">
 
-                        <!-- Flex-column-reverse para o botão 'Salvar' ficar por cima e ocupar a tela toda no celular -->
                         <div class="d-flex flex-column-reverse flex-sm-row justify-content-sm-end gap-2 gap-sm-3">
                             <a href="/config/tipos" class="btn btn-cancelar px-4 py-2 w-100 w-sm-auto text-center">Cancelar</a>
-                            <button type="submit" class="btn btn-manancial px-4 py-2 w-100 w-sm-auto">
-                                <i class="bi bi-save me-2"></i> Salvar Modelo
+                            <button type="submit" class="btn btn-mava px-4 py-2 w-100 w-sm-auto">
+                                <i class="bi bi-save me-2 fs-5 align-middle"></i> Salvar Modelo
                             </button>
                         </div>
 

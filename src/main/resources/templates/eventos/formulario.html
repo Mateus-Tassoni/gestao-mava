@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Novo Evento | Mava</title>
+    <title>Portal MAVA | Novo Evento</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
 
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
@@ -13,42 +14,53 @@
 
     <style>
         :root {
-            --azul-petroleo: #0c5465;
-            --azul-claro: #d1e7ed;
-            --texto-escuro: #2c3e50;
+            /* Paleta MAVA - Light Premium */
+            --mava-ouro: #c5a059;
+            --mava-ouro-light: #dfc48c;
+            --mava-grafite: #111111;
+            --mava-bg-light: #f4f6f9;
+            --texto-escuro: #2d3436;
+            --texto-muted: #636e72;
+            --mava-success: #198754;
+            --mava-danger: #dc3545;
+            --cinza-subtil: #e2e8f0;
         }
 
         body {
-            background-color: #f0f2f5;
-            font-family: 'Segoe UI', sans-serif;
+            background-color: var(--mava-bg-light);
+            font-family: 'Poppins', sans-serif;
             min-height: 100vh;
+            color: var(--texto-escuro);
         }
 
-        /* --- NAVBAR --- */
-        .navbar-manancial {
-            background: linear-gradient(135deg, #0c5465, #146c82);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        /* --- NAVBAR GRAFITE --- */
+        .navbar-mava {
+            background: var(--mava-grafite);
+            border-bottom: 2px solid var(--mava-ouro);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
+        .navbar-brand img { background: transparent !important; filter: drop-shadow(0 0 5px rgba(197, 160, 89, 0.4)); }
 
-        /* --- PADRÃO MANANCIAL DE CARDS --- */
+        /* --- PADRÃO MAVA DE CARDS --- */
         .card-3d {
             background: #ffffff;
             border: none;
-            border-radius: 20px;
-            box-shadow: 0 10px 20px rgba(12, 84, 101, 0.08);
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.04);
             position: relative;
             overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
         .card-topo-detalhe {
-            height: 6px; width: 100%; position: absolute; top: 0; left: 0;
-            background: var(--azul-petroleo);
+            height: 4px; width: 100%; position: absolute; top: 0; left: 0;
+            background: linear-gradient(90deg, transparent, var(--mava-ouro), transparent);
         }
 
         /* --- INPUTS --- */
         .form-label {
             color: var(--texto-escuro);
-            font-weight: 700;
+            font-weight: 600;
             font-size: 0.95rem;
             margin-bottom: 0.5rem;
         }
@@ -56,24 +68,26 @@
         .input-arredondado {
             border-radius: 12px;
             padding: 0.75rem 1rem;
-            border: 1px solid #dee2e6;
+            border: 1px solid var(--cinza-subtil);
             transition: all 0.2s;
             background-color: #fff;
+            color: var(--texto-escuro);
         }
 
         .input-arredondado:focus {
-            border-color: var(--azul-petroleo);
-            box-shadow: 0 0 0 0.25rem rgba(12, 84, 101, 0.15);
+            border-color: var(--mava-ouro);
+            box-shadow: 0 0 0 0.25rem rgba(197, 160, 89, 0.15);
+            outline: none;
         }
 
         /* Customização para Inputs com Ícones (Input Groups) */
         .input-group-text-moderno {
-            background-color: #f8f9fa;
-            border: 1px solid #dee2e6;
+            background-color: #f8fafc;
+            border: 1px solid var(--cinza-subtil);
             border-right: none;
             border-top-left-radius: 12px;
             border-bottom-left-radius: 12px;
-            color: #6c757d;
+            color: var(--texto-muted);
         }
         .input-arredondado-group {
             border-top-left-radius: 0;
@@ -84,7 +98,7 @@
         /* Customização Selects */
         select.input-arredondado {
             cursor: pointer;
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%232d3436' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
             background-repeat: no-repeat;
             background-position: right 1rem center;
             background-size: 16px 12px;
@@ -94,37 +108,40 @@
 
         /* --- ESTILO DO BOTÃO OK DO CALENDÁRIO (TEMA AGENDA) --- */
         .flatpickr-confirm {
-            background-color: var(--azul-petroleo) !important;
+            background-color: var(--mava-ouro) !important;
             color: white !important;
             border-radius: 8px !important;
-            font-weight: bold !important;
+            font-weight: 600 !important;
+            font-family: 'Poppins', sans-serif !important;
             padding: 10px 15px !important;
             margin: 0 auto 10px auto !important;
             width: 90% !important;
             text-align: center !important;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1) !important;
+            box-shadow: 0 4px 6px rgba(197, 160, 89, 0.2) !important;
             transition: transform 0.2s !important;
+            border: none !important;
         }
         .flatpickr-confirm:hover {
             transform: scale(1.02) !important;
+            background-color: #b38f4d !important;
         }
 
         /* --- SWITCH DE REPETIÇÃO --- */
         .box-repeticao-container {
-            background: #f8f9fa;
-            border-radius: 15px;
-            border: 1px solid #e9ecef;
+            background: #ffffff;
+            border-radius: 16px;
+            border: 1px solid var(--cinza-subtil);
             padding: 1.5rem;
             transition: all 0.3s;
         }
         .box-repeticao-container.active {
-            background: #f0f7f9;
-            border-color: var(--azul-claro);
+            background: rgba(197, 160, 89, 0.05);
+            border-color: var(--mava-ouro-light);
         }
 
-        .form-switch .form-check-input { width: 3em; height: 1.5em; margin-top: 0.1em; cursor: pointer; }
-        .form-switch .form-check-input:checked { background-color: var(--azul-petroleo); border-color: var(--azul-petroleo); }
-        .form-switch .form-check-input:focus { box-shadow: 0 0 0 0.25rem rgba(12, 84, 101, 0.25); background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%230c5465'/%3e%3c/svg%3e"); }
+        .form-switch .form-check-input { width: 3em; height: 1.5em; margin-top: 0.1em; cursor: pointer; border-color: var(--cinza-subtil); }
+        .form-switch .form-check-input:checked { background-color: var(--mava-ouro); border-color: var(--mava-ouro); }
+        .form-switch .form-check-input:focus { box-shadow: 0 0 0 0.25rem rgba(197, 160, 89, 0.25); background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23c5a059'/%3e%3c/svg%3e"); outline: none; }
 
         /* Animação suave para o Box de Repetição */
         .anim-fade-in { animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
@@ -134,27 +151,40 @@
         }
 
         /* --- BOTÕES --- */
-        .btn-manancial { background-color: var(--azul-petroleo); color: white; border-radius: 12px; font-weight: 700; transition: all 0.3s ease; }
-        .btn-manancial:hover { background-color: #093e4b; color: white; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(12, 84, 101, 0.2); }
+        .btn-mava {
+            background-color: var(--mava-ouro); color: white; border-radius: 12px;
+            font-weight: 600; transition: all 0.3s ease; border: none;
+            box-shadow: 0 4px 10px rgba(197, 160, 89, 0.2);
+        }
+        .btn-mava:hover { background-color: #b38f4d; color: white; transform: translateY(-2px); box-shadow: 0 6px 15px rgba(197, 160, 89, 0.3); }
 
-        .btn-cancelar { border-radius: 12px; font-weight: 600; color: #6c757d; background: transparent; border: 1px solid transparent; transition: all 0.2s; }
-        .btn-cancelar:hover { background-color: #e9ecef; color: var(--texto-escuro); }
+        .btn-cancelar { border-radius: 12px; font-weight: 600; color: var(--texto-muted); background: transparent; border: 1px solid transparent; transition: all 0.2s; }
+        .btn-cancelar:hover { background-color: #e2e8f0; color: var(--texto-escuro); }
+
+        .hover-scale { transition: transform 0.2s; }
 
         /* --- ALERTA DE ERRO PREMIUM --- */
         .alert-premium {
             background-color: #ffffff;
-            border-left: 5px solid #dc3545;
+            border-left: 5px solid var(--mava-danger);
             border-radius: 12px;
-            box-shadow: 0 5px 15px rgba(220, 53, 69, 0.15);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
             color: var(--texto-escuro);
+            border-top: none; border-right: none; border-bottom: none;
+        }
+
+        /* === REGRAS DE HOVER APENAS PARA DESKTOP === */
+        @media (hover: hover) and (pointer: fine) {
+            .card-3d:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(0,0,0,0.06); }
+            .hover-scale:hover { transform: scale(1.05); }
         }
 
         /* --- AJUSTES DE RESPONSIVIDADE PARA MOBILE --- */
         @media (max-width: 576px) {
             .navbar-brand span { font-size: 0.85rem !important; }
-            .card-3d { padding: 1.2rem !important; } /* Alivia espaçamento do card */
-            .box-repeticao-container { padding: 1rem !important; }
-            .btn-manancial, .btn-cancelar { width: 100%; text-align: center; } /* Botões em 100% no celular */
+            .card-3d { padding: 1.5rem !important; }
+            .box-repeticao-container { padding: 1.2rem !important; }
+            .btn-mava, .btn-cancelar { width: 100%; text-align: center; }
             .alert-premium { padding: 1rem !important; flex-direction: column; text-align: center; gap: 10px !important; position: relative; }
             .alert-premium .btn-close { position: absolute; top: 10px; right: 10px; }
             .alert-premium > div:first-child { margin: 0 auto; }
@@ -166,17 +196,20 @@
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-dark navbar-manancial mb-4 mb-md-5 sticky-top">
+<nav class="navbar navbar-expand-lg navbar-dark navbar-mava mb-4 mb-md-5 sticky-top">
     <div class="container">
         <a class="navbar-brand d-flex align-items-center gap-2 gap-md-3" href="/">
-            <img th:src="@{/img/logo.png}" alt="Logo" width="40" height="40" class="bg-white rounded-circle p-1 shadow-sm">
+            <img th:src="@{/img/logo.png}" alt="Logo MAVA" width="40" height="40">
             <div class="d-flex flex-column text-white">
-                <span class="fw-bold text-uppercase" style="letter-spacing: 1px; font-size: 1rem; line-height: 1.1;">Mava</span>
+                <span class="fw-bold text-uppercase" style="letter-spacing: 2px; font-size: 1rem; line-height: 1.1; color: var(--mava-ouro);">MAVA</span>
             </div>
         </a>
 
-        <div class="ms-auto">
-            <a href="/eventos" class="btn btn-outline-light btn-sm rounded-pill px-3 px-md-4 fw-bold">
+        <div class="ms-auto d-flex gap-2 gap-md-3 align-items-center">
+            <span class="text-white opacity-75 d-none d-md-block small text-uppercase fw-bold" style="letter-spacing: 1px; color: #cbd5e1 !important;">
+                Agenda e Eventos
+            </span>
+            <a href="/eventos" class="btn btn-sm rounded-pill px-3 px-md-4 fw-bold hover-scale text-nowrap" style="background: transparent; color: #cbd5e1; border: 1px solid #64748b;">
                 <i class="bi bi-list-task"></i> <span class="d-none d-sm-inline ms-1">Ir para Agenda</span>
             </a>
         </div>
@@ -185,22 +218,21 @@
 
 <div class="container pb-5">
     <div class="row justify-content-center">
-        <!-- Flexibilizado para preencher melhor em tablets e celulares (col-12 col-md-11 col-lg-8) -->
         <div class="col-12 col-md-11 col-lg-8">
 
             <div th:if="${mensagemErro}" class="alert alert-premium alert-dismissible fade show mb-4 d-flex align-items-center gap-3 p-4" role="alert">
-                <div class="bg-danger bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; flex-shrink: 0;">
-                    <i class="bi bi-shield-lock-fill fs-4 text-danger"></i>
+                <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 50px; height: 50px; background-color: #f8d7da;">
+                    <i class="bi bi-shield-lock-fill fs-4" style="color: var(--mava-danger);"></i>
                 </div>
                 <div>
-                    <h6 class="alert-heading fw-bold mb-1 text-danger">Bloqueio de Agenda!</h6>
-                    <span class="small fw-semibold text-muted" th:text="${mensagemErro}">Erro de conflito no horário X.</span>
+                    <h6 class="alert-heading fw-bold mb-1" style="color: var(--mava-danger);">Bloqueio de Agenda!</h6>
+                    <span class="small fw-medium text-muted lh-sm d-block" th:text="${mensagemErro}">Erro de conflito no horário X.</span>
                 </div>
                 <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
 
             <div class="mb-3 ps-1">
-                <a href="/eventos" class="text-decoration-none text-muted fw-bold d-flex align-items-center" style="width: fit-content; transition: transform 0.2s;">
+                <a href="/eventos" class="text-decoration-none text-muted fw-bold d-flex align-items-center hover-scale" style="width: fit-content;">
                     <i class="bi bi-arrow-left me-2"></i> Voltar para Lista
                 </a>
             </div>
@@ -208,26 +240,23 @@
             <div class="card-3d">
                 <div class="card-topo-detalhe"></div>
 
-                <!-- Padding reduzido em telas menores via CSS media query ou classes Bootstrap -->
                 <div class="card-body p-4 p-md-5">
 
-                    <!-- Flex-column no mobile para não quebrar feio, e lado a lado no desktop -->
-                    <div class="d-flex flex-column flex-sm-row align-items-sm-center text-center text-sm-start mb-4 gap-3">
-                        <div class="bg-light rounded-circle d-flex align-items-center justify-content-center me-sm-3 shadow-sm flex-shrink-0 mx-auto mx-sm-0" style="width: 50px; height: 50px;">
-                            <i class="bi bi-calendar-plus fs-4" style="color: var(--azul-petroleo);"></i>
+                    <div class="d-flex flex-column flex-sm-row align-items-sm-center text-center text-sm-start mb-4 gap-3 mt-2">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center me-sm-3 shadow-sm flex-shrink-0 mx-auto mx-sm-0" style="width: 55px; height: 55px; background-color: rgba(197, 160, 89, 0.1);">
+                            <i class="bi bi-calendar-plus fs-3" style="color: var(--mava-ouro);"></i>
                         </div>
                         <div>
-                            <h4 class="mb-0 fw-bold" style="color: var(--azul-petroleo); letter-spacing: -0.5px;">Agendar Novo Evento</h4>
-                            <small class="text-muted">Preencha os dados para reservar o espaço e as equipes.</small>
+                            <h4 class="mb-0 fw-bold" style="color: var(--mava-grafite); letter-spacing: -0.5px;">Agendar Novo Evento</h4>
+                            <small class="text-muted fw-medium lh-sm d-block mt-1">Preencha os dados para reservar o espaço e as equipes.</small>
                         </div>
                     </div>
 
-                    <hr class="mb-4" style="opacity: 0.1;">
+                    <hr class="mb-4" style="border-color: var(--cinza-subtil); opacity: 0.5;">
 
                     <form th:action="@{/eventos/salvar}" method="post" th:object="${evento}">
 
                         <div class="row g-3 g-md-4 mb-4">
-                            <!-- col-12 adicionado para 100% de largura no mobile -->
                             <div class="col-12 col-md-7">
                                 <label class="form-label">Nome do Evento <span class="text-danger">*</span></label>
                                 <input type="text" th:field="*{nome}" class="form-control input-arredondado fs-6 fw-bold" placeholder="Ex: Culto da Família" required />
@@ -236,8 +265,8 @@
                             <div class="col-12 col-md-5">
                                 <label class="form-label">Local / Sala <span class="text-danger">*</span></label>
                                 <div class="input-group">
-                                    <span class="input-group-text input-group-text-moderno px-3"><i class="bi bi-geo-alt-fill"></i></span>
-                                    <input type="text" th:field="*{local}" class="form-control input-arredondado input-arredondado-group" placeholder="Ex: Templo Principal" required />
+                                    <span class="input-group-text input-group-text-moderno px-3"><i class="bi bi-geo-alt-fill" style="color: var(--mava-ouro);"></i></span>
+                                    <input type="text" th:field="*{local}" class="form-control input-arredondado input-arredondado-group fw-medium" placeholder="Ex: Templo Principal" required />
                                 </div>
                             </div>
                         </div>
@@ -247,7 +276,7 @@
                                 <label class="form-label">Início <span class="text-danger">*</span></label>
                                 <div class="input-group">
                                     <span class="input-group-text input-group-text-moderno px-3"><i class="bi bi-calendar-event"></i></span>
-                                    <input type="text" th:field="*{dataHoraInicio}" class="form-control input-arredondado input-arredondado-group date-picker bg-white" placeholder="Selecionar data e hora..." required />
+                                    <input type="text" th:field="*{dataHoraInicio}" class="form-control input-arredondado input-arredondado-group date-picker bg-white fw-bold" placeholder="Selecionar data e hora..." required />
                                 </div>
                             </div>
 
@@ -255,33 +284,33 @@
                                 <label class="form-label">Término <span class="text-danger">*</span></label>
                                 <div class="input-group">
                                     <span class="input-group-text input-group-text-moderno px-3"><i class="bi bi-clock-history"></i></span>
-                                    <input type="text" th:field="*{dataHoraFim}" class="form-control input-arredondado input-arredondado-group date-picker bg-white" placeholder="Selecionar data e hora..." required />
+                                    <input type="text" th:field="*{dataHoraFim}" class="form-control input-arredondado input-arredondado-group date-picker bg-white fw-bold" placeholder="Selecionar data e hora..." required />
                                 </div>
                             </div>
                         </div>
 
                         <div class="mb-4">
-                            <div id="containerSwitchRepeticao" class="box-repeticao-container">
+                            <div id="containerSwitchRepeticao" class="box-repeticao-container shadow-sm">
 
                                 <div class="form-check form-switch d-flex align-items-start align-items-sm-center">
                                     <input class="form-check-input mt-1 mt-sm-0 me-3 flex-shrink-0" type="checkbox" id="checkRepetir" onclick="toggleRepeticao()">
                                     <label class="form-check-label pt-1" for="checkRepetir" style="cursor: pointer;">
-                                        <span class="fw-bold fs-6 lh-sm d-block mb-1" style="color: var(--texto-escuro);">Tornar Evento Fixo (Travar Agenda)</span>
-                                        <small class="text-muted fw-normal lh-sm d-block">Repete este evento nas próximas semanas, bloqueando o horário.</small>
+                                        <span class="fw-bold fs-6 lh-sm d-block mb-1" style="color: var(--mava-grafite);">Tornar Evento Fixo (Travar Agenda)</span>
+                                        <small class="text-muted fw-medium lh-sm d-block">Repete este evento nas próximas semanas, bloqueando o horário.</small>
                                     </label>
                                 </div>
 
-                                <div id="boxRepeticao" class="mt-4 pt-3 border-top anim-fade-in" style="display: none;">
+                                <div id="boxRepeticao" class="mt-4 pt-3 border-top anim-fade-in" style="display: none; border-color: var(--cinza-subtil) !important;">
                                     <div class="row align-items-center g-3">
                                         <div class="col-12 col-sm-6">
                                             <label class="form-label text-muted">Repetir por quantas semanas?</label>
                                             <div class="input-group">
-                                                <input type="number" name="repeticoes" class="form-control input-arredondado input-arredondado-group fw-bold text-center" style="border-left: 1px solid #dee2e6; border-radius: 12px 0 0 12px;" value="0" min="0" max="52">
-                                                <span class="input-group-text input-group-text-moderno" style="border-radius: 0 12px 12px 0; border-left: none; background: white;">semanas</span>
+                                                <input type="number" name="repeticoes" class="form-control input-arredondado input-arredondado-group fw-bold text-center" style="border-left: 1px solid var(--cinza-subtil); border-radius: 12px 0 0 12px; color: var(--mava-grafite);" value="0" min="0" max="52">
+                                                <span class="input-group-text input-group-text-moderno fw-medium" style="border-radius: 0 12px 12px 0; border-left: none; background: white;">semanas</span>
                                             </div>
                                         </div>
                                         <div class="col-12 col-sm-6 mt-3 mt-sm-0 text-center text-sm-end">
-                                            <span class="badge bg-danger-subtle text-danger border border-danger px-3 py-2 rounded-pill shadow-sm lh-sm">
+                                            <span class="badge px-3 py-2 rounded-pill shadow-sm lh-sm" style="background-color: #fff5f5; color: var(--mava-danger); border: 1px solid #f5c2c7; font-weight: 600; letter-spacing: 0.5px;">
                                                 <i class="bi bi-exclamation-triangle-fill me-1"></i> Horários futuros serão travados
                                             </span>
                                         </div>
@@ -290,32 +319,31 @@
                             </div>
                         </div>
 
-                        <hr class="mt-4 mt-md-5 mb-4" style="opacity: 0.1;">
+                        <hr class="mt-4 mt-md-5 mb-4" style="border-color: var(--cinza-subtil); opacity: 0.5;">
 
                         <div class="row g-4 mb-4">
                             <div class="col-12">
-                                <div class="p-3 rounded-3" style="background-color: #f8f9fa; border: 1px dashed #ced4da;">
-                                    <label for="tipoEvento" class="form-label text-muted"><i class="bi bi-diagram-3-fill me-2"></i>Modelo de Equipes / Template</label>
-                                    <select id="tipoEvento" th:field="*{tipoEvento}" class="form-control input-arredondado fw-bold text-primary">
+                                <div class="p-4 rounded-4" style="background-color: #f8fafc; border: 1px solid var(--cinza-subtil);">
+                                    <label for="tipoEvento" class="form-label" style="color: var(--mava-grafite);"><i class="bi bi-diagram-3-fill me-2" style="color: var(--mava-ouro);"></i>Modelo de Equipes / Template</label>
+                                    <select id="tipoEvento" th:field="*{tipoEvento}" class="form-control input-arredondado fw-bold mt-1" style="color: var(--mava-grafite);">
                                         <option value="" selected>-- Não usar template (Evento Simples) --</option>
                                         <option th:each="tipo : ${tiposEvento}" th:value="${tipo.id}" th:text="${tipo.nome}"></option>
                                     </select>
-                                    <small class="text-muted d-block mt-2 lh-sm" style="font-size: 0.85rem;"><i class="bi bi-info-circle me-1"></i>Ao selecionar um modelo, as equipes serão escaladas e os líderes notificados automaticamente.</small>
+                                    <small class="text-muted fw-medium d-block mt-3 lh-sm" style="font-size: 0.85rem;"><i class="bi bi-info-circle me-1" style="color: var(--mava-ouro);"></i>Ao selecionar um modelo, as equipes serão escaladas e os líderes notificados automaticamente.</small>
                                 </div>
                             </div>
                         </div>
 
                         <div class="mb-4">
                             <label class="form-label">Observações Adicionais</label>
-                            <textarea th:field="*{descricao}" class="form-control input-arredondado" rows="2" placeholder="Informações de suporte, avisos internos..."></textarea>
+                            <textarea th:field="*{descricao}" class="form-control input-arredondado fw-medium" rows="2" placeholder="Informações de suporte, avisos internos..."></textarea>
                         </div>
 
-                        <hr class="mt-4 mt-md-5 mb-4" style="opacity: 0.1;">
+                        <hr class="mt-4 mt-md-5 mb-4" style="border-color: var(--cinza-subtil); opacity: 0.5;">
 
-                        <!-- Flex-column-reverse para o botão 'Confirmar' ficar no topo e largo no celular -->
                         <div class="d-flex flex-column-reverse flex-sm-row justify-content-sm-end gap-2 gap-sm-3">
-                            <a href="/eventos" class="btn btn-cancelar px-4 py-2 w-sm-auto">Cancelar</a>
-                            <button type="submit" class="btn btn-manancial px-4 py-2 w-sm-auto">
+                            <a href="/eventos" class="btn btn-cancelar px-4 py-2 w-sm-auto text-center">Cancelar</a>
+                            <button type="submit" class="btn btn-mava px-4 py-2 w-sm-auto">
                                 <i class="bi bi-calendar-check-fill me-2"></i> Confirmar Agendamento
                             </button>
                         </div>
