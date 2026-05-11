@@ -3,68 +3,141 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Boas Vindas | Mava</title>
+    <title>Portal MAVA | Boas Vindas</title>
 
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
     <style>
-        :root { --azul-petroleo: #0c5465; --azul-claro: #d1e7ed; --texto-escuro: #2c3e50; }
-        body { background-color: #f0f2f5; font-family: 'Segoe UI', sans-serif; min-height: 100vh; }
-        .navbar-manancial { background: linear-gradient(135deg, #0c5465, #146c82); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
-        .card-adm { border: none; border-radius: 20px; box-shadow: 0 10px 20px rgba(12, 84, 101, 0.08); position: relative; overflow: hidden; background: white; }
-        .topo-detalhe { height: 6px; width: 100%; background: var(--azul-petroleo); }
-        .form-label { color: var(--texto-escuro); font-weight: 700; font-size: 0.9rem; margin-bottom: 0.4rem; }
-        .input-arredondado { border-radius: 12px; padding: 0.7rem 1rem; border: 1px solid #dee2e6; transition: all 0.2s; }
-        .input-arredondado:focus { border-color: var(--azul-petroleo); box-shadow: 0 0 0 0.25rem rgba(12, 84, 101, 0.15); }
-        .bloco-secao { background-color: #ffffff; border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem; border: 1px solid #e9ecef; }
-        .btn-salvar { background-color: var(--azul-petroleo); color: white; border-radius: 12px; font-weight: 700; transition: all 0.3s; }
+        :root {
+            /* Paleta MAVA - Light Premium */
+            --mava-ouro: #c5a059;
+            --mava-ouro-light: #dfc48c;
+            --mava-grafite: #111111;
+            --mava-bg-light: #f4f6f9;
+            --texto-escuro: #2d3436;
+            --texto-muted: #636e72;
+            --cinza-subtil: #e2e8f0;
+            --mava-success: #198754;
+        }
 
-        /* Botões de Unidade */
-        .btn-outline-info {
-            --bs-btn-color: #0c5465;
-            --bs-btn-border-color: #d1e7ed;
-            --bs-btn-hover-color: #fff;
-            --bs-btn-hover-bg: #0c5465;
-            --bs-btn-hover-border-color: #0c5465;
-            --bs-btn-active-color: #fff;
-            --bs-btn-active-bg: #0c5465;
-            --bs-btn-active-border-color: #0c5465;
+        body {
+            background-color: var(--mava-bg-light);
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+            color: var(--texto-escuro);
+        }
+
+        /* --- NAVBAR GRAFITE --- */
+        .navbar-mava {
+            background: var(--mava-grafite);
+            border-bottom: 2px solid var(--mava-ouro);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .navbar-brand img { background: transparent !important; filter: drop-shadow(0 0 5px rgba(197, 160, 89, 0.4)); }
+
+        /* --- PADRÃO MAVA DE CARDS --- */
+        .card-3d {
+            background: #ffffff; border: none; border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.04);
+            position: relative; overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        .card-topo-detalhe {
+            height: 4px; width: 100%; position: absolute; top: 0; left: 0;
+            background: linear-gradient(90deg, transparent, var(--mava-ouro), transparent);
+        }
+
+        /* --- INPUTS E BLOCOS --- */
+        .bloco-secao {
+            background-color: #ffffff; border-radius: 16px;
+            padding: 1.5rem; margin-bottom: 1.5rem;
+            border: 1px solid var(--cinza-subtil);
+        }
+
+        .form-label { color: var(--texto-escuro); font-weight: 600; font-size: 0.9rem; margin-bottom: 0.4rem; }
+
+        .input-arredondado {
+            border-radius: 12px; padding: 0.7rem 1rem;
+            border: 1px solid var(--cinza-subtil); transition: all 0.2s;
+            color: var(--texto-escuro);
+        }
+        .input-arredondado:focus {
+            border-color: var(--mava-ouro);
+            box-shadow: 0 0 0 0.25rem rgba(197, 160, 89, 0.15);
+            outline: none;
+        }
+
+        .input-group-text {
+            background-color: #f8fafc; border: 1px solid var(--cinza-subtil); color: var(--texto-muted);
+        }
+
+        select.input-arredondado {
+            cursor: pointer; background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+            background-repeat: no-repeat; background-position: right 1rem center; background-size: 16px 12px; padding-right: 2.5rem; -webkit-appearance: none; -moz-appearance: none; appearance: none;
+        }
+
+        /* --- BOTÕES --- */
+        .btn-salvar {
+            background-color: var(--mava-ouro); color: white; border-radius: 12px;
+            font-weight: 600; transition: all 0.3s; border: none;
+            box-shadow: 0 4px 10px rgba(197, 160, 89, 0.2);
+        }
+        .btn-cancelar {
+            border-radius: 12px; font-weight: 600; color: var(--texto-muted);
+            background: transparent; border: 1px solid transparent; transition: all 0.2s;
+        }
+
+        /* Botões de Unidade (Customizado MAVA) */
+        .btn-outline-mava {
+            border: 1px solid var(--cinza-subtil);
+            color: var(--texto-muted);
+            background-color: #ffffff;
             transition: all 0.2s;
+        }
+        .btn-check:checked + .btn-outline-mava {
+            background-color: var(--mava-ouro);
+            border-color: var(--mava-ouro);
+            color: #ffffff;
+            box-shadow: 0 4px 10px rgba(197, 160, 89, 0.2);
         }
 
         /* --- REGRAS DE HOVER APENAS PARA DESKTOP --- */
         @media (hover: hover) and (pointer: fine) {
-            .btn-salvar:hover { background-color: #093e4b; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+            .card-3d:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(0,0,0,0.06); }
+            .btn-salvar:hover { background-color: #b38f4d; color: white; transform: translateY(-2px); box-shadow: 0 6px 15px rgba(197, 160, 89, 0.3); }
+            .btn-cancelar:hover { background-color: #e2e8f0; color: var(--texto-escuro); }
+            .btn-outline-mava:hover { background-color: #f8fafc; color: var(--texto-escuro); }
+            .btn-outline-light:hover { background-color: #f8fafc; color: var(--mava-grafite) !important; }
         }
 
         /* --- AJUSTES MOBILE EXCLUSIVOS --- */
         @media (max-width: 768px) {
-            .card-adm .card-body { padding: 1.5rem !important; }
+            .card-3d .card-body { padding: 1.5rem !important; }
             .bloco-secao { padding: 1.2rem; }
 
             .botoes-acao { flex-direction: column; width: 100%; gap: 10px !important; }
             .botoes-acao .btn { width: 100%; }
 
-            /* Ajuste dos botões de unidade para quebrarem linha se forem muitos/texto grande */
             .unidades-container { flex-direction: column; gap: 10px !important; }
         }
     </style>
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-dark navbar-manancial mb-3 mb-lg-5 sticky-top">
+<nav class="navbar navbar-expand-lg navbar-dark navbar-mava mb-3 mb-lg-5 sticky-top">
     <div class="container">
         <a class="navbar-brand d-flex align-items-center gap-2 gap-md-3" href="/">
-            <img th:src="@{/img/logo.png}" alt="Logo" width="40" height="40" class="bg-white rounded-circle p-1">
-            <span class="fw-bold text-uppercase small" style="letter-spacing: 1px;">Secretaria</span>
+            <img th:src="@{/img/logo.png}" alt="Logo MAVA" width="40" height="40">
+            <span class="fw-bold text-uppercase small" style="letter-spacing: 2px; color: var(--mava-ouro);">Secretaria</span>
         </a>
         <div class="ms-auto d-flex gap-2">
-            <a href="/visitantes" class="btn btn-outline-light btn-sm rounded-pill px-3 px-md-4 fw-bold text-nowrap">
+            <a href="/visitantes" class="btn btn-sm rounded-pill px-3 px-md-4 fw-bold text-nowrap" style="background: transparent; color: #cbd5e1; border: 1px solid #64748b;">
                 <i class="bi bi-card-list d-inline d-sm-none"></i>
                 <span class="d-none d-sm-inline">Ver Histórico</span>
             </a>
-            <a href="/" class="btn btn-light btn-sm rounded-pill px-3 px-md-4 fw-bold text-dark text-nowrap">
+            <a href="/" class="btn btn-sm rounded-pill px-3 px-md-4 fw-bold text-nowrap" style="background: var(--mava-ouro); color: #fff; border: none;">
                 <i class="bi bi-x-lg d-inline d-sm-none"></i>
                 <span class="d-none d-sm-inline">Sair</span>
             </a>
@@ -76,16 +149,16 @@
     <div class="row justify-content-center">
         <div class="col-lg-9">
 
-            <div class="card-adm">
-                <div class="topo-detalhe"></div>
+            <div class="card-3d">
+                <div class="card-topo-detalhe"></div>
                 <div class="card-body p-4 p-md-5">
 
-                    <div class="d-flex align-items-center mb-4 mb-md-5">
-                        <div class="bg-info bg-opacity-10 rounded-circle p-3 me-3 flex-shrink-0">
-                            <i class="bi bi-person-plus-fill fs-2 fs-md-1 text-info"></i>
+                    <div class="d-flex align-items-center mb-4 mb-md-5 mt-2">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center me-3 flex-shrink-0" style="width: 55px; height: 55px; background-color: rgba(197, 160, 89, 0.1);">
+                            <i class="bi bi-person-plus-fill fs-3" style="color: var(--mava-ouro);"></i>
                         </div>
                         <div>
-                            <h4 class="mb-0 fw-bold" style="color: var(--texto-escuro);">
+                            <h4 class="mb-0 fw-bold" style="color: var(--mava-grafite); letter-spacing: -0.5px;">
                                 <span th:text="${visitante.id == null ? 'Novo Registro de Boas Vindas' : 'Editar Dados do Visitante'}">Novo Registro</span>
                             </h4>
                             <p class="text-muted small mb-0 lh-sm mt-1">Preencha os dados coletados para triagem ministerial e envio das mensagens.</p>
@@ -101,8 +174,8 @@
                                 <div class="col-md-8">
                                     <label class="form-label">Nome Completo</label>
                                     <div class="input-group">
-                                        <span class="input-group-text bg-light border-end-0" style="border-radius: 12px 0 0 12px;"><i class="bi bi-person"></i></span>
-                                        <input type="text" th:field="*{nome}" class="form-control input-arredondado border-start-0" style="border-radius: 0 12px 12px 0;" required placeholder="Nome completo" />
+                                        <span class="input-group-text border-end-0" style="border-radius: 12px 0 0 12px;"><i class="bi bi-person" style="color: var(--mava-ouro);"></i></span>
+                                        <input type="text" th:field="*{nome}" class="form-control input-arredondado border-start-0 fw-medium" style="border-radius: 0 12px 12px 0;" required placeholder="Nome completo" />
                                     </div>
                                 </div>
 
@@ -128,16 +201,16 @@
                                 <div class="col-md-4">
                                     <label class="form-label">WhatsApp</label>
                                     <div class="input-group">
-                                        <span class="input-group-text bg-light border-end-0" style="border-radius: 12px 0 0 12px;"><i class="bi bi-whatsapp text-success"></i></span>
+                                        <span class="input-group-text border-end-0" style="border-radius: 12px 0 0 12px;"><i class="bi bi-whatsapp" style="color: var(--mava-success);"></i></span>
                                         <input type="tel" th:field="*{telefone}" class="form-control input-arredondado border-start-0 fw-bold" style="border-radius: 0 12px 12px 0;" placeholder="(11) 99999-9999" maxlength="15" oninput="mascaraTelefone(this)" />
                                     </div>
                                 </div>
 
-                                <hr class="my-2 my-md-4 opacity-0 d-none d-md-block">
+                                <hr class="my-3 my-md-4 d-none d-md-block" style="border-color: var(--cinza-subtil); opacity: 0.5;">
 
                                 <div class="col-md-4">
                                     <label class="form-label">Data do Cadastro</label>
-                                    <input type="date" th:field="*{dataCadastro}" class="form-control input-arredondado bg-light" />
+                                    <input type="date" th:field="*{dataCadastro}" class="form-control input-arredondado" style="background-color: #f8fafc;" />
                                 </div>
 
                                 <div class="col-md-8">
@@ -145,7 +218,7 @@
                                     <div class="d-flex gap-2 gap-md-3 unidades-container">
                                         <div th:each="c : ${congregacoes}" class="flex-fill">
                                             <input type="radio" class="btn-check" th:field="*{congregacao}" th:value="${c}" th:id="'check' + ${c}" required>
-                                            <label class="btn btn-outline-info w-100 py-2 fw-bold rounded-3" th:for="'check' + ${c}" th:text="${c}">Sede / Mirim</label>
+                                            <label class="btn btn-outline-mava w-100 py-2 fw-bold rounded-3" th:for="'check' + ${c}" th:text="${c}">Sede / Mirim</label>
                                         </div>
                                     </div>
                                 </div>
@@ -153,8 +226,8 @@
                         </div>
 
                         <div class="d-flex justify-content-end mt-4 mt-md-5 gap-3 botoes-acao">
-                            <a href="/visitantes" class="btn btn-light px-4 py-2 py-md-3 fw-bold order-2 order-md-1" style="border-radius: 12px; color: #6c757d;">Cancelar</a>
-                            <button type="submit" class="btn btn-salvar px-5 py-2 py-md-3 shadow-sm order-1 order-md-2">
+                            <a href="/visitantes" class="btn btn-cancelar px-4 py-2 py-md-3 order-2 order-md-1 text-center">Cancelar</a>
+                            <button type="submit" class="btn btn-salvar px-5 py-2 py-md-3 order-1 order-md-2">
                                 <i class="bi bi-check2-circle me-2 fs-5 align-middle"></i> Salvar Dados
                             </button>
                         </div>

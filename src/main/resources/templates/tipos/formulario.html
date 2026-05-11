@@ -3,115 +3,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Configurar Modelo de Evento | Mava</title>
+    <title>Portal MAVA | Configurar Modelo de Evento</title>
 
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
     <style>
         :root {
-            --azul-petroleo: #0c5465;
-            --azul-claro: #d1e7ed;
-            --texto-escuro: #2c3e50;
+            /* Paleta MAVA - Light Premium */
+            --mava-ouro: #c5a059;
+            --mava-ouro-light: #dfc48c;
+            --mava-grafite: #111111;
+            --mava-bg-light: #f4f6f9;
+            --texto-escuro: #2d3436;
+            --texto-muted: #636e72;
+            --cinza-subtil: #e2e8f0;
         }
 
         body {
-            background-color: #f0f2f5;
-            font-family: 'Segoe UI', sans-serif;
+            background-color: var(--mava-bg-light);
+            font-family: 'Poppins', sans-serif;
             min-height: 100vh;
+            color: var(--texto-escuro);
         }
 
-        /* --- NAVBAR --- */
-        .navbar-manancial {
-            background: linear-gradient(135deg, #0c5465, #146c82);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        /* --- NAVBAR GRAFITE --- */
+        .navbar-mava {
+            background: var(--mava-grafite);
+            border-bottom: 2px solid var(--mava-ouro);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
+        .navbar-brand img { background: transparent !important; filter: drop-shadow(0 0 5px rgba(197, 160, 89, 0.4)); }
 
-        /* --- PADRÃO MANANCIAL DE CARDS --- */
+        /* --- PADRÃO MAVA DE CARDS --- */
         .card-3d {
-            background: #ffffff; border: none; border-radius: 20px;
-            box-shadow: 0 10px 20px rgba(12, 84, 101, 0.08);
+            background: #ffffff; border: none; border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.04);
             position: relative; overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
         .card-topo-detalhe {
-            height: 6px; width: 100%; position: absolute; top: 0; left: 0;
-            background: var(--azul-petroleo);
+            height: 4px; width: 100%; position: absolute; top: 0; left: 0;
+            background: linear-gradient(90deg, transparent, var(--mava-ouro), transparent);
         }
 
         /* --- INPUTS --- */
         .form-label {
-            color: var(--texto-escuro); font-weight: 700; font-size: 0.95rem; margin-bottom: 0.5rem;
+            color: var(--texto-escuro); font-weight: 600; font-size: 0.95rem; margin-bottom: 0.5rem;
         }
 
         .input-arredondado {
-            border-radius: 12px; padding: 0.75rem 1rem; border: 1px solid #dee2e6;
-            transition: all 0.2s; background-color: #fff;
+            border-radius: 12px; padding: 0.75rem 1rem; border: 1px solid var(--cinza-subtil);
+            transition: all 0.2s; background-color: #fff; color: var(--texto-escuro);
         }
         .input-arredondado:focus {
-            border-color: var(--azul-petroleo); box-shadow: 0 0 0 0.25rem rgba(12, 84, 101, 0.15);
+            border-color: var(--mava-ouro); box-shadow: 0 0 0 0.25rem rgba(197, 160, 89, 0.15); outline: none;
         }
 
         .input-group-text-moderno {
-            background-color: #f8f9fa; border: 1px solid #dee2e6; border-right: none;
-            border-top-left-radius: 12px; border-bottom-left-radius: 12px; color: #6c757d;
+            background-color: #f8fafc; border: 1px solid var(--cinza-subtil); border-right: none;
+            border-top-left-radius: 12px; border-bottom-left-radius: 12px; color: var(--texto-muted);
         }
         .input-arredondado-group { border-top-left-radius: 0; border-bottom-left-radius: 0; border-left: none; }
 
         /* --- CHECKBOX MODULAR (MÁGICA DO CSS) --- */
         .check-ministry-card {
             display: flex; align-items: center; gap: 12px;
-            background-color: #f8f9fa; border: 2px solid #e9ecef;
-            border-radius: 14px; padding: 1rem; cursor: pointer;
+            background-color: #ffffff; border: 1px solid var(--cinza-subtil);
+            border-radius: 12px; padding: 1rem; cursor: pointer;
             transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
             position: relative; width: 100%; height: 100%;
         }
 
         /* Quando o input escondido estiver 'checked', muda o visual do card inteiro */
         .check-ministry-card:has(input:checked) {
-            border-color: var(--azul-petroleo);
-            background-color: var(--azul-claro);
-            box-shadow: 0 4px 12px rgba(12, 84, 101, 0.12);
+            border-color: var(--mava-ouro);
+            background-color: rgba(197, 160, 89, 0.05);
+            box-shadow: 0 4px 12px rgba(197, 160, 89, 0.1);
         }
 
-        /* Oculta o checkbox nativo feio */
+        /* Oculta o checkbox nativo */
         .check-ministry-card input[type="checkbox"] {
             position: absolute; opacity: 0; cursor: pointer; height: 0; width: 0;
         }
 
         .icon-box {
             width: 40px; height: 40px; border-radius: 10px;
-            background-color: #ffffff; color: var(--texto-escuro);
+            background-color: #f8fafc; color: var(--texto-muted);
+            border: 1px solid var(--cinza-subtil);
             display: flex; align-items: center; justify-content: center;
-            font-size: 1.2rem; box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            transition: all 0.2s;
-            flex-shrink: 0; /* Evita que o ícone seja esmagado se o texto for longo no mobile */
+            font-size: 1.2rem; transition: all 0.2s;
+            flex-shrink: 0;
         }
 
         .check-ministry-card:has(input:checked) .icon-box {
-            background-color: var(--azul-petroleo); color: white;
+            background-color: var(--mava-ouro); color: white; border-color: var(--mava-ouro);
         }
 
-        .ministry-name { font-weight: 700; color: var(--texto-escuro); transition: color 0.2s; font-size: 0.95rem; line-height: 1.2; word-break: break-word; }
-        .check-ministry-card:has(input:checked) .ministry-name { color: var(--azul-petroleo); }
+        .ministry-name { font-weight: 600; color: var(--texto-escuro); transition: color 0.2s; font-size: 0.95rem; line-height: 1.2; word-break: break-word; }
+        .check-ministry-card:has(input:checked) .ministry-name { color: var(--mava-ouro); }
 
         /* --- ALERTA INFORMATIVO --- */
         .alert-info-custom {
-            background-color: #f8f9fa; border-left: 4px solid var(--azul-petroleo);
+            background-color: #f8fafc; border-left: 4px solid var(--mava-ouro);
             border-radius: 12px; padding: 1rem; display: flex; gap: 15px; align-items: flex-start;
+            border-top: 1px solid var(--cinza-subtil); border-right: 1px solid var(--cinza-subtil); border-bottom: 1px solid var(--cinza-subtil);
         }
 
         /* --- BOTÕES --- */
-        .btn-manancial { background-color: var(--azul-petroleo); color: white; border-radius: 12px; font-weight: 700; transition: all 0.3s ease; }
-        .btn-cancelar { border-radius: 12px; font-weight: 600; color: #6c757d; background: transparent; border: 1px solid transparent; transition: all 0.2s; }
+        .btn-mava { background-color: var(--mava-ouro); color: white; border-radius: 12px; font-weight: 600; transition: all 0.3s ease; border: none; box-shadow: 0 4px 10px rgba(197, 160, 89, 0.2); }
+        .btn-cancelar { border-radius: 12px; font-weight: 600; color: var(--texto-muted); background: transparent; border: 1px solid transparent; transition: all 0.2s; }
 
         .hover-scale { transition: transform 0.2s; }
 
         /* === REGRAS DE HOVER APENAS PARA DESKTOP === */
         @media (hover: hover) and (pointer: fine) {
-            .check-ministry-card:hover { border-color: #ced4da; background-color: #ffffff; transform: translateY(-2px); }
-            .btn-manancial:hover { background-color: #093e4b; color: white; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(12, 84, 101, 0.2); }
-            .btn-cancelar:hover { background-color: #e9ecef; color: var(--texto-escuro); }
+            .card-3d:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(0,0,0,0.06); }
+            .check-ministry-card:not(:has(input:checked)):hover { border-color: #cbd5e1; background-color: #f8fafc; transform: translateY(-2px); }
+            .btn-mava:hover { background-color: #b38f4d; color: white; transform: translateY(-2px); box-shadow: 0 6px 15px rgba(197, 160, 89, 0.3); }
+            .btn-cancelar:hover { background-color: #e2e8f0; color: var(--texto-escuro); }
             .hover-scale:hover { transform: scale(1.05); }
         }
 
@@ -129,20 +141,20 @@
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-dark navbar-manancial mb-3 mb-lg-5 sticky-top">
+<nav class="navbar navbar-expand-lg navbar-dark navbar-mava mb-3 mb-lg-5 sticky-top">
     <div class="container">
         <a class="navbar-brand d-flex align-items-center gap-2 gap-md-3" href="/">
-            <img th:src="@{/img/logo.png}" alt="Logo" width="42" height="42" class="bg-white rounded-circle p-1 shadow-sm">
+            <img th:src="@{/img/logo.png}" alt="Logo MAVA" width="42" height="42">
             <div class="d-flex flex-column text-white">
-                <span class="fw-bold text-uppercase" style="letter-spacing: 1px; font-size: 1rem; line-height: 1.1;">Mava</span>
+                <span class="fw-bold text-uppercase" style="letter-spacing: 2px; font-size: 1rem; line-height: 1.1; color: var(--mava-ouro);">MAVA</span>
             </div>
         </a>
 
         <div class="ms-auto d-flex gap-2 gap-md-3 align-items-center">
-            <span class="text-white opacity-75 d-none d-md-block small text-uppercase fw-bold" style="letter-spacing: 1px;">
+            <span class="text-white opacity-75 d-none d-md-block small text-uppercase fw-bold" style="letter-spacing: 1px; color: #cbd5e1 !important;">
                 Configurações
             </span>
-            <a href="/config/tipos" class="btn btn-outline-light btn-sm rounded-pill px-3 px-md-4 fw-bold hover-scale text-nowrap">
+            <a href="/config/tipos" class="btn btn-sm rounded-pill px-3 px-md-4 fw-bold hover-scale text-nowrap" style="background: transparent; color: #cbd5e1; border: 1px solid #64748b;">
                 <i class="bi bi-gear-fill me-1"></i> <span class="d-none d-sm-inline">Gestão de Modelos</span><span class="d-inline d-sm-none">Modelos</span>
             </a>
         </div>
@@ -163,16 +175,16 @@
                 <div class="card-topo-detalhe"></div>
 
                 <div class="d-flex align-items-center mb-4 mt-2">
-                    <div class="bg-light rounded-circle d-flex align-items-center justify-content-center me-3 shadow-sm flex-shrink-0" style="width: 55px; height: 55px;">
-                        <i class="bi bi-diagram-3-fill fs-3" style="color: var(--azul-petroleo);"></i>
+                    <div class="rounded-circle d-flex align-items-center justify-content-center me-3 shadow-sm flex-shrink-0" style="width: 55px; height: 55px; background-color: rgba(197, 160, 89, 0.1);">
+                        <i class="bi bi-diagram-3-fill fs-3" style="color: var(--mava-ouro);"></i>
                     </div>
                     <div>
-                        <h4 class="mb-0 fw-bold" style="color: var(--texto-escuro); letter-spacing: -0.5px;">Modelo de Evento (Template)</h4>
+                        <h4 class="mb-0 fw-bold" style="color: var(--mava-grafite); letter-spacing: -0.5px;">Modelo de Evento (Template)</h4>
                         <small class="text-muted d-block lh-sm mt-1">Crie moldes predefinidos para agilizar a criação da agenda.</small>
                     </div>
                 </div>
 
-                <hr class="mb-4" style="opacity: 0.1;">
+                <hr class="mb-4" style="border-color: var(--cinza-subtil); opacity: 0.5;">
 
                 <form action="/config/tipos/salvar" method="post" th:object="${tipoEvento}">
 
@@ -181,15 +193,15 @@
                     <div class="mb-4 mb-md-5">
                         <label class="form-label">Nome do Modelo <span class="text-danger">*</span></label>
                         <div class="input-group">
-                            <span class="input-group-text input-group-text-moderno px-3"><i class="bi bi-bookmark-star-fill"></i></span>
-                            <input type="text" th:field="*{nome}" class="form-control input-arredondado input-arredondado-group fw-bold fs-6" placeholder="Ex: Culto de Celebração, Santa Ceia, Reunião de Jovens..." required />
+                            <span class="input-group-text input-group-text-moderno px-3"><i class="bi bi-bookmark-star-fill" style="color: var(--mava-ouro);"></i></span>
+                            <input type="text" th:field="*{nome}" class="form-control input-arredondado input-arredondado-group fw-medium fs-6" placeholder="Ex: Culto de Celebração, Santa Ceia, Reunião de Jovens..." required />
                         </div>
                     </div>
 
                     <div class="mb-4">
                         <div class="d-flex align-items-center mb-3">
-                            <i class="bi bi-people-fill fs-5 me-2" style="color: var(--azul-petroleo);"></i>
-                            <h6 class="mb-0 fw-bold" style="color: var(--texto-escuro);">Selecione as Equipes Necessárias</h6>
+                            <i class="bi bi-people-fill fs-5 me-2" style="color: var(--mava-ouro);"></i>
+                            <h6 class="mb-0 fw-bold" style="color: var(--mava-grafite);">Selecione as Equipes Necessárias</h6>
                         </div>
 
                         <div class="row g-2 g-md-3 mb-4">
@@ -206,7 +218,7 @@
                         </div>
 
                         <div class="alert-info-custom shadow-sm mt-4">
-                            <i class="bi bi-info-circle-fill fs-4 flex-shrink-0" style="color: var(--azul-petroleo);"></i>
+                            <i class="bi bi-info-circle-fill fs-4 flex-shrink-0" style="color: var(--mava-ouro);"></i>
                             <div>
                                 <h6 class="fw-bold mb-1" style="color: var(--texto-escuro);">Automação de Agenda</h6>
                                 <p class="small text-muted mb-0 lh-sm">
@@ -216,11 +228,11 @@
                         </div>
                     </div>
 
-                    <hr class="mt-4 mt-md-5 mb-4" style="opacity: 0.1;">
+                    <hr class="mt-4 mt-md-5 mb-4" style="border-color: var(--cinza-subtil); opacity: 0.5;">
 
                     <div class="d-flex flex-column flex-md-row justify-content-end gap-2 botoes-acao">
-                        <a href="/config/tipos" class="btn btn-cancelar px-4 py-2 py-md-3 order-2 order-md-1">Cancelar</a>
-                        <button type="submit" class="btn btn-manancial px-5 py-2 py-md-3 shadow-sm order-1 order-md-2">
+                        <a href="/config/tipos" class="btn btn-cancelar px-4 py-2 py-md-3 order-2 order-md-1 text-center">Cancelar</a>
+                        <button type="submit" class="btn btn-mava px-5 py-2 py-md-3 order-1 order-md-2">
                             <i class="bi bi-save2-fill me-2 fs-5 align-middle"></i> Salvar Modelo
                         </button>
                     </div>

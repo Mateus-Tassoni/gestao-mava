@@ -3,99 +3,108 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Agenda de Eventos | Mava</title>
+  <title>Portal MAVA | Agenda de Eventos</title>
 
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
   <style>
     :root {
-        --azul-petroleo: #0c5465;
-        --azul-claro: #d1e7ed;
-        --texto-escuro: #2c3e50;
-        --laranja-agenda: #fd7e14;
+        /* Paleta MAVA - Light Premium */
+        --mava-ouro: #c5a059;
+        --mava-ouro-light: #dfc48c;
+        --mava-grafite: #111111;
+        --mava-bg-light: #f4f6f9;
+        --texto-escuro: #2d3436;
+        --texto-muted: #636e72;
         --vermelho-erro: #dc3545;
     }
 
     body {
-        background-color: #f0f2f5;
-        font-family: 'Segoe UI', sans-serif;
+        background-color: var(--mava-bg-light);
+        font-family: 'Poppins', sans-serif;
         min-height: 100vh;
+        color: var(--texto-escuro);
     }
 
-    /* --- NAVBAR --- */
-    .navbar-manancial {
-        background: linear-gradient(135deg, #0c5465, #146c82);
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    /* --- NAVBAR GRAFITE --- */
+    .navbar-mava {
+        background: var(--mava-grafite);
+        border-bottom: 2px solid var(--mava-ouro);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
+    .navbar-brand img { background: transparent !important; filter: drop-shadow(0 0 5px rgba(197, 160, 89, 0.4)); }
 
-    /* --- PADRÃO MANANCIAL DE CARDS --- */
+    /* --- PADRÃO MAVA DE CARDS --- */
     .card-3d {
-        background: #ffffff; border: none; border-radius: 20px;
-        box-shadow: 0 10px 20px rgba(12, 84, 101, 0.08);
-        position: relative; overflow: hidden;
+        background: #ffffff;
+        border: none;
+        border-radius: 16px;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.04);
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     }
 
     .card-topo-detalhe {
-        height: 6px; width: 100%; position: absolute; top: 0; left: 0;
-        background: var(--laranja-agenda);
+        height: 4px; width: 100%; position: absolute; top: 0; left: 0;
+        background: linear-gradient(90deg, transparent, var(--mava-ouro), transparent);
     }
 
     /* --- DASHBOARD BOTÕES --- */
-    .btn-dash { border-radius: 12px; font-weight: 700; padding: 0.6rem 1.2rem; transition: all 0.3s ease; border: none; display: flex; align-items: center; justify-content: center; gap: 8px; }
-    .btn-agenda { background-color: var(--laranja-agenda); color: white; }
-    .btn-outline-dash { background-color: white; color: var(--texto-escuro); border: 2px solid #e9ecef; }
+    .btn-dash {
+        border-radius: 12px; font-weight: 600; padding: 0.6rem 1.2rem;
+        transition: all 0.3s ease; border: none; display: flex;
+        align-items: center; justify-content: center; gap: 8px; font-size: 0.9rem;
+    }
+    .btn-agenda { background-color: var(--mava-ouro); color: white; box-shadow: 0 4px 10px rgba(197, 160, 89, 0.2); }
+    .btn-outline-dash { background-color: #ffffff; color: var(--texto-muted); border: 1px solid #e2e8f0; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
 
     /* --- TABELA MODERNA --- */
     .table-moderna { border-collapse: separate; border-spacing: 0 8px; margin-top: -8px; }
-    .table-moderna th { text-transform: uppercase; font-size: 0.75rem; letter-spacing: 1px; color: #6c757d; border: none; padding: 0 1rem 10px 1rem; font-weight: 700; white-space: nowrap; }
-    .table-moderna td { vertical-align: middle; background-color: #ffffff; border-top: 1px solid #f8f9fa; border-bottom: 1px solid #f8f9fa; padding: 1.2rem 1rem; transition: all 0.2s; }
-    .table-moderna td:first-child { border-left: 1px solid #f8f9fa; border-top-left-radius: 12px; border-bottom-left-radius: 12px; }
-    .table-moderna td:last-child { border-right: 1px solid #f8f9fa; border-top-right-radius: 12px; border-bottom-right-radius: 12px; }
+    .table-moderna th { text-transform: uppercase; font-size: 0.75rem; letter-spacing: 1.5px; color: var(--texto-muted); border: none; padding: 0 1rem 10px 1rem; font-weight: 700; white-space: nowrap; }
+    .table-moderna td { vertical-align: middle; background-color: #ffffff; border-top: 1px solid #f8fafc; border-bottom: 1px solid #f8fafc; padding: 1.2rem 1rem; transition: all 0.2s; }
+    .table-moderna td:first-child { border-left: 1px solid #f8fafc; border-top-left-radius: 12px; border-bottom-left-radius: 12px; }
+    .table-moderna td:last-child { border-right: 1px solid #f8fafc; border-top-right-radius: 12px; border-bottom-right-radius: 12px; }
     .table-moderna tbody tr { transition: transform 0.2s, box-shadow 0.2s; }
 
     /* --- CALENDÁRIO "FOLHINHA" --- */
     .data-box {
-        background-color: #fcfcfd; border: 2px solid #f0f2f5;
-        border-radius: 14px; text-align: center; width: 65px;
-        padding: 0.5rem 0; box-shadow: 0 4px 6px rgba(0,0,0,0.02);
-        margin: 0 auto; /* Centraliza no mobile se apertar muito */
+        background-color: #f8fafc; border: 1px solid #e2e8f0;
+        border-radius: 12px; text-align: center; width: 65px;
+        padding: 0.5rem 0; box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        margin: 0 auto;
     }
-    .data-box .dia { font-size: 1.6rem; font-weight: 900; color: var(--azul-petroleo); line-height: 1; display: block; }
-    .data-box .mes { font-size: 0.75rem; font-weight: 800; color: var(--laranja-agenda); text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; display: block; }
+    .data-box .dia { font-size: 1.6rem; font-weight: 800; color: var(--mava-grafite); line-height: 1; display: block; }
+    .data-box .mes { font-size: 0.75rem; font-weight: 700; color: var(--mava-ouro); text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; display: block; }
 
     /* Botões de Ação na Tabela */
-    .btn-acao-tabela { width: 35px; height: 35px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; background-color: transparent; border: none; color: #adb5bd; transition: all 0.2s; }
+    .btn-acao-tabela { width: 35px; height: 35px; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; background-color: transparent; border: 1px solid transparent; color: #cbd5e1; transition: all 0.2s; }
 
     .hover-scale { transition: transform 0.2s; }
 
     /* === REGRAS DE HOVER APENAS PARA DESKTOP (Evita bugs no touch) === */
     @media (hover: hover) and (pointer: fine) {
+        .card-3d:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(0,0,0,0.06); }
         .btn-dash:hover { transform: translateY(-2px); }
-        .btn-agenda:hover { background-color: #e56b00; color: white; box-shadow: 0 6px 15px rgba(253, 126, 20, 0.3); }
-        .btn-outline-dash:hover { background-color: #f8f9fa; border-color: #ced4da; }
-        .table-moderna tbody tr:hover td { background-color: #f8f9fa; border-color: #e9ecef; }
+        .btn-agenda:hover { background-color: #b38f4d; color: white; box-shadow: 0 6px 15px rgba(197, 160, 89, 0.3); }
+        .btn-outline-dash:hover { background-color: #f8fafc; border-color: var(--mava-ouro); color: var(--mava-ouro); }
+        .table-moderna tbody tr:hover td { background-color: #f8fafc; border-color: #e2e8f0; }
         .table-moderna tbody tr:hover { transform: scale(1.005); box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
-        .btn-acao-tabela:hover.edit { background-color: #fff4ec; color: var(--laranja-agenda); }
-        .btn-acao-tabela:hover.delete { background-color: #ffe6e6; color: var(--vermelho-erro); }
+        .btn-acao-tabela:hover.edit { background-color: rgba(197, 160, 89, 0.1); color: var(--mava-ouro); border-color: var(--mava-ouro-light); }
+        .btn-acao-tabela:hover.delete { background-color: #ffe6e6; color: var(--vermelho-erro); border-color: #f5c2c7; }
         .hover-scale:hover { transform: scale(1.05); }
     }
 
     /* === AJUSTES MOBILE EXCLUSIVOS === */
     @media (max-width: 768px) {
-        /* Reduz padding da tabela para caber na tela */
         .table-moderna td, .table-moderna th { padding: 0.8rem 0.5rem; }
-
-        /* Ajusta o tamanho da folhinha de data */
         .data-box { width: 55px; padding: 0.4rem 0; }
         .data-box .dia { font-size: 1.3rem; }
         .data-box .mes { font-size: 0.65rem; }
-
-        /* Ajusta tipografia da tabela para não quebrar feio */
         .table-moderna td h6 { font-size: 0.95rem !important; }
         .table-moderna td .small { font-size: 0.75rem; }
-
-        /* Os botões do topo viram blocos completos no mobile */
         .botoes-topo { width: 100%; flex-direction: column; }
         .botoes-topo .btn-dash { width: 100%; }
     }
@@ -103,21 +112,20 @@
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-dark navbar-manancial mb-3 mb-lg-5 sticky-top">
+<nav class="navbar navbar-expand-lg navbar-dark navbar-mava mb-3 mb-lg-5 sticky-top">
   <div class="container">
     <a class="navbar-brand d-flex align-items-center gap-2 gap-md-3" href="/">
-      <img th:src="@{/img/logo.png}" alt="Logo" width="42" height="42" class="bg-white rounded-circle p-1 shadow-sm">
+      <img th:src="@{/img/logo.png}" alt="Logo MAVA" width="42" height="42">
       <div class="d-flex flex-column text-white">
-        <span class="fw-bold text-uppercase" style="letter-spacing: 1px; font-size: 1rem; line-height: 1.1;">Mava</span>
+        <span class="fw-bold text-uppercase" style="letter-spacing: 2px; font-size: 1rem; line-height: 1.1; color: var(--mava-ouro);">MAVA</span>
       </div>
     </a>
 
-    <!-- A Navbar aqui não tem menu colapsável, então mantemos a estrutura adaptada para caber no mobile -->
     <div class="ms-auto d-flex gap-2 gap-md-3 align-items-center">
-        <span class="text-white opacity-75 d-none d-md-block small text-uppercase fw-bold" style="letter-spacing: 1px;">
+        <span class="text-white opacity-75 d-none d-md-block small text-uppercase fw-bold" style="letter-spacing: 1px; color: #cbd5e1 !important;">
             Agenda da Igreja
         </span>
-      <a href="/" class="btn btn-outline-light btn-sm rounded-pill px-3 px-md-4 fw-bold hover-scale text-nowrap">
+      <a href="/" class="btn btn-sm rounded-pill px-3 px-md-4 fw-bold hover-scale text-nowrap" style="background: transparent; color: #cbd5e1; border: 1px solid #64748b;">
         <i class="bi bi-grid-3x3-gap-fill me-1"></i> <span class="d-none d-sm-inline">Painel Geral</span><span class="d-inline d-sm-none">Voltar</span>
       </a>
     </div>
@@ -128,16 +136,15 @@
 
   <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
     <div>
-      <h4 class="fw-bold mb-1" style="color: var(--texto-escuro);"><i class="bi bi-calendar-week-fill me-2" style="color: var(--laranja-agenda);"></i>Próximos Eventos</h4>
+      <h4 class="fw-bold mb-1" style="color: var(--mava-grafite);"><i class="bi bi-calendar-week-fill me-2" style="color: var(--mava-ouro);"></i>Próximos Eventos</h4>
       <span class="text-muted small">Acompanhe e gerencie a programação de cultos e reuniões.</span>
     </div>
 
-    <!-- Container dos botões ajustado para mobile (botoes-topo) -->
     <div class="d-flex gap-2 botoes-topo">
-      <a href="/config/tipos" class="btn-dash btn-outline-dash shadow-sm">
+      <a href="/config/tipos" class="btn-dash btn-outline-dash">
         <i class="bi bi-card-list"></i> Modelos Salvos
       </a>
-      <a href="/eventos/novo" class="btn-dash btn-agenda shadow-sm">
+      <a href="/eventos/novo" class="btn-dash btn-agenda">
         <i class="bi bi-plus-lg fs-5"></i> Novo Evento
       </a>
     </div>
@@ -167,8 +174,8 @@
           </td>
 
           <td>
-            <div class="d-flex align-items-center text-muted fw-semibold flex-wrap">
-              <i class="bi bi-clock me-1 me-md-2 opacity-75"></i>
+            <div class="d-flex align-items-center text-muted fw-semibold flex-wrap" style="font-size: 0.9rem;">
+              <i class="bi bi-clock me-1 me-md-2 opacity-75" style="color: var(--mava-ouro);"></i>
               <span th:text="${evento.dataHoraInicio != null ? #temporals.format(evento.dataHoraInicio, 'HH:mm') : '--:--'}"></span>
               <span class="mx-1 opacity-50">às</span>
               <span th:text="${evento.dataHoraFim != null ? #temporals.format(evento.dataHoraFim, 'HH:mm') : '??:??'}"></span>
@@ -177,10 +184,10 @@
 
           <td>
             <div class="d-flex flex-column justify-content-center py-2">
-              <h6 class="mb-1 fw-bold text-wrap" style="color: var(--texto-escuro); font-size: 1.05rem;" th:text="${evento.nome}">Nome do Evento</h6>
+              <h6 class="mb-1 fw-bold text-wrap" style="color: var(--mava-grafite); font-size: 1.05rem;" th:text="${evento.nome}">Nome do Evento</h6>
 
-              <div class="d-flex align-items-start align-items-md-center text-muted small fw-semibold mb-1">
-                <i class="bi bi-geo-alt-fill me-1 mt-1 mt-md-0 flex-shrink-0" style="color: var(--vermelho-erro);"></i>
+              <div class="d-flex align-items-start align-items-md-center text-muted small fw-medium mb-1">
+                <i class="bi bi-geo-alt-fill me-1 mt-1 mt-md-0 flex-shrink-0" style="color: var(--texto-muted);"></i>
                 <span class="text-wrap" th:text="${evento.local}">Local do Evento</span>
               </div>
 
@@ -204,10 +211,10 @@
 
         <tr th:if="${#lists.isEmpty(eventos)}">
           <td colspan="4" class="text-center py-5">
-            <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 70px; height: 70px;">
-              <i class="bi bi-calendar-x fs-2 text-muted opacity-50"></i>
+            <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 70px; height: 70px; background: rgba(197, 160, 89, 0.1);">
+              <i class="bi bi-calendar-x fs-2" style="color: var(--mava-ouro);"></i>
             </div>
-            <h6 class="fw-bold text-muted">A agenda está livre</h6>
+            <h6 class="fw-bold" style="color: var(--mava-grafite);">A agenda está livre</h6>
             <p class="text-muted small mb-0 px-3">Nenhum culto ou reunião programado no momento. Use o botão "Novo Evento".</p>
           </td>
         </tr>

@@ -1,126 +1,177 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Login | Mava</title>
-    <!-- Adicionado maximum-scale para evitar zoom indesejado ao focar nos inputs no iOS -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Login | MAVA</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
     <style>
         :root {
-            --azul-petroleo: #0c5465;
-            --azul-escuro: #05242b;
-            --texto-escuro: #2c3e50;
-            --vermelho-erro: #dc3545;
-            --verde-sucesso: #198754;
+            /* Paleta MAVA - Ouro Polido e Slate */
+            --mava-ouro-puro: #c5a059;
+            --mava-ouro-champanhe: #dfc48c;
+            --mava-slate-deep: #0a0a0a; /* Fundo absoluto */
+            --mava-slate-card: rgba(26, 26, 26, 0.65); /* Fundo do vidro */
+            --mava-text: #e8e8e8;
+            --vermelho-erro: #ff6b6b;
+            --verde-sucesso: #51cf66;
         }
 
-        /* --- BACKGROUND CINEMATOGRÁFICO --- */
+        /* --- BACKGROUND IMMERSIVO TEXTURIZADO --- */
         body {
-            background: linear-gradient(135deg, rgba(12, 84, 101, 0.85), rgba(5, 36, 43, 0.95)), url('/img/fundo.jpg');
+            /* Textura sutil de pedra adicionada via gradiente e overlay */
+            background-color: var(--mava-slate-deep);
+            background-image:
+                radial-gradient(circle at center, rgba(197, 160, 89, 0.05) 0%, rgba(0,0,0,0) 70%),
+                url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgdmlld0JveD0iMCAwIDQwIDQwIj48ZyBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiM4ODgiIGZpbGwtb3BhY2l0eT0iMC4wMiI+PHBhdGggZD0iTTAgMGg0MHY0MEgwVjB6bTIwIDIwaDIwdjIwSDIWMjB6TTAgMjBoMjB2MjBIMFYyMHoyMCAwaDIwdjIwSDIwVjB6Ii8+PC9nPjwvZz48L3N2Zz4=');
             background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-family: 'Segoe UI', sans-serif;
+            font-family: 'Poppins', sans-serif;
             margin: 0;
-            padding: 15px;
+            padding: 20px;
+            color: var(--mava-text);
         }
 
-        /* --- CARD DE LOGIN --- */
+        /* --- CARD DARK GLASSMORPHISM --- */
         .login-card {
-            background: #ffffff;
+            background: var(--mava-slate-card);
+            backdrop-filter: blur(20px); /* O segredo do efeito vidro jateado */
+            -webkit-backdrop-filter: blur(20px);
             width: 100%;
-            max-width: 420px;
-            border-radius: 24px;
-            padding: 3rem 2.5rem;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+            max-width: 440px;
+            border-radius: 30px;
+            padding: 4rem 3rem;
+            /* Borda dourada ultra fina e sutil */
+            border: 1px solid rgba(197, 160, 89, 0.15);
+            box-shadow: 0 50px 120px rgba(0,0,0,0.9);
             position: relative;
             overflow: hidden;
-            animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            animation: fadeInScale 0.9s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.95) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
         }
 
+        /* Detalhe superior premium */
         .card-topo-detalhe {
-            height: 8px; width: 100%; position: absolute; top: 0; left: 0;
-            background: var(--azul-petroleo);
+            height: 3px; width: 100%; position: absolute; top: 0; left: 0;
+            background: linear-gradient(90deg, rgba(197, 160, 89, 0), var(--mava-ouro-puro), rgba(197, 160, 89, 0));
         }
 
         /* --- LOGO E TÍTULOS --- */
         .logo-login {
-            max-height: 70px; display: block; margin: 0 auto;
-            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
-            transition: transform 0.3s;
+            max-height: 100px; display: block; margin: 0 auto;
+            /* Brilho mais suave e orgânico */
+            filter: drop-shadow(0 5px 20px rgba(197, 160, 89, 0.25));
+            transition: all 0.4s ease;
         }
+        .logo-login:hover { transform: scale(1.05); filter: drop-shadow(0 5px 30px rgba(197, 160, 89, 0.4)); }
 
         .brand-title {
-            font-size: 1.4rem; font-weight: 900; color: var(--texto-escuro);
-            letter-spacing: 1px; margin-top: 1rem; margin-bottom: 0.2rem;
+            font-size: 1.8rem; font-weight: 800; color: var(--mava-ouro-puro);
+            letter-spacing: 4px; margin-top: 1.5rem; margin-bottom: 0.1rem;
+            text-transform: uppercase;
         }
-        .brand-subtitle { font-size: 0.85rem; font-weight: 600; color: #6c757d; letter-spacing: 0.5px; text-transform: uppercase; }
+        .brand-subtitle {
+            font-size: 0.7rem; font-weight: 500; color: #999;
+            letter-spacing: 2.5px; text-transform: uppercase;
+        }
 
-        /* --- INPUTS PREMIUM --- */
-        .form-label { color: var(--texto-escuro); font-weight: 700; font-size: 0.8rem; margin-bottom: 0.4rem; letter-spacing: 0.5px; text-transform: uppercase; }
+        /* --- INPUTS PREMIUM (DARK) --- */
+        .form-label {
+            color: #bbb; font-weight: 600; font-size: 0.7rem;
+            margin-bottom: 0.6rem; letter-spacing: 1.5px; text-transform: uppercase;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
 
         .input-arredondado {
-            border-radius: 12px; padding: 0.8rem 1rem; border: 1px solid #dee2e6;
-            transition: all 0.2s; background-color: #f8f9fa; font-weight: 600;
+            border-radius: 16px; padding: 1rem 1.4rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            background-color: rgba(0,0,0,0.3);
+            color: white;
+            transition: all 0.3s;
+            font-weight: 400;
+            font-size: 0.9rem;
         }
+        .input-arredondado::placeholder { color: #555; }
+
         .input-arredondado:focus {
-            background-color: #ffffff; border-color: var(--azul-petroleo);
-            box-shadow: 0 0 0 0.25rem rgba(12, 84, 101, 0.15);
+            background-color: rgba(0,0,0,0.5);
+            border-color: rgba(197, 160, 89, 0.5);
+            box-shadow: 0 0 0 5px rgba(197, 160, 89, 0.08);
+            color: white;
         }
 
         .input-group-text-moderno {
-            background-color: #f8f9fa; border: 1px solid #dee2e6; border-right: none;
-            border-top-left-radius: 12px; border-bottom-left-radius: 12px; color: #adb5bd;
-            padding-left: 1rem; padding-right: 0.5rem; transition: background-color 0.2s;
+            background-color: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255, 255, 255, 0.05); border-right: none;
+            border-top-left-radius: 16px; border-bottom-left-radius: 16px;
+            color: #555;
+            padding-left: 1.4rem; transition: all 0.3s;
         }
 
         .input-group:focus-within .input-group-text-moderno {
-            background-color: #ffffff; border-color: var(--azul-petroleo); color: var(--azul-petroleo);
+            border-color: rgba(197, 160, 89, 0.5); color: var(--mava-ouro-puro);
         }
         .input-arredondado-group { border-top-left-radius: 0; border-bottom-left-radius: 0; border-left: none; }
 
-        /* --- BOTÃO DE ACESSO --- */
+        /* --- BOTÃO DE ACESSO POLIDO --- */
         .btn-entrar {
-            background-color: var(--azul-petroleo); color: white; border-radius: 12px;
-            font-weight: 800; letter-spacing: 1px; padding: 0.9rem;
-            transition: all 0.3s ease; border: none; font-size: 1rem; display: flex; align-items: center; justify-content: center; gap: 8px;
+            /* Gradiente metálico mais suave */
+            background: linear-gradient(135deg, var(--mava-ouro-champanhe), var(--mava-ouro-puro));
+            color: #000;
+            border-radius: 16px;
+            font-weight: 700; letter-spacing: 1.5px; padding: 1.1rem;
+            transition: all 0.4s ease; border: none; font-size: 0.9rem;
+            display: flex; align-items: center; justify-content: center; gap: 12px;
+            margin-top: 2rem;
+            text-transform: uppercase;
         }
-        .btn-entrar:active { transform: translateY(0); }
-
-        /* --- ALERTAS CUSTOMIZADOS --- */
-        .alert-login { border-radius: 12px; font-weight: 600; font-size: 0.85rem; padding: 0.8rem 1rem; text-align: left; display: flex; align-items: center; gap: 10px; border: none; }
-        .alert-erro { background-color: #fff5f5; color: var(--vermelho-erro); border-left: 4px solid var(--vermelho-erro); }
-        .alert-sucesso { background-color: #f3faf6; color: var(--verde-sucesso); border-left: 4px solid var(--verde-sucesso); }
-
-        /* --- FOOTER --- */
-        .login-footer { margin-top: 2rem; font-size: 0.75rem; color: #adb5bd; font-weight: 600; letter-spacing: 0.5px; }
-
-        /* === REGRAS DE HOVER APENAS PARA DESKTOP === */
-        @media (hover: hover) and (pointer: fine) {
-            .logo-login:hover { transform: scale(1.05); }
-            .btn-entrar:hover { background-color: #093e4b; transform: translateY(-2px); box-shadow: 0 8px 15px rgba(12, 84, 101, 0.3); }
+        .btn-entrar:hover {
+            background: linear-gradient(135deg, #fff, var(--mava-ouro-champanhe));
+            transform: translateY(-4px);
+            box-shadow: 0 15px 35px rgba(197, 160, 89, 0.35);
         }
 
-        /* === AJUSTES MOBILE EXCLUSIVOS === */
-        @media (max-width: 576px) {
-            .login-card {
-                padding: 2.5rem 1.5rem; /* Reduz o padding lateral no celular para os inputs não ficarem esmagados */
-            }
-            .brand-title {
-                font-size: 1.25rem; /* Ajusta o título para não quebrar a linha */
-            }
+        /* Botão de Senha integrado */
+        .btn-toggle-senha {
+            border-top-right-radius: 16px !important;
+            border-bottom-right-radius: 16px !important;
+            border-color: rgba(255, 255, 255, 0.05) !important;
+            background-color: rgba(0,0,0,0.3) !important;
+            color: #555 !important;
+            border-left: none !important;
+        }
+        .input-group:focus-within .btn-toggle-senha {
+            border-color: rgba(197, 160, 89, 0.5) !important;
+            color: var(--mava-ouro-puro) !important;
+        }
+
+        /* --- ALERTAS MINIMALISTAS --- */
+        .alert-login {
+            border-radius: 16px; font-weight: 500; font-size: 0.8rem;
+            padding: 0.9rem 1.2rem; border: none; background: rgba(0,0,0,0.4);
+            letter-spacing: 0.5px;
+        }
+        .alert-erro { color: var(--vermelho-erro); border: 1px solid rgba(255, 107, 107, 0.15); }
+        .alert-sucesso { color: var(--verde-sucesso); border: 1px solid rgba(81, 207, 102, 0.15); }
+
+        /* --- FOOTER MODERNO --- */
+        .login-footer {
+            margin-top: 3rem; font-size: 0.65rem; color: #666;
+            font-weight: 600; letter-spacing: 2.5px;
+            text-transform: uppercase;
         }
     </style>
 </head>
@@ -129,73 +180,62 @@
 <div class="login-card">
     <div class="card-topo-detalhe"></div>
 
-    <div class="text-center mb-4">
-        <img th:src="@{/img/logo.png}" class="logo-login" alt="Logo Manancial" onerror="this.style.display='none'; document.getElementById('icon-fallback').style.display='block';">
-        <i id="icon-fallback" class="bi bi-church display-1" style="display:none; color: var(--azul-petroleo);"></i>
+    <div class="text-center mb-5">
+        <img th:src="@{/img/logo.png}" class="logo-login" alt="Logo MAVA">
 
-        <h4 class="brand-title">Mava</h4>
-        <div class="brand-subtitle">Portal de Gestão Integrada</div>
+        <h4 class="brand-title">MAVA</h4>
+        <div class="brand-subtitle">Gestão Inteligente</div>
     </div>
 
-    <div th:if="${param.error}" class="alert alert-login alert-erro mb-4 shadow-sm fade show" role="alert">
-        <i class="bi bi-shield-x fs-5"></i>
-        <span><strong>Acesso negado!</strong> Usuário ou senha incorretos.</span>
-    </div>
-
-    <div th:if="${param.logout}" class="alert alert-login alert-sucesso mb-4 shadow-sm fade show" role="alert">
-        <i class="bi bi-shield-check fs-5"></i>
-        <span>Sessão encerrada com segurança.</span>
+    <div th:if="${param.error}" class="alert alert-login alert-erro mb-4 shadow-sm" role="alert">
+        <i class="bi bi-shield-slash-fill me-2"></i>
+        <span>Credenciais inválidas.</span>
     </div>
 
     <form th:action="@{/login}" method="post">
-
-        <div class="mb-3">
-            <label class="form-label">Credencial de Acesso</label>
+        <div>
+            <label class="form-label">Usuário</label>
             <div class="input-group">
-                <span class="input-group-text input-group-text-moderno"><i class="bi bi-person-fill"></i></span>
-                <input type="text" name="username" class="form-control input-arredondado input-arredondado-group" placeholder="Digite seu usuário..." required autofocus>
+                <span class="input-group-text input-group-text-moderno"><i class="bi bi-person"></i></span>
+                <input type="text" name="username" class="form-control input-arredondado input-arredondado-group" placeholder="Digite seu acesso" required autofocus>
             </div>
         </div>
 
-        <div class="mb-4">
+        <div>
             <label class="form-label">Senha</label>
             <div class="input-group">
-                <span class="input-group-text input-group-text-moderno"><i class="bi bi-key-fill"></i></span>
+                <span class="input-group-text input-group-text-moderno"><i class="bi bi-key"></i></span>
                 <input type="password" name="password" class="form-control input-arredondado input-arredondado-group" style="border-top-right-radius: 0; border-bottom-right-radius: 0;" placeholder="••••••••" required>
-                <button class="btn btn-outline-secondary btn-toggle-senha" type="button" style="border-top-right-radius: 12px; border-bottom-right-radius: 12px; border-color: #dee2e6; background-color: #f8f9fa;">
-                    <i class="bi bi-eye text-muted"></i>
+                <button class="btn btn-outline-secondary btn-toggle-senha" type="button">
+                    <i class="bi bi-eye"></i>
                 </button>
             </div>
         </div>
 
-        <button type="submit" class="btn-entrar w-100 mt-2">
-            ACESSAR SISTEMA <i class="bi bi-arrow-right-circle-fill fs-5 ms-1"></i>
+        <button type="submit" class="btn-entrar w-100">
+            ENTRAR NO PORTAL <i class="bi bi-arrow-right-short fs-4"></i>
         </button>
     </form>
 
     <div class="text-center login-footer">
-        &copy; 2026 MANANCIAL TECNOLOGIA
+        &copy; 2026 MAVA TECNOLOGIA
     </div>
-
 </div>
 
 <script>
+    // Mantendo a funcionalidade de ver senha
     document.addEventListener("DOMContentLoaded", function() {
         const botoesSenha = document.querySelectorAll('.btn-toggle-senha');
-
         botoesSenha.forEach(botao => {
             botao.addEventListener('click', function() {
                 const inputSenha = this.previousElementSibling;
                 const icone = this.querySelector('i');
-
                 if (inputSenha.type === 'password') {
                     inputSenha.type = 'text';
-                    icone.classList.remove('bi-eye');
-                    icone.classList.add('bi-eye-slash');
+                    icone.classList.replace('bi-eye', 'bi-eye-slash');
                 } else {
                     inputSenha.type = 'password';
-                    icone.classList.remove('bi-eye-slash');
-                    icone.classList.add('bi-eye');
+                    icone.classList.replace('bi-eye-slash', 'bi-eye');
                 }
             });
         });

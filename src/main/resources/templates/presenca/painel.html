@@ -3,22 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Painel TV - Recepção | Mava</title>
+  <title>Portal MAVA | Painel TV - Recepção</title>
 
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
   <style>
     :root {
-        --azul-petroleo: #0c5465;
-        --azul-escuro: #05242b;
-        --ouro-visitante: #ffc107;
-        --texto-claro: #f8f9fa;
+        /* Paleta MAVA - Dark Premium (TV Mode) */
+        --mava-ouro: #c5a059;
+        --mava-grafite: #111111;
+        --texto-claro: #f8fafc;
     }
 
-    /* Fundo de TV (Kiosk Mode) com efeito Holofote */
+    /* Fundo de TV (Kiosk Mode) com efeito Holofote MAVA */
     body {
-        background: radial-gradient(circle at center, var(--azul-petroleo) 0%, var(--azul-escuro) 60%, #000000 100%);
+        background: radial-gradient(circle at center, #2b2b2b 0%, var(--mava-grafite) 60%, #000000 100%);
         color: var(--texto-claro);
         height: 100vh;
         margin: 0;
@@ -26,7 +27,7 @@
         align-items: center;
         justify-content: center;
         overflow: hidden;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-family: 'Poppins', sans-serif;
     }
 
     /* --- HEADER (Logo e Relógio) --- */
@@ -38,14 +39,14 @@
     }
 
     .logo-tv {
-        display: flex; align-items: center; gap: 15px; opacity: 0.8;
+        display: flex; align-items: center; gap: 15px; opacity: 0.9;
     }
-    .logo-tv img { width: 60px; height: 60px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5)); }
-    .logo-tv-text { font-size: 1.5rem; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; line-height: 1.1; }
+    .logo-tv img { width: 60px; height: 60px; filter: drop-shadow(0 0 10px rgba(197, 160, 89, 0.3)); }
+    .logo-tv-text { font-size: 1.5rem; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; line-height: 1.1; color: var(--mava-ouro); }
 
     .relogio {
         font-size: 3.5rem; font-weight: 300; letter-spacing: 2px;
-        text-shadow: 0 4px 15px rgba(0,0,0,0.8); line-height: 1;
+        text-shadow: 0 4px 15px rgba(0,0,0,0.8); line-height: 1; color: #ffffff;
     }
 
     /* --- CONTAINER CENTRAL (A Mágica Acontece Aqui) --- */
@@ -54,7 +55,7 @@
         /* Propriedades para a animação via JS */
         transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         opacity: 1; transform: scale(1);
-        padding: 0 20px; /* Adicionado para mobile não colar na borda */
+        padding: 0 20px;
     }
 
     .container-tv.escondido {
@@ -68,66 +69,61 @@
 
     .foto-destaque {
         width: 420px; height: 420px; object-fit: cover; border-radius: 50%;
-        border: 12px solid rgba(255, 255, 255, 0.1);
-        background-color: #111;
-        box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        border: 10px solid rgba(255, 255, 255, 0.05);
+        background-color: var(--mava-grafite);
+        box-shadow: 0 20px 50px rgba(0,0,0,0.8);
         transition: all 0.5s ease;
     }
 
     /* Tipografia de Apresentação */
     .saudacao {
-        font-size: 2rem; font-weight: 600; color: rgba(255,255,255,0.7);
+        font-size: 2rem; font-weight: 600; color: rgba(255,255,255,0.6);
         text-transform: uppercase; letter-spacing: 5px; margin-bottom: 0.5rem;
     }
 
     .nome-grande {
         font-size: 5.5rem; font-weight: 900; line-height: 1.1; margin-bottom: 1.5rem;
-        text-shadow: 0 10px 30px rgba(0,0,0,0.8); text-wrap: balance;
+        text-shadow: 0 10px 30px rgba(0,0,0,0.9); text-wrap: balance; color: #ffffff;
     }
 
     .cargo-grande {
         font-size: 2.2rem; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; gap: 15px;
-        background-color: rgba(255,255,255,0.1); padding: 12px 50px; border-radius: 50rem;
+        background-color: rgba(255,255,255,0.05); padding: 12px 50px; border-radius: 50rem;
         text-transform: uppercase; letter-spacing: 3px; backdrop-filter: blur(10px);
-        border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-        word-break: break-word; /* Proteção contra cargos longos */
-        max-width: 100%;
+        border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+        word-break: break-word; max-width: 100%;
     }
 
     /* --- TEMAS CONDICIONAIS (Controlados pelo JS) --- */
     .tema-membro .foto-destaque {
         border-color: #ffffff;
-        box-shadow: 0 0 80px rgba(255, 255, 255, 0.2), 0 20px 50px rgba(0,0,0,0.5);
+        box-shadow: 0 0 60px rgba(255, 255, 255, 0.15), 0 20px 50px rgba(0,0,0,0.8);
     }
     .tema-membro .cargo-grande { color: #ffffff; }
 
     .tema-visitante .foto-destaque {
-        border-color: var(--ouro-visitante);
-        box-shadow: 0 0 100px rgba(255, 193, 7, 0.4), 0 20px 50px rgba(0,0,0,0.5);
+        border-color: var(--mava-ouro);
+        box-shadow: 0 0 80px rgba(197, 160, 89, 0.3), 0 20px 50px rgba(0,0,0,0.8);
     }
-    .tema-visitante .saudacao { color: var(--ouro-visitante); }
+    .tema-visitante .saudacao { color: var(--mava-ouro); }
     .tema-visitante .cargo-grande {
-        color: var(--ouro-visitante); border-color: rgba(255, 193, 7, 0.3);
-        background-color: rgba(255, 193, 7, 0.1);
+        color: var(--mava-ouro); border-color: rgba(197, 160, 89, 0.3);
+        background-color: rgba(197, 160, 89, 0.1);
     }
 
     /* Rodapé de Sistema */
     .marca-dagua {
         position: absolute; bottom: 30px; width: 100%; text-align: center;
-        font-size: 1rem; color: rgba(255,255,255,0.3); font-weight: 600; letter-spacing: 2px;
+        font-size: 1rem; color: rgba(255,255,255,0.2); font-weight: 600; letter-spacing: 3px;
+        text-transform: uppercase;
     }
 
     /* === AJUSTES MOBILE EXCLUSIVOS === */
     @media (max-width: 768px) {
-        /* Permite scroll apenas em telas muito pequenas, para não cortar o layout */
         body { overflow-y: auto; overflow-x: hidden; min-height: 100vh; height: auto; }
 
         .painel-header {
-            position: relative; /* Solta o header do topo para fluir no documento */
-            padding: 20px;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
+            position: relative; padding: 20px; flex-direction: column; align-items: center; gap: 10px;
         }
 
         .logo-tv { justify-content: center; }
@@ -136,7 +132,7 @@
 
         .relogio { font-size: 2.5rem; text-shadow: 0 2px 10px rgba(0,0,0,0.8); }
 
-        .container-tv { padding: 20px 15px; margin-bottom: 60px; /* Margem para a marca d'agua não sobrepor */ }
+        .container-tv { padding: 20px 15px; margin-bottom: 60px; }
 
         .foto-wrapper { margin-bottom: 1.5rem; }
         .foto-destaque { width: 220px; height: 220px; border-width: 6px; }
@@ -161,7 +157,7 @@
 
 <div class="painel-header">
   <div class="logo-tv">
-    <img src="/img/logo.png" alt="Logo" onerror="this.style.display='none'">
+    <img th:src="@{/img/logo.png}" alt="Logo" onerror="this.style.display='none'">
     <div class="logo-tv-text">Igreja Batista<br>Manancial</div>
   </div>
   <div class="relogio" id="relogio">--:--</div>
@@ -172,7 +168,7 @@
   <div class="saudacao" id="txtSaudacao">Bem-vindo(a)</div>
 
   <div class="foto-wrapper">
-    <img id="imgFoto" src="/img/logo.png" class="foto-destaque" onerror="this.src='/img/logo.png'">
+    <img id="imgFoto" th:src="@{/img/logo.png}" class="foto-destaque" onerror="this.src='/img/logo.png'">
   </div>
 
   <div id="txtNome" class="nome-grande">Aguardando...</div>
@@ -183,7 +179,7 @@
 
 </div>
 
-<div class="marca-dagua">SISTEMA DE GESTÃO E RECEPÇÃO</div>
+<div class="marca-dagua">SISTEMA DE GESTÃO E RECEPÇÃO | MAVA</div>
 
 <script>
   let ultimoNome = "";

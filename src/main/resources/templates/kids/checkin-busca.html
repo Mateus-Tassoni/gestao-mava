@@ -3,33 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Check-in Kids | Mava</title>
+    <title>Portal MAVA | Check-in Kids</title>
 
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
     <style>
         :root {
-            --azul-petroleo: #0c5465;
-            --texto-escuro: #2c3e50;
-            --vermelho-erro: #dc3545;
-            --amarelo-kids: #ffc107;
+            /* Paleta MAVA - Premium */
+            --mava-ouro: #c5a059;
+            --mava-ouro-light: #dfc48c;
+            --mava-grafite: #111111;
+            --texto-escuro: #2d3436;
+            --mava-danger: #dc3545;
+            --cinza-subtil: #e2e8f0;
         }
 
-        /* Fundo imersivo estilo "Totem/App" */
+        /* Fundo imersivo estilo "Totem/App" (MAVA Dark Mode) */
         body {
-            background: linear-gradient(135deg, #0c5465, #146c82);
-            font-family: 'Segoe UI', sans-serif;
+            background: radial-gradient(circle at center, #2b2b2b 0%, var(--mava-grafite) 60%, #000000 100%);
+            font-family: 'Poppins', sans-serif;
             display: flex; align-items: center; justify-content: center;
             min-height: 100vh; margin: 0; padding: 15px;
         }
 
-        /* Card Central Premium */
+        /* Card Central Premium MAVA */
         .card-checkin {
             background: #ffffff;
             border: none;
             border-radius: 24px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
             width: 100%; max-width: 420px;
             padding: 3rem 2.5rem;
             position: relative;
@@ -37,50 +41,51 @@
             text-align: center;
         }
 
-        /* Detalhe no topo com cor mais alegre */
+        /* Detalhe no topo MAVA Ouro */
         .card-topo-detalhe {
             height: 8px; width: 100%; position: absolute; top: 0; left: 0;
-            background: var(--amarelo-kids);
+            background: linear-gradient(90deg, transparent, var(--mava-ouro), transparent);
         }
 
         /* Input Customizado para Digitação Rápida */
         .input-arredondado {
             border-radius: 16px;
-            background-color: #f8f9fa;
-            border: 2px solid #e9ecef;
+            background-color: #f8fafc;
+            border: 2px solid var(--cinza-subtil);
             text-align: center;
             letter-spacing: 2px;
             font-weight: 800;
             font-size: 1.6rem;
             padding: 1rem;
             transition: all 0.3s;
-            color: var(--azul-petroleo);
+            color: var(--texto-escuro);
         }
 
         .input-arredondado:focus {
-            border-color: var(--azul-petroleo);
-            box-shadow: 0 0 0 0.25rem rgba(12, 84, 101, 0.15);
+            border-color: var(--mava-ouro);
+            box-shadow: 0 0 0 4px rgba(197, 160, 89, 0.15);
             background-color: #ffffff;
             outline: none;
         }
 
         .input-arredondado::placeholder {
-            color: #ced4da; font-weight: 600; letter-spacing: 1px; font-size: 1.4rem;
+            color: #cbd5e1; font-weight: 600; letter-spacing: 1px; font-size: 1.4rem;
         }
 
-        /* Botão de Ação Gigante */
+        /* Botão de Ação Gigante MAVA */
         .btn-entrar {
-            background-color: var(--azul-petroleo);
+            background-color: var(--mava-ouro);
             color: white; border-radius: 16px; font-weight: 800;
             font-size: 1.3rem; padding: 1rem; transition: all 0.3s ease; border: none; width: 100%;
-            margin-top: 1rem; letter-spacing: 1px;
+            margin-top: 1rem; letter-spacing: 2px; text-transform: uppercase;
             display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 15px rgba(197, 160, 89, 0.3);
         }
 
         /* Alerta de Erro Discreto e Elegante */
         .alert-premium {
-            background-color: #fff5f5; border-left: 4px solid var(--vermelho-erro);
-            border-radius: 12px; color: var(--vermelho-erro); font-weight: 600;
+            background-color: #fff5f5; border-left: 4px solid var(--mava-danger);
+            border-radius: 12px; color: var(--mava-danger); font-weight: 600;
             padding: 0.8rem; font-size: 0.95rem; display: flex; align-items: center; justify-content: center;
             box-shadow: 0 4px 10px rgba(220, 53, 69, 0.05);
         }
@@ -91,7 +96,7 @@
         /* === REGRAS DE HOVER APENAS PARA DESKTOP === */
         @media (hover: hover) and (pointer: fine) {
             .btn-entrar:hover {
-                background-color: #093e4b; transform: translateY(-3px); box-shadow: 0 8px 15px rgba(12, 84, 101, 0.3);
+                background-color: #b38f4d; transform: translateY(-3px); box-shadow: 0 8px 20px rgba(197, 160, 89, 0.4);
                 color: white;
             }
         }
@@ -111,9 +116,9 @@
 
     <div class="card-topo-detalhe"></div>
 
-    <img src="/img/logo-etiqueta.png" alt="Logo Kids" class="img-fluid mb-4" style="max-height: 90px;" onerror="this.style.display='none'">
+    <img th:src="@{/img/logo.png}" alt="Logo MAVA" class="img-fluid mb-4" style="max-height: 90px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));" onerror="this.style.display='none'">
 
-    <h3 class="fw-bold mb-1" style="color: var(--texto-escuro); letter-spacing: -0.5px;">Check-in</h3>
+    <h3 class="fw-bold mb-1" style="color: var(--mava-grafite); letter-spacing: -0.5px;">Check-in</h3>
     <p class="text-muted mb-4 fw-semibold lh-sm">Digite o celular do responsável</p>
 
     <div th:if="${erro}" class="alert-premium mb-4" role="alert">
@@ -128,14 +133,14 @@
                    th:value="${telefone}" oninput="mascaraTelefone(this)">
         </div>
 
-        <button type="submit" class="btn btn-entrar shadow-sm">
+        <button type="submit" class="btn-entrar shadow-sm">
             BUSCAR CADASTRO <i class="bi bi-arrow-right-circle-fill ms-2 fs-5"></i>
         </button>
     </form>
 
-    <div class="mt-4 pt-3 border-top">
+    <div class="mt-4 pt-3 border-top" style="border-color: var(--cinza-subtil) !important;">
         <small class="text-muted fw-semibold d-block lh-sm">
-            <i class="bi bi-info-circle-fill me-1 opacity-50"></i>
+            <i class="bi bi-info-circle-fill me-1" style="color: var(--mava-ouro);"></i>
             Não possui cadastro? Procure a recepção.
         </small>
     </div>
@@ -143,7 +148,6 @@
 </div>
 
 <script>
-    // Substituída a máscara básica pela máscara padrão e robusta do sistema
     function mascaraTelefone(input) {
         let v = input.value.replace(/\D/g, "");
         if (v.length > 11) v = v.substring(0, 11);

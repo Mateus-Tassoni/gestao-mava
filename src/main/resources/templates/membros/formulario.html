@@ -3,45 +3,116 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Cadastro de Membro | Mava</title>
+    <title>Portal MAVA | Cadastro de Membro</title>
 
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
     <style>
-        :root { --azul-petroleo: #0c5465; --azul-claro: #d1e7ed; --texto-escuro: #2c3e50; }
-        body { background-color: #f0f2f5; font-family: 'Segoe UI', sans-serif; min-height: 100vh; }
-        .navbar-manancial { background: linear-gradient(135deg, #0c5465, #146c82); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
-        .card-3d { background: #ffffff; border: none; border-radius: 20px; box-shadow: 0 10px 20px rgba(12, 84, 101, 0.08); position: relative; overflow: hidden; }
-        .card-topo-detalhe { height: 6px; width: 100%; position: absolute; top: 0; left: 0; background: var(--azul-petroleo); }
+        :root {
+            /* Paleta MAVA - Light Premium */
+            --mava-ouro: #c5a059;
+            --mava-ouro-light: #dfc48c;
+            --mava-grafite: #111111;
+            --mava-bg-light: #f4f6f9;
+            --texto-escuro: #2d3436;
+            --texto-muted: #636e72;
+            --mava-success: #198754;
+            --mava-danger: #dc3545;
+            --cinza-subtil: #e2e8f0;
+        }
 
-        .form-label { color: var(--texto-escuro); font-weight: 700; font-size: 0.95rem; margin-bottom: 0.4rem; }
-        .input-arredondado { border-radius: 12px; padding: 0.75rem 1rem; border: 1px solid #dee2e6; transition: all 0.2s; background-color: #fff; }
-        .input-arredondado:focus { border-color: var(--azul-petroleo); box-shadow: 0 0 0 0.25rem rgba(12, 84, 101, 0.15); }
+        body {
+            background-color: var(--mava-bg-light);
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+            color: var(--texto-escuro);
+        }
 
-        select.input-arredondado { cursor: pointer; background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 1rem center; background-size: 16px 12px; padding-right: 2.5rem; -webkit-appearance: none; -moz-appearance: none; appearance: none; }
-        .input-group-text-moderno { background-color: #f8f9fa; border: 1px solid #dee2e6; border-right: none; border-top-left-radius: 12px; border-bottom-left-radius: 12px; color: #6c757d; }
+        /* --- NAVBAR GRAFITE --- */
+        .navbar-mava {
+            background: var(--mava-grafite);
+            border-bottom: 2px solid var(--mava-ouro);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .navbar-brand img { background: transparent !important; filter: drop-shadow(0 0 5px rgba(197, 160, 89, 0.4)); }
+
+        /* --- PADRÃO MAVA DE CARDS --- */
+        .card-3d {
+            background: #ffffff; border: none; border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.04);
+            position: relative; overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        .card-topo-detalhe {
+            height: 4px; width: 100%; position: absolute; top: 0; left: 0;
+            background: linear-gradient(90deg, transparent, var(--mava-ouro), transparent);
+        }
+
+        /* --- INPUTS --- */
+        .form-label { color: var(--texto-escuro); font-weight: 600; font-size: 0.95rem; margin-bottom: 0.4rem; }
+
+        .input-arredondado {
+            border-radius: 12px; padding: 0.75rem 1rem; border: 1px solid var(--cinza-subtil);
+            transition: all 0.2s; background-color: #fff; color: var(--texto-escuro);
+        }
+        .input-arredondado:focus {
+            border-color: var(--mava-ouro); box-shadow: 0 0 0 0.25rem rgba(197, 160, 89, 0.15); outline: none;
+        }
+
+        select.input-arredondado {
+            cursor: pointer; background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+            background-repeat: no-repeat; background-position: right 1rem center; background-size: 16px 12px; padding-right: 2.5rem; -webkit-appearance: none; -moz-appearance: none; appearance: none;
+        }
+
+        .input-group-text-moderno {
+            background-color: #f8fafc; border: 1px solid var(--cinza-subtil); border-right: none;
+            border-top-left-radius: 12px; border-bottom-left-radius: 12px; color: var(--texto-muted);
+        }
         .input-arredondado-group { border-top-left-radius: 0; border-bottom-left-radius: 0; border-left: none; }
 
-        .bloco-secao { background-color: #fcfcfd; border: 1px solid #f0f2f5; border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem; }
-        .titulo-secao { color: var(--azul-petroleo); font-weight: 800; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px; margin-bottom: 1.2rem; display: flex; align-items: center; gap: 8px; }
+        /* --- SEÇÕES E CONTAINERS --- */
+        .bloco-secao {
+            background-color: #ffffff; border: 1px solid var(--cinza-subtil);
+            border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem;
+        }
+        .titulo-secao {
+            color: var(--mava-grafite); font-weight: 700; text-transform: uppercase;
+            font-size: 0.85rem; letter-spacing: 1px; margin-bottom: 1.2rem; display: flex; align-items: center; gap: 8px;
+        }
 
-        .upload-container { display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 2rem; background: linear-gradient(to bottom, #f8f9fa, #ffffff); padding: 2rem; border-radius: 20px; border: 1px dashed #dee2e6; }
-        .avatar-preview { width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 4px solid white; box-shadow: 0 8px 25px rgba(0,0,0,0.15); background-color: #e9ecef; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem; position: relative; overflow: hidden; flex-shrink: 0; }
+        /* --- FOTO UPLOAD --- */
+        .upload-container {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            margin-bottom: 2rem; background: #f8fafc; padding: 2rem;
+            border-radius: 16px; border: 1px dashed #cbd5e1;
+        }
+        .avatar-preview {
+            width: 150px; height: 150px; border-radius: 50%; object-fit: cover;
+            border: 4px solid white; box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+            background-color: var(--cinza-subtil); display: flex; align-items: center; justify-content: center;
+            margin-bottom: 1.5rem; position: relative; overflow: hidden; flex-shrink: 0;
+        }
         .avatar-img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
 
-        input[type="file"]::file-selector-button { border-radius: 50rem; padding: 0.5rem 1.2rem; cursor: pointer; background-color: var(--azul-claro); border: 1px solid var(--azul-claro); color: var(--azul-petroleo); font-weight: 700; margin-right: 15px; transition: all 0.2s; }
+        input[type="file"]::file-selector-button {
+            border-radius: 50rem; padding: 0.5rem 1.2rem; cursor: pointer;
+            background-color: rgba(197, 160, 89, 0.1); border: 1px solid var(--mava-ouro-light);
+            color: var(--mava-ouro); font-weight: 600; margin-right: 15px; transition: all 0.2s;
+        }
 
-        .btn-manancial { background-color: var(--azul-petroleo); color: white; border-radius: 12px; font-weight: 700; transition: all 0.3s ease; }
-        .btn-cancelar { border-radius: 12px; font-weight: 600; color: #6c757d; background: transparent; border: 1px solid transparent; transition: all 0.2s; }
+        /* --- BOTÕES --- */
+        .btn-mava { background-color: var(--mava-ouro); color: white; border-radius: 12px; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 4px 10px rgba(197, 160, 89, 0.2); border: none; }
+        .btn-cancelar { border-radius: 12px; font-weight: 600; color: var(--texto-muted); background: transparent; border: 1px solid transparent; transition: all 0.2s; }
 
         .hover-scale { transition: transform 0.2s; }
 
         /* === REGRAS DE HOVER APENAS PARA DESKTOP === */
         @media (hover: hover) and (pointer: fine) {
-            input[type="file"]::file-selector-button:hover { background-color: var(--azul-petroleo); color: white; }
-            .btn-manancial:hover { background-color: #093e4b; color: white; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(12, 84, 101, 0.2); }
-            .btn-cancelar:hover { background-color: #e9ecef; color: var(--texto-escuro); }
+            input[type="file"]::file-selector-button:hover { background-color: var(--mava-ouro); color: white; }
+            .btn-mava:hover { background-color: #b38f4d; color: white; transform: translateY(-2px); box-shadow: 0 6px 15px rgba(197, 160, 89, 0.3); }
+            .btn-cancelar:hover { background-color: #e2e8f0; color: var(--texto-escuro); }
             .hover-scale:hover { transform: scale(1.05); }
         }
 
@@ -51,11 +122,9 @@
             .bloco-secao { padding: 1.2rem; }
             .upload-container { padding: 1.5rem 1rem; }
 
-            /* Ajuste para o botão de arquivo não vazar na tela */
             input[type="file"] { font-size: 0.85rem; padding: 0.2rem; }
             input[type="file"]::file-selector-button { padding: 0.4rem 0.8rem; margin-right: 10px; font-size: 0.8rem; }
 
-            /* Botões de Ação Empilhados */
             .botoes-acao { flex-direction: column; width: 100%; gap: 10px !important; }
             .botoes-acao .btn { width: 100%; }
         }
@@ -63,17 +132,17 @@
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-dark navbar-manancial mb-3 mb-lg-5 sticky-top">
+<nav class="navbar navbar-expand-lg navbar-dark navbar-mava mb-3 mb-lg-5 sticky-top">
     <div class="container">
         <a class="navbar-brand d-flex align-items-center gap-2 gap-md-3" href="/">
-            <img th:src="@{/img/logo.png}" alt="Logo" width="42" height="42" class="bg-white rounded-circle p-1 shadow-sm">
+            <img th:src="@{/img/logo.png}" alt="Logo MAVA" width="42" height="42">
             <div class="d-flex flex-column text-white">
-                <span class="fw-bold text-uppercase" style="letter-spacing: 1px; font-size: 1rem; line-height: 1.1;">Mava</span>
+                <span class="fw-bold text-uppercase" style="letter-spacing: 2px; font-size: 1rem; line-height: 1.1; color: var(--mava-ouro);">MAVA</span>
             </div>
         </a>
         <div class="ms-auto d-flex gap-2 gap-md-3 align-items-center">
-            <span class="text-white opacity-75 d-none d-md-block small text-uppercase fw-bold" style="letter-spacing: 1px;">Secretaria</span>
-            <a href="/membros" class="btn btn-outline-light btn-sm rounded-pill px-3 px-md-4 fw-bold hover-scale text-nowrap">
+            <span class="text-white opacity-75 d-none d-md-block small text-uppercase fw-bold" style="letter-spacing: 1px; color: #cbd5e1 !important;">Secretaria</span>
+            <a href="/membros" class="btn btn-sm rounded-pill px-3 px-md-4 fw-bold hover-scale text-nowrap" style="background: transparent; color: #cbd5e1; border: 1px solid #64748b;">
                 <i class="bi bi-people-fill me-1"></i> <span class="d-none d-sm-inline">Lista de Membros</span><span class="d-inline d-sm-none">Membros</span>
             </a>
         </div>
@@ -95,27 +164,27 @@
                 <div class="card-body p-4 p-md-5">
 
                     <div class="d-flex align-items-center mb-4 mb-md-5 mt-2">
-                        <div class="bg-light rounded-circle d-flex align-items-center justify-content-center me-3 shadow-sm flex-shrink-0" style="width: 55px; height: 55px;">
-                            <i class="bi bi-person-vcard-fill fs-3" style="color: var(--azul-petroleo);"></i>
+                        <div class="rounded-circle d-flex align-items-center justify-content-center me-3 shadow-sm flex-shrink-0" style="width: 55px; height: 55px; background-color: rgba(197, 160, 89, 0.1);">
+                            <i class="bi bi-person-vcard-fill fs-3" style="color: var(--mava-ouro);"></i>
                         </div>
                         <div>
-                            <h4 class="mb-0 fw-bold" style="color: var(--texto-escuro); letter-spacing: -0.5px;">Ficha de Membro</h4>
+                            <h4 class="mb-0 fw-bold" style="color: var(--mava-grafite); letter-spacing: -0.5px;">Ficha de Membro</h4>
                             <small class="text-muted d-block lh-sm mt-1" th:text="${membro.id == null ? 'Preencha os dados para registrar um novo membro.' : 'Atualize as informações do cadastro.'}">Subtítulo dinâmico</small>
                         </div>
                     </div>
 
                     <!-- ============================================== -->
-                    <!-- ALERTAS DE FEEDBACK (ERRO OU SUCESSO)          -->
+                    <!-- ALERTAS DE FEEDBACK                            -->
                     <!-- ============================================== -->
-                    <div th:if="${mensagemErro}" class="alert alert-danger alert-dismissible fade show shadow-sm rounded-4 mb-4" role="alert">
-                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                        <span th:text="${mensagemErro}"></span>
+                    <div th:if="${mensagemErro}" class="alert alert-danger alert-dismissible fade show shadow-sm rounded-4 mb-4" role="alert" style="border-left: 5px solid var(--mava-danger); background-color: #ffffff;">
+                        <i class="bi bi-exclamation-triangle-fill me-2" style="color: var(--mava-danger);"></i>
+                        <span class="fw-medium text-dark" th:text="${mensagemErro}"></span>
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
 
-                    <div th:if="${mensagemSucesso}" class="alert alert-success alert-dismissible fade show shadow-sm rounded-4 mb-4" role="alert">
-                        <i class="bi bi-check-circle-fill me-2"></i>
-                        <span th:text="${mensagemSucesso}"></span>
+                    <div th:if="${mensagemSucesso}" class="alert alert-success alert-dismissible fade show shadow-sm rounded-4 mb-4" role="alert" style="border-left: 5px solid var(--mava-success); background-color: #ffffff;">
+                        <i class="bi bi-check-circle-fill me-2" style="color: var(--mava-success);"></i>
+                        <span class="fw-medium text-dark" th:text="${mensagemSucesso}"></span>
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                     <!-- ============================================== -->
@@ -125,19 +194,19 @@
                         <input type="hidden" th:field="*{fotoUrl}" />
 
                         <div class="upload-container shadow-sm">
-                            <h6 class="fw-bold mb-3 text-center" style="color: var(--azul-petroleo);">Foto de Perfil / Reconhecimento Facial</h6>
+                            <h6 class="fw-bold mb-3 text-center" style="color: var(--mava-grafite);">Foto de Perfil / Reconhecimento Facial</h6>
                             <div class="avatar-preview">
                                 <img id="previewImg" class="avatar-img" th:src="${membro.fotoUrl != null && !membro.fotoUrl.isEmpty() ? '/uploads/' + membro.fotoUrl : ''}" th:style="${membro.fotoUrl != null && !membro.fotoUrl.isEmpty() ? 'display:block;' : 'display:none;'}">
                                 <i id="iconeCamera" class="bi bi-camera-fill text-muted opacity-50" style="font-size: 3.5rem;" th:style="${membro.fotoUrl != null && !membro.fotoUrl.isEmpty() ? 'display:none;' : 'display:block;'}"></i>
                             </div>
                             <div style="width: 100%; max-width: 350px;">
-                                <input type="file" name="file" id="inputFoto" class="form-control input-arredondado shadow-sm w-100" accept="image/*" style="padding: 0.3rem;" onchange="previewImagem(event)">
+                                <input type="file" name="file" id="inputFoto" class="form-control input-arredondado shadow-sm w-100 fw-medium" accept="image/*" style="padding: 0.3rem;" onchange="previewImagem(event)">
                             </div>
-                            <small class="text-muted mt-3 fw-semibold text-center lh-sm"><i class="bi bi-info-circle-fill me-1" style="color: var(--azul-petroleo);"></i>A foto deve ter o rosto bem visível para o reconhecimento facial.</small>
+                            <small class="text-muted mt-3 fw-medium text-center lh-sm"><i class="bi bi-info-circle-fill me-1" style="color: var(--mava-ouro);"></i>A foto deve ter o rosto bem visível para o reconhecimento facial.</small>
                         </div>
 
                         <div class="bloco-secao shadow-sm">
-                            <div class="titulo-secao"><i class="bi bi-person-lines-fill fs-5"></i> Dados Pessoais</div>
+                            <div class="titulo-secao"><i class="bi bi-person-lines-fill fs-5" style="color: var(--mava-ouro);"></i> Dados Pessoais</div>
                             <div class="row g-3 g-md-4">
                                 <div class="col-12 col-md-7">
                                     <label class="form-label">Nome Completo <span class="text-danger">*</span></label>
@@ -150,7 +219,7 @@
                                     <label class="form-label">CPF</label>
                                     <div class="input-group">
                                         <span class="input-group-text input-group-text-moderno px-3"><i class="bi bi-credit-card-2-front-fill"></i></span>
-                                        <input type="tel" th:field="*{cpf}" class="form-control input-arredondado input-arredondado-group" placeholder="000.000.000-00" maxlength="14" oninput="mascaraCPF(this)" />
+                                        <input type="tel" th:field="*{cpf}" class="form-control input-arredondado input-arredondado-group fw-medium" placeholder="000.000.000-00" maxlength="14" oninput="mascaraCPF(this)" />
                                     </div>
                                 </div>
                                 <div class="col-12 col-md-6">
@@ -174,7 +243,7 @@
                         </div>
 
                         <div class="bloco-secao shadow-sm">
-                            <div class="titulo-secao"><i class="bi bi-geo-alt-fill fs-5"></i> Contato e Endereço</div>
+                            <div class="titulo-secao"><i class="bi bi-geo-alt-fill fs-5" style="color: var(--mava-ouro);"></i> Contato e Endereço</div>
                             <div class="row g-3 g-md-4">
                                 <div class="col-12 col-md-6">
                                     <label class="form-label">Telefone / WhatsApp</label>
@@ -187,12 +256,11 @@
                                     <label class="form-label">E-mail</label>
                                     <div class="input-group">
                                         <span class="input-group-text input-group-text-moderno px-3"><i class="bi bi-envelope-at-fill"></i></span>
-                                        <!-- autocapitalize disabled for emails -->
-                                        <input type="email" th:field="*{email}" class="form-control input-arredondado input-arredondado-group" placeholder="joao@email.com" autocapitalize="none" />
+                                        <input type="email" th:field="*{email}" class="form-control input-arredondado input-arredondado-group fw-medium" placeholder="joao@email.com" autocapitalize="none" />
                                     </div>
                                 </div>
 
-                                <hr class="mt-4 mb-2 d-none d-md-block" style="opacity: 0.1;">
+                                <hr class="mt-4 mb-2 d-none d-md-block" style="border-color: var(--cinza-subtil); opacity: 0.5;">
 
                                 <div class="col-12 col-md-3">
                                     <label class="form-label">CEP</label>
@@ -204,7 +272,7 @@
 
                                 <div class="col-12 col-md-7">
                                     <label class="form-label">Endereço / Logradouro</label>
-                                    <input type="text" th:field="*{logradouro}" id="campoLogradouro" class="form-control input-arredondado" placeholder="Rua, Avenida, Travessa..." />
+                                    <input type="text" th:field="*{logradouro}" id="campoLogradouro" class="form-control input-arredondado fw-medium" placeholder="Rua, Avenida, Travessa..." />
                                 </div>
 
                                 <div class="col-12 col-md-2">
@@ -214,17 +282,17 @@
 
                                 <div class="col-12 col-md-5">
                                     <label class="form-label">Complemento</label>
-                                    <input type="text" th:field="*{complemento}" class="form-control input-arredondado" placeholder="Apto, Bloco, Casa 2..." />
+                                    <input type="text" th:field="*{complemento}" class="form-control input-arredondado fw-medium" placeholder="Apto, Bloco, Casa 2..." />
                                 </div>
 
                                 <div class="col-12 col-md-4">
                                     <label class="form-label">Bairro</label>
-                                    <input type="text" th:field="*{bairro}" id="campoBairro" class="form-control input-arredondado" placeholder="Bairro" />
+                                    <input type="text" th:field="*{bairro}" id="campoBairro" class="form-control input-arredondado fw-medium" placeholder="Bairro" />
                                 </div>
 
                                 <div class="col-12 col-md-3">
                                     <label class="form-label">Cidade</label>
-                                    <input type="text" th:field="*{cidade}" id="campoCidade" class="form-control input-arredondado" placeholder="Cidade" />
+                                    <input type="text" th:field="*{cidade}" id="campoCidade" class="form-control input-arredondado fw-medium" placeholder="Cidade" />
                                 </div>
 
                                 <div class="col-md-2 d-none">
@@ -233,17 +301,17 @@
                             </div>
                         </div>
 
-                        <div class="bloco-secao border-0 shadow-sm" style="background-color: #f0f7f9;">
-                            <div class="titulo-secao" style="color: var(--texto-escuro);"><i class="bi bi-bank fs-5" style="color: var(--azul-petroleo);"></i> Dados Ministeriais</div>
+                        <div class="bloco-secao shadow-sm" style="background-color: #fcfaf5; border-color: #f5eedc;">
+                            <div class="titulo-secao" style="color: var(--texto-escuro);"><i class="bi bi-bank fs-5" style="color: var(--mava-ouro);"></i> Dados Ministeriais</div>
                             <div class="row g-3 g-md-4">
                                 <div class="col-12 col-sm-6 col-md-3">
-                                    <label class="form-label text-primary">Cargo / Vínculo</label>
-                                    <select th:field="*{cargo}" class="form-control input-arredondado" style="border-color: #b6effb; font-weight: 700;">
+                                    <label class="form-label" style="color: var(--mava-ouro);">Cargo / Vínculo</label>
+                                    <select th:field="*{cargo}" class="form-control input-arredondado" style="border-color: var(--mava-ouro-light); font-weight: 700;">
                                         <option th:each="c : ${cargos}" th:value="${c}" th:text="${c}"></option>
                                     </select>
                                 </div>
                                 <div class="col-12 col-sm-6 col-md-3">
-                                    <label class="form-label" style="color: #198754;">Status na Igreja</label>
+                                    <label class="form-label" style="color: var(--mava-success);">Status na Igreja</label>
                                     <select th:field="*{status}" class="form-control input-arredondado" style="border-color: #a3cfbb; font-weight: 700;">
                                         <option th:each="s : ${statusList}" th:value="${s}" th:text="${s}"></option>
                                     </select>
@@ -265,11 +333,11 @@
                             </div>
                         </div>
 
-                        <hr class="mt-4 mt-md-5 mb-4" style="opacity: 0.1;">
+                        <hr class="mt-4 mt-md-5 mb-4" style="border-color: var(--cinza-subtil); opacity: 0.5;">
 
                         <div class="d-flex flex-column flex-md-row justify-content-end gap-2 botoes-acao">
-                            <a href="/membros" class="btn btn-cancelar px-4 py-2 py-md-3 order-2 order-md-1">Cancelar</a>
-                            <button type="submit" class="btn btn-manancial px-5 py-2 py-md-3 shadow-sm order-1 order-md-2">
+                            <a href="/membros" class="btn btn-cancelar px-4 py-2 py-md-3 order-2 order-md-1 text-center">Cancelar</a>
+                            <button type="submit" class="btn btn-mava px-5 py-2 py-md-3 order-1 order-md-2">
                                 <i class="bi bi-save2-fill me-2 fs-5 align-middle"></i> Salvar Cadastro
                             </button>
                         </div>

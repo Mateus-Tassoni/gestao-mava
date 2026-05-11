@@ -1,88 +1,99 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Mapa da Agenda | Mava</title>
+    <title>Portal MAVA | Mapa da Agenda</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js'></script>
 
     <style>
         :root {
-            --azul-petroleo: #0c5465;
-            --azul-claro: #d1e7ed;
-            --texto-escuro: #2c3e50;
-            --laranja-pendente: #fd7e14;
-            --laranja-claro: #ffe5d0;
-            --vermelho-rejeitado: #dc3545;
-            --vermelho-claro: #f8d7da;
+            /* Paleta MAVA - Light Premium */
+            --mava-ouro: #c5a059;
+            --mava-ouro-light: #dfc48c;
+            --mava-grafite: #111111;
+            --mava-bg-light: #f4f6f9;
+            --texto-escuro: #2d3436;
+            --texto-muted: #636e72;
+            --mava-success: #198754;
+            --mava-danger: #dc3545;
+            --cinza-subtil: #e2e8f0;
         }
 
         body {
-            background-color: #f0f2f5;
-            font-family: 'Segoe UI', sans-serif;
+            background-color: var(--mava-bg-light);
+            font-family: 'Poppins', sans-serif;
             min-height: 100vh;
+            color: var(--texto-escuro);
         }
 
-        /* --- NAVBAR Padrão --- */
-        .navbar-manancial {
-            background: linear-gradient(135deg, #0c5465, #146c82);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        /* --- NAVBAR GRAFITE --- */
+        .navbar-mava {
+            background: var(--mava-grafite);
+            border-bottom: 2px solid var(--mava-ouro);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
+        .navbar-brand img { background: transparent !important; filter: drop-shadow(0 0 5px rgba(197, 160, 89, 0.4)); }
 
-        /* --- PADRÃO MANANCIAL DE CARDS --- */
+        /* --- PADRÃO MAVA DE CARDS --- */
         .card-3d {
             background: #ffffff;
             border: none;
-            border-radius: 20px;
-            box-shadow: 0 10px 20px rgba(12, 84, 101, 0.08);
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.04);
             position: relative;
             overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
         .card-topo-detalhe {
-            height: 6px; width: 100%; position: absolute; top: 0; left: 0;
-            background: var(--azul-petroleo);
+            height: 4px; width: 100%; position: absolute; top: 0; left: 0;
+            background: linear-gradient(90deg, transparent, var(--mava-ouro), transparent);
         }
 
         /* --- ESTILO MODERNO DO CALENDÁRIO (SaaS Premium) --- */
         .fc {
-            font-family: 'Segoe UI', sans-serif;
+            font-family: 'Poppins', sans-serif;
             border: none !important;
+            --fc-border-color: var(--cinza-subtil);
         }
 
         .fc-theme-standard .fc-scrollgrid { border: none !important; }
-        .fc-theme-standard td, .fc-theme-standard th { border-color: #eaecef !important; }
+        .fc-theme-standard td, .fc-theme-standard th { border-color: var(--cinza-subtil) !important; }
 
         /* Cabeçalho do Calendário (Mês/Botões) */
         .fc-header-toolbar { margin-bottom: 2em !important; padding: 0 10px; }
-        .fc-toolbar-title { font-size: 1.5rem !important; font-weight: 800; color: var(--azul-petroleo); letter-spacing: -0.5px; text-transform: capitalize; }
+        .fc-toolbar-title { font-size: 1.4rem !important; font-weight: 800; color: var(--mava-grafite); letter-spacing: -0.5px; text-transform: uppercase; }
 
         .fc-button {
-            border-radius: 12px !important; font-size: 0.85rem !important; font-weight: 700 !important;
-            text-transform: uppercase; letter-spacing: 0.5px; padding: 8px 16px !important; transition: all 0.2s;
+            border-radius: 10px !important; font-size: 0.75rem !important; font-weight: 700 !important;
+            text-transform: uppercase; letter-spacing: 0.5px; padding: 8px 16px !important; transition: all 0.2s !important;
         }
-        .fc-button-primary { background-color: #f8f9fa !important; border-color: #dee2e6 !important; color: #6c757d !important; }
-        .fc-button-primary:hover { background-color: var(--azul-claro) !important; color: var(--azul-petroleo) !important; border-color: var(--azul-claro) !important; }
-        .fc-button-active { background-color: var(--azul-petroleo) !important; border-color: var(--azul-petroleo) !important; color: #ffffff !important; box-shadow: 0 4px 10px rgba(12, 84, 101, 0.2) !important; }
+        .fc-button-primary { background-color: #f8fafc !important; border-color: var(--cinza-subtil) !important; color: var(--texto-muted) !important; box-shadow: none !important; }
+        .fc-button-primary:not(:disabled):hover { background-color: rgba(197, 160, 89, 0.05) !important; color: var(--mava-ouro) !important; border-color: var(--mava-ouro) !important; }
+        .fc-button-active { background-color: var(--mava-ouro) !important; border-color: var(--mava-ouro) !important; color: #ffffff !important; box-shadow: 0 4px 10px rgba(197, 160, 89, 0.3) !important; }
 
         /* Títulos dos dias (Seg, Ter...) */
-        .fc-col-header-cell { background-color: #f8f9fa; padding: 12px 0 !important; border-bottom: 2px solid #dee2e6 !important; }
+        .fc-col-header-cell { background-color: #f8fafc; padding: 12px 0 !important; border-bottom: 2px solid var(--cinza-subtil) !important; }
         .fc-col-header-cell-cushion { color: var(--texto-escuro); font-weight: 700; text-transform: uppercase; font-size: 0.8rem; }
 
         /* Número do dia */
-        .fc-daygrid-day-number { font-weight: 700; color: #6c757d; padding: 10px !important; font-size: 0.9rem; }
-        .fc-day-today { background-color: #f4fb8 !important; } /* Fundo sutil pro dia de hoje */
-        .fc-day-today .fc-daygrid-day-number { color: var(--azul-petroleo); background: var(--azul-claro); border-radius: 50%; width: 30px; height: 30px; display: inline-flex; align-items: center; justify-content: center; margin: 5px; }
+        .fc-daygrid-day-number { font-weight: 600; color: var(--texto-muted); padding: 10px !important; font-size: 0.85rem; text-decoration: none; }
+        .fc-day-today { background-color: #fcfaf5 !important; } /* Fundo sutil pro dia de hoje */
+        .fc-day-today .fc-daygrid-day-number { color: #ffffff !important; background: var(--mava-ouro) !important; border-radius: 8px; width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center; margin: 5px; }
 
         /* --- O VISUAL DOS EVENTOS (Borda grossa lateral) --- */
         .fc-event {
             border: none !important;
             border-radius: 6px !important;
             padding: 4px 8px !important;
-            font-size: 0.85rem;
+            font-size: 0.75rem;
+            font-weight: 600 !important;
             margin-bottom: 4px !important;
             box-shadow: 0 2px 4px rgba(0,0,0,0.04);
             transition: transform 0.2s, box-shadow 0.2s;
@@ -90,22 +101,22 @@
         }
         .fc-event:hover { transform: scale(1.02); box-shadow: 0 4px 8px rgba(0,0,0,0.1); z-index: 10; }
 
-        /* Cores Manenciais para os Status */
+        /* Cores MAVA para os Status */
         .evento-aprovado {
-            background-color: var(--azul-claro) !important;
-            border-left: 4px solid var(--azul-petroleo) !important;
-            color: var(--azul-petroleo) !important;
+            background-color: #f3faf6 !important;
+            border-left: 4px solid var(--mava-success) !important;
+            color: #125735 !important;
         }
         .evento-pendente {
-            background-color: var(--laranja-claro) !important;
-            border-left: 4px solid var(--laranja-pendente) !important;
-            color: #8a4000 !important;
+            background-color: rgba(197, 160, 89, 0.1) !important;
+            border-left: 4px solid var(--mava-ouro) !important;
+            color: #9e7f45 !important;
         }
         .evento-rejeitado {
-            background-color: var(--vermelho-claro) !important;
-            border-left: 4px solid var(--vermelho-rejeitado) !important;
+            background-color: #fff5f5 !important;
+            border-left: 4px solid var(--mava-danger) !important;
             color: #842029 !important;
-            opacity: 0.6;
+            opacity: 0.7;
             text-decoration: line-through;
         }
 
@@ -113,10 +124,20 @@
         .hover-scale { transition: transform 0.2s; }
         .hover-scale:hover { transform: scale(1.05); }
 
+        .btn-outline-mava {
+            background-color: #ffffff; color: var(--texto-muted);
+            border: 1px solid var(--cinza-subtil); font-weight: 600;
+            border-radius: 12px; transition: all 0.2s;
+        }
+        .btn-outline-mava:hover {
+            border-color: var(--mava-ouro); color: var(--mava-ouro);
+            background-color: rgba(197, 160, 89, 0.05);
+        }
+
         .badge-legenda {
             padding: 0.6rem 1rem;
-            font-weight: 700;
-            font-size: 0.8rem;
+            font-weight: 600;
+            font-size: 0.75rem;
             letter-spacing: 0.5px;
             border-radius: 12px;
             display: inline-flex;
@@ -126,7 +147,7 @@
         /* --- AJUSTES DE RESPONSIVIDADE PARA MOBILE --- */
         @media (max-width: 768px) {
             .navbar-brand span { font-size: 0.85rem !important; }
-            .card-3d { padding: 1rem !important; } /* Reduz padding do card do calendário */
+            .card-3d { padding: 1rem !important; }
 
             /* Empilha e centraliza a barra de ferramentas do FullCalendar no mobile */
             .fc-header-toolbar {
@@ -139,7 +160,7 @@
                 width: 100%;
             }
             .fc-toolbar-title {
-                font-size: 1.25rem !important; /* Reduz tamanho do título do mês */
+                font-size: 1.2rem !important;
             }
 
             /* Badges de legenda em 100% no celular */
@@ -152,19 +173,21 @@
 </head>
 <body>
 
-<!-- Margem ajustada no mobile (mb-4 mb-md-5) -->
-<nav class="navbar navbar-expand-lg navbar-dark navbar-manancial mb-4 mb-md-5 sticky-top">
+<nav class="navbar navbar-expand-lg navbar-dark navbar-mava mb-4 mb-md-5 sticky-top">
     <div class="container">
         <a class="navbar-brand d-flex align-items-center gap-2 gap-md-3" href="/">
-            <img th:src="@{/img/logo.png}" alt="Logo" width="40" height="40" class="bg-white rounded-circle p-1 shadow-sm">
+            <img th:src="@{/img/logo.png}" alt="Logo MAVA" width="40" height="40">
             <div class="d-flex flex-column text-white">
-                <span class="fw-bold text-uppercase" style="letter-spacing: 1px; font-size: 1rem; line-height: 1.1;">Mava</span>
+                <span class="fw-bold text-uppercase" style="letter-spacing: 2px; font-size: 1rem; line-height: 1.1; color: var(--mava-ouro);">MAVA</span>
             </div>
         </a>
 
-        <div class="ms-auto">
-            <a href="/" class="btn btn-outline-light btn-sm rounded-pill px-3 px-md-4 fw-bold">
-                <i class="bi bi-house-door-fill"></i> <span class="d-none d-sm-inline ms-1">Início</span>
+        <div class="ms-auto d-flex align-items-center gap-2 gap-md-3">
+            <span class="text-white opacity-75 d-none d-md-block small text-uppercase fw-bold" style="letter-spacing: 1px; color: #cbd5e1 !important;">
+                Agenda e Eventos
+            </span>
+            <a href="/" class="btn btn-sm rounded-pill px-3 px-md-4 fw-bold hover-scale" style="background: transparent; color: #cbd5e1; border: 1px solid #64748b;">
+                <i class="bi bi-house-door-fill d-inline d-sm-none"></i> <span class="d-none d-sm-inline">Início</span>
             </a>
         </div>
     </div>
@@ -172,20 +195,18 @@
 
 <div class="container pb-5">
 
-    <!-- Flex-column no mobile para o título e o botão empilharem -->
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
         <div>
-            <h4 class="fw-bold mb-1" style="color: var(--texto-escuro);">Mapa da Agenda</h4>
-            <span class="text-muted small">Visão geral de todos os eventos programados.</span>
+            <h4 class="fw-bold mb-1" style="color: var(--mava-grafite);"><i class="bi bi-calendar-range-fill me-2" style="color: var(--mava-ouro);"></i>Mapa da Agenda</h4>
+            <span class="text-muted small fw-medium">Visão geral de todos os eventos programados.</span>
         </div>
         <div class="w-100 w-md-auto">
-            <a href="/eventos" class="btn btn-light text-muted fw-bold shadow-sm border px-4 py-2 hover-scale w-100">
+            <a href="/eventos" class="btn btn-outline-mava shadow-sm px-4 py-2 hover-scale w-100 d-flex justify-content-center align-items-center">
                 <i class="bi bi-list-task me-2"></i> Ver em Lista
             </a>
         </div>
     </div>
 
-    <!-- Reduzido o padding original para .p-3 e no MD volta para .p-4 -->
     <div class="card-3d p-3 p-md-4 mb-4">
         <div class="card-topo-detalhe"></div>
         <div class="card-body p-0 mt-2">
@@ -194,14 +215,14 @@
     </div>
 
     <div class="d-flex justify-content-center flex-wrap gap-2 gap-md-3 mt-4">
-        <span class="badge badge-legenda text-primary shadow-sm" style="background-color: var(--azul-claro); border: 1px solid var(--azul-petroleo); color: var(--azul-petroleo) !important;">
-            <i class="bi bi-check-circle-fill me-2"></i> Confirmado / Aprovado
+        <span class="badge badge-legenda shadow-sm" style="background-color: #f3faf6; border: 1px solid var(--mava-success); color: #125735 !important;">
+            <i class="bi bi-check-circle-fill me-2" style="color: var(--mava-success);"></i> Confirmado / Aprovado
         </span>
-        <span class="badge badge-legenda text-warning shadow-sm" style="background-color: var(--laranja-claro); border: 1px solid var(--laranja-pendente); color: #8a4000 !important;">
-            <i class="bi bi-hourglass-split me-2"></i> Pendente (Aprovação)
+        <span class="badge badge-legenda shadow-sm" style="background-color: rgba(197, 160, 89, 0.1); border: 1px solid var(--mava-ouro); color: #9e7f45 !important;">
+            <i class="bi bi-hourglass-split me-2" style="color: var(--mava-ouro);"></i> Pendente (Aprovação)
         </span>
-        <span class="badge badge-legenda text-danger shadow-sm" style="background-color: var(--vermelho-claro); border: 1px solid var(--vermelho-rejeitado); color: #842029 !important;">
-            <i class="bi bi-x-circle-fill me-2"></i> Cancelado / Rejeitado
+        <span class="badge badge-legenda shadow-sm" style="background-color: #fff5f5; border: 1px solid var(--mava-danger); color: #842029 !important;">
+            <i class="bi bi-x-circle-fill me-2" style="color: var(--mava-danger);"></i> Cancelado / Rejeitado
         </span>
     </div>
 
@@ -222,7 +243,7 @@
             },
             buttonText: { today: 'Hoje', month: 'Mês', week: 'Semana' },
 
-            // Puxa os eventos da sua API (O Controller que ajustamos antes)
+            // Puxa os eventos da sua API
             events: '/api/eventos',
 
             // Lógica de Cores baseada no Enum StatusEvento
