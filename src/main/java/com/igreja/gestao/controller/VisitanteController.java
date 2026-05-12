@@ -97,7 +97,7 @@ public class VisitanteController {
         return "redirect:/visitantes?sucesso";
     }
 
-    // --- LÓGICA DE AVISO AOS LÍDERES ---
+    // --- LÓGICA DE AVISO AOS LÍDERES (ATUALIZADA) ---
     private void rotearParaLideres(Visitante v) {
         if (v.getDataNascimento() == null) return;
 
@@ -105,28 +105,24 @@ public class VisitanteController {
         Visitante.EstadoCivil civil = v.getEstadoCivil();
         Visitante.Sexo sexo = v.getSexo();
 
+        // Mulheres Com Propósito
         if (sexo == Visitante.Sexo.FEMININO) {
-            enviarAlertaLider("5511977190907", "Natiely", v, idade, "Ministério Avivadas");
-        }
-        if (sexo == Visitante.Sexo.MASCULINO) {
-            enviarAlertaLider("5511952008412", "Helder Zara", v, idade, "Homens com Propósito");
-            enviarAlertaLider("5511968593792", "Junior", v, idade, "Homens com Propósito");
+            enviarAlertaLider("5511974440062", "Carina", v, idade, "Mulheres Com Propósito");
         }
 
-        if (civil == Visitante.EstadoCivil.SOLTEIRO && idade >= 10 && idade <= 15) {
-            enviarAlertaLider("5511960338183", "Juca", v, idade, "Adolescentes");
+        // Adolescentes e Jovens
+        if (civil == Visitante.EstadoCivil.SOLTEIRO) {
+            if (idade >= 10 && idade <= 15) {
+                enviarAlertaLider("5518991412681", "Ligiane", v, idade, "Adolescentes");
+            } else if (idade > 15 && idade <= 30) {
+                enviarAlertaLider("5511942202518", "Richard", v, idade, "Jovens");
+            }
         }
-        if (civil == Visitante.EstadoCivil.SOLTEIRO && idade > 15 && idade <= 30) {
-            enviarAlertaLider("5511933451923", "Anderson", v, idade, "Jovens");
-        }
-        if (civil == Visitante.EstadoCivil.SOLTEIRO && idade > 30) {
-            enviarAlertaLider("5511976692161", "Marcia Zara", v, idade, "Aliançados (Solteiros 30+)");
-        }
-        if (civil == Visitante.EstadoCivil.DIVORCIADO || civil == Visitante.EstadoCivil.VIUVO) {
-            enviarAlertaLider("5511976692161", "Marcia Zara", v, idade, "Aliançados (Viúvos/Divorciados)");
-        }
-        if (sexo == Visitante.Sexo.FEMININO && civil == Visitante.EstadoCivil.CASADO) {
-            enviarAlertaLider("5511997592849", "Adriana", v, idade, "Casais (Mulheres Casadas)");
+
+        // Ministério de Casais (Envia para Vivian e Marcos)
+        if (civil == Visitante.EstadoCivil.CASADO) {
+            enviarAlertaLider("5511971473707", "Vivian", v, idade, "Casais");
+            enviarAlertaLider("5511987195596", "Marcos", v, idade, "Casais");
         }
     }
 
@@ -155,11 +151,9 @@ public class VisitanteController {
         String chatId = numeroLimpo + "@c.us";
 
         String mensagem1 = "🌿 *Graça e Paz!*\n" +
-                "Somos a Igreja Batista Manancial e estamos entrando em contato com você porque ficamos muito felizes com a sua visita!\n" +
-                "Foi uma grande bênção receber você em nossa igreja e queremos que saiba que você é muito bem-vindo a se juntar à nossa família Manancial! 💚\n\n" +
-                "Gostaríamos de te convidar a conhecer mais sobre nossa programação e caminhar ainda mais perto de Jesus junto conosco. Para isso, temos um grupo no WhatsApp onde compartilhamos mensagens, eventos, devocionais e tudo o que Deus tem feito em nosso meio. É só clicar no link abaixo para entrar e fazer parte:\n" +
-                "👉 https://chat.whatsapp.com/LQ7sbN1Xysl6yVf3mjQhXR\n\n" +
-                "E para encerrar este momento com carinho e fé, gostaríamos de orar por você e sua casa. 🙏";
+                "Somos a Familia MAVA e estamos entrando em contato com você porque ficamos muito felizes com a sua visita!\n" +
+                "Foi uma grande bênção receber você em nossa igreja e queremos que saiba que você é muito bem-vindo a se juntar à nossa família MAVA! 💚\n\n" +
+                "Gostaríamos de te convidar a conhecer mais sobre nossa programação e caminhar ainda mais perto de Jesus junto conosco.";
 
         String mensagem2 = "Pai amado,\n" +
                 "eu coloco essa vida diante de Ti agora.\n" +
