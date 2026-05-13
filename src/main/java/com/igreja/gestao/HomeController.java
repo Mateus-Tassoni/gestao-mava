@@ -34,7 +34,7 @@ public class HomeController {
             if (dominio.contains("kids") || dominio.contains("checkin")) {
                 return "redirect:/kids/checkin";
             }
-            if (dominio.contains("sysmanancial")) {
+            if (dominio.contains("sysmava")) {
                 return "redirect:/dashboard";
             }
         }

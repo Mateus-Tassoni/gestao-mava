@@ -1,4 +1,4 @@
-# Sistema de Gestão - Igreja Manancial
+# Sistema de Gestão - Igreja MAVA
 
 Sistema de gestão para igreja com módulos de membros, presença, eventos, kids, tesouraria, estoque e mais.
 
