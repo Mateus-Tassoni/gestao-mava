@@ -177,7 +177,7 @@ public class VisitanteController {
         new Thread(() -> {
             try {
                 RestTemplate restTemplate = new RestTemplate();
-                String wahaUrl = "http://192.168.15.56:8081/api/sendText";
+                String wahaUrl = "http://192.168.0.7:8081/api/sendText";
 
                 Map<String, Object> payload = new HashMap<>();
                 payload.put("chatId", chatId);
