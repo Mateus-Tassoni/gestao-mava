@@ -217,8 +217,9 @@
                                     <label class="form-label">Unidade / Igreja</label>
                                     <div class="d-flex gap-2 gap-md-3 unidades-container">
                                         <div th:each="c : ${congregacoes}" class="flex-fill">
+                                            <!-- Como agora só tem SEDE, o loop vai gerar apenas um botão -->
                                             <input type="radio" class="btn-check" th:field="*{congregacao}" th:value="${c}" th:id="'check' + ${c}" required>
-                                            <label class="btn btn-outline-mava w-100 py-2 fw-bold rounded-3" th:for="'check' + ${c}" th:text="${c}">Sede / Mirim</label>
+                                            <label class="btn btn-outline-mava w-100 py-2 fw-bold rounded-3" th:for="'check' + ${c}" th:text="${c}">Sede</label>
                                         </div>
                                     </div>
                                 </div>

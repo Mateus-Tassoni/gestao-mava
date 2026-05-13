@@ -44,6 +44,6 @@ public class Visitante {
     }
 
     public enum Congregacao {
-        SEDE, MIRIM
+        SEDE
     }
 }
